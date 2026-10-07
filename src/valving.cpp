@@ -57,6 +57,7 @@ struct State { Vec d,psi,k,h; explicit State(size_t n):d(n),psi(n),k(n),h(n){} }
 struct Model {
     int n; double H,W,dz,T,q0; bool coupled;
     Vec z,a,b,sigma,klo,khi,ss_h,tau0,buf,eigen,kwork,lower,diag,upper,rhs,old;
+    std::vector<State> rk;
     fftw_plan transform;
     Model(int intervals,double healing,double height,double width,bool feedback):
       n(intervals+1),H(height),W(width),dz(H/intervals),T(healing),
@@ -78,6 +79,7 @@ struct Model {
         }
         transform=fftw_plan_r2r_1d(n,buf.data(),buf.data(),FFTW_REDFT00,FFTW_ESTIMATE);
         if(!transform) throw std::runtime_error("FFTW plan failed");
+        for(int j=0;j<7;++j)rk.emplace_back(n);
     }
     ~Model(){fftw_destroy_plan(transform);}
     void elastic(const Vec& d,Vec& tau) {
@@ -97,7 +99,6 @@ struct Model {
             s.psi[i]=f0-b[i]*std::log(vp/v0);
         }
         // Steady discrete Darcy flux: each face satisfies q=q0 exactly.
-        s.h[0]=0;
         for(int i=1;i<n;++i) {
             double left=perm(i-1,s.h[i-1],s.k[i-1]);
             double low=s.h[i-1],high=low+q0*viscosity*dz/kfloor;
@@ -142,6 +143,51 @@ struct Model {
             s.h[i]=interp(z[i],zz,pp)-rhog*z[i];tau0[i]=interp(z[i],zz,tt);
         }
         ss_h=s.h;
+    }
+    bool all_rates(const State& s,State& r,Vec& v,double dt) {
+        rates(s,r,v);
+        std::fill(r.h.begin(),r.h.end(),0);
+        if(!coupled)return true;
+        double largest=0;
+        for(int i=0;i<n;++i) {
+            kwork[i]=perm(i,s.h[i],s.k[i]);
+            if(kwork[i]<=0 || !std::isfinite(kwork[i]))return false;
+            largest=std::max(largest,kwork[i]);
+        }
+        if(dt*largest/(storage*viscosity*dz*dz)>.4)return false;
+        double previous=.5*(kwork[0]+kwork[1])*(s.h[1]-s.h[0])/(viscosity*dz);
+        for(int i=1;i<n-1;++i) {
+            double next=.5*(kwork[i]+kwork[i+1])*(s.h[i+1]-s.h[i])/(viscosity*dz);
+            r.h[i]=(next-previous)/(storage*dz);previous=next;
+        }
+        r.h[n-1]=2*(q0-previous)/(storage*dz);
+        return true;
+    }
+    // Dormand--Prince 5(4) for subsecond steps: all four equations are explicit.
+    // The hydraulic CFL condition is checked at every stage. This avoids the
+    // cost of repeated implicit solves during effectively undrained ruptures.
+    bool dopri(const State& s,double dt,State& high,State& low,State& stage,Vec& v) {
+        static const double A[7][7]={
+            {0},{1./5},{3./40,9./40},{44./45,-56./15,32./9},
+            {19372./6561,-25360./2187,64448./6561,-212./729},
+            {9017./3168,-355./33,46732./5247,49./176,-5103./18656},
+            {35./384,0,500./1113,125./192,-2187./6784,11./84}};
+        static const double B[7]={5179./57600,0,7571./16695,393./640,-92097./339200,187./2100,1./40};
+        for(int j=0;j<7;++j) {
+            stage=s;
+            for(int l=0;l<j;++l)if(A[j][l]!=0)for(int i=0;i<n;++i) {
+                stage.d[i]+=dt*A[j][l]*rk[l].d[i];stage.psi[i]+=dt*A[j][l]*rk[l].psi[i];
+                stage.k[i]+=dt*A[j][l]*rk[l].k[i];stage.h[i]+=dt*A[j][l]*rk[l].h[i];
+            }
+            for(int i=0;i<n;++i)if(stage.k[i]<=0)return false;
+            if(!all_rates(stage,rk[j],v,dt))return false;
+        }
+        high=stage;low=s;
+        for(int j=0;j<7;++j)if(B[j]!=0)for(int i=0;i<n;++i) {
+            low.d[i]+=dt*B[j]*rk[j].d[i];low.psi[i]+=dt*B[j]*rk[j].psi[i];
+            low.k[i]+=dt*B[j]*rk[j].k[i];low.h[i]+=dt*B[j]*rk[j].h[i];
+        }
+        return true;
     }
     // Nonlinear backward-Euler hydraulic stage with conservative face fluxes.
     bool pressure(const Vec& h0,const Vec& ks,double dt,Vec& h) {
@@ -198,14 +244,15 @@ struct Model {
         for(int newton=0;newton<14;++newton) {
             for(int i=0;i<n;++i) {
                 mid.d[i]=s.d[i]+h*(current[i]-vp);
-                double ps=s.psi[i];
+                double ps=s.psi[i];bool state_converged=false;
                 for(int j=0;j<30;++j) {
                     double vv=v0*std::exp((f0-ps)/b[i]);
                     double step=(ps-s.psi[i]-h*b[i]/dc*(vv-current[i]))/(1+h*vv/dc);
                     ps-=step;
                     if(!std::isfinite(ps))return false;
-                    if(std::abs(step)<1e-13)break;
+                    if(std::abs(step)<1e-13){state_converged=true;break;}
                 }
+                if(!state_converged)return false;
                 mid.psi[i]=ps;
                 mid.k[i]=(s.k[i]+h*(current[i]*khi[i]/L+klo[i]/T))/(1+h*(current[i]/L+1/T));
             }
@@ -309,15 +356,28 @@ void tests() {
     double exact=evolve(64),e1=std::abs(evolve(1)-exact),e2=std::abs(evolve(2)-exact);
     require(e1/e2>3.7 && e1/e2<4.3,"midpoint second-order time convergence");
     std::cout<<"midpoint_error_ratio "<<e1/e2<<"\nPASS\n";
+    auto evolve_rk=[&](int count) {
+        State x=init,y(q.n),low(q.n),stage(q.n);Vec vv(q.n);
+        for(int j=0;j<count;++j) {
+            require(q.dopri(x,1e6/count,y,low,stage,vv),"Dormand-Prince stages");
+            std::swap(x,y);
+        }
+        return x.d[0];
+    };
+    exact=evolve_rk(64);e1=std::abs(evolve_rk(1)-exact);e2=std::abs(evolve_rk(2)-exact);
+    require(e1/e2>20 && e1/e2<50,"fifth-order time convergence");
+    std::cout<<"dopri_error_ratio "<<e1/e2<<"\nPASS\n";
 }
 
 int main(int argc,char**argv) try {
     int intervals=16384,stride=10;double T=1e8,years=120,H=578952.681034,rtol=1e-4,maxdt=3e5,perturb=1e-4;
-    bool coupled=true;std::string output="results/coupled",profile="";
+    bool coupled=true,append=false;double start_year=0;
+    std::string output="results/coupled",profile="",state_file="";
     for(int i=1;i<argc;++i) {
         std::string a=argv[i];
         if(a=="--test"){tests();return 0;}
         if(a=="--fixed"){coupled=false;continue;}
+        if(a=="--append"){append=true;continue;}
         if(i+1>=argc)throw std::runtime_error("missing value for "+a);
         std::string v=argv[++i];
         if(a=="--n")intervals=std::stoi(v);else if(a=="--T")T=std::stod(v);
@@ -325,23 +385,44 @@ int main(int argc,char**argv) try {
         else if(a=="--rtol")rtol=std::stod(v);else if(a=="--max-dt")maxdt=std::stod(v);
         else if(a=="--perturb")perturb=std::stod(v);else if(a=="--output")output=v;
         else if(a=="--profile")profile=v;
+        else if(a=="--state")state_file=v;else if(a=="--start-year")start_year=std::stod(v);
         else if(a=="--stride")stride=std::stoi(v);else throw std::runtime_error("unknown argument "+a);
     }
-    if(intervals<16 || rtol<=0 || years<=0 || stride<1 || H<=60000)throw std::runtime_error("invalid configuration");
+    if(intervals<16 || rtol<=0 || years<=0 || stride<1 || H<=60000 || maxdt<=0)
+        throw std::runtime_error("invalid configuration");
+    if(T!=1e7 && T!=1e8 && T!=1e9 && T!=1e10)
+        throw std::runtime_error("T must be 1e7, 1e8, 1e9, or 1e10 s for the supplied depth profiles");
+    if(start_year<0 || start_year>=years || (start_year>0 && state_file.empty()) || (append && state_file.empty()))
+        throw std::runtime_error("invalid continuation arguments");
     std::filesystem::create_directories(output);
     Model m(intervals,T,H,500e3,coupled);State s(m.n),full(m.n),half(m.n),fine(m.n),mid(m.n),r(m.n);
     Vec v(m.n),k(m.n);m.initialize(s,perturb);
     if(!profile.empty())m.load_profile(s,profile);
+    if(!state_file.empty()) {
+        std::ifstream state(state_file,std::ios::binary);
+        for(auto p:{&s.d,&s.psi,&s.k,&s.h})state.read(reinterpret_cast<char*>(p->data()),m.n*8);
+        if(!state || state.peek()!=EOF)throw std::runtime_error("checkpoint size does not match grid");
+    }
     // Archive top 30 km on the computational nodes. Float64 time and fields.
     int nz=std::upper_bound(m.z.begin(),m.z.end(),30000)-m.z.begin();
+    if(append) {
+        std::ifstream previous(output+"/fields.bin",std::ios::binary|std::ios::ate);
+        auto bytes=previous.tellg();std::streamoff width=8*(1+7*nz);
+        if(bytes<width || bytes%width!=0)throw std::runtime_error("invalid existing output for append");
+        previous.seekg(-width,std::ios::end);double last_time;previous.read(reinterpret_cast<char*>(&last_time),8);
+        if(std::abs(last_time-start_year*year)>1e-5)throw std::runtime_error("continuation time does not match existing output");
+    }
     std::ofstream meta(output+"/metadata.json");
     meta<<std::setprecision(17)<<"{\n\"n\": "<<m.n<<", \"nz\": "<<nz<<", \"dz\": "<<m.dz
         <<", \"height_m\": "<<H<<", \"width_m\": "<<m.W<<", \"T_s\": "<<T<<", \"q0_m_s\": "<<m.q0
         <<", \"rtol\": "<<rtol<<", \"max_dt_s\": "<<maxdt<<", \"years\": "<<years
         <<", \"coupled\": "<<(coupled?"true":"false")<<", \"initial_state_perturbation\": "<<perturb
+        <<", \"continuation_start_year\": "<<start_year
         <<", \"initial_profile\": \""<<profile<<"\", \"fields\": [\"slip_m\",\"velocity_m_s\",\"effective_stress_Pa\",\"permeability_m2\",\"flux_m_s\",\"psi\",\"kstar_m2\"]}\n";meta.close();
-    std::ofstream bin(output+"/fields.bin",std::ios::binary),history(output+"/history.csv");
-    history<<"time_s,dt_s,max_velocity_m_s,accepted,rejected,error\n"<<std::setprecision(15);
+    auto mode=std::ios::out|(append?std::ios::app:std::ios::trunc);
+    std::ofstream bin(output+"/fields.bin",mode|std::ios::binary),history(output+"/history.csv",mode);
+    if(!append)history<<"time_s,dt_s,max_velocity_m_s,accepted,rejected,error\n";
+    history<<std::setprecision(15);
     auto write=[&](double t) {
         m.rates(s,r,v);m.permeability(s,k);
         bin.write(reinterpret_cast<char*>(&t),8);
@@ -357,13 +438,15 @@ int main(int argc,char**argv) try {
             bin.write(reinterpret_cast<char*>(&val),8);
         }
     };
-    double t=0,dt=100,stop=years*year,last_report=-1,last_save=0;long accepted=0,rejected=0;
-    auto start=std::chrono::steady_clock::now();write(0);
+    double t=start_year*year,dt=100,stop=years*year,last_report=-1,last_save=t;long accepted=0,rejected=0;
+    auto start=std::chrono::steady_clock::now();if(!append)write(t);
     while(t<stop) {
         dt=std::min({dt,maxdt,stop-t});
-        bool ok=false;
+        bool ok=false,use_rk=dt<1;double divisor=use_rk?1:3,exponent=use_rk?-.2:-1./3;
         try {
-            if(dt>3000) {
+            if(use_rk) {
+                ok=m.dopri(s,dt,fine,full,mid,v);
+            } else if(dt>3000) {
                 ok=m.implicit_midpoint(s,dt,full,mid,r,v) && m.implicit_midpoint(s,dt/2,half,mid,r,v)
                      && m.implicit_midpoint(half,dt/2,fine,mid,r,v);
             } else {
@@ -373,13 +456,17 @@ int main(int argc,char**argv) try {
         } catch(const std::exception&) {ok=false;}
         double error=0;
         if(ok)for(int i=0;i<m.n;++i) {
-            error=std::max(error,std::abs(fine.d[i]-full.d[i])/(3*rtol*dc));
-            error=std::max(error,std::abs(fine.psi[i]-full.psi[i])/(3*rtol*m.b[i]));
-            error=std::max(error,std::abs(fine.k[i]-full.k[i])/(3*rtol*(1e-3+std::abs(fine.k[i]))));
-            error=std::max(error,std::abs(fine.h[i]-full.h[i])/(3*rtol*stress_scale));
+            if(!std::isfinite(fine.d[i]+fine.psi[i]+fine.k[i]+fine.h[i]) ||
+               !std::isfinite(full.d[i]+full.psi[i]+full.k[i]+full.h[i])) {
+                error=INFINITY;break;
+            }
+            error=std::max(error,std::abs(fine.d[i]-full.d[i])/(divisor*rtol*dc));
+            error=std::max(error,std::abs(fine.psi[i]-full.psi[i])/(divisor*rtol*m.b[i]));
+            error=std::max(error,std::abs(fine.k[i]-full.k[i])/(divisor*rtol*(1e-3+std::abs(fine.k[i]))));
+            error=std::max(error,std::abs(fine.h[i]-full.h[i])/(divisor*rtol*stress_scale));
         }
         if(!ok || !std::isfinite(error) || error>1) {
-            ++rejected;dt*=ok?std::max(.1,.8*std::pow(error,-1.0/3)):.25;
+            ++rejected;dt*=ok?std::max(.1,.8*std::pow(error,exponent)):.25;
             if(dt<1e-10)throw std::runtime_error("time step underflow at t="+std::to_string(t));
             continue;
         }
@@ -393,7 +480,7 @@ int main(int argc,char**argv) try {
                      <<" accepted="<<accepted<<" rejected="<<rejected<<" wall_s="<<elapsed<<std::endl;
             last_report=elapsed;bin.flush();history.flush();
         }
-        dt*=std::clamp(.9*std::pow(std::max(error,1e-8),-1.0/3),.5,2.0);
+        dt*=std::clamp(.9*std::pow(std::max(error,1e-8),exponent),.5,2.0);
     }
     std::ofstream checkpoint(output+"/final_state.bin",std::ios::binary);
     for(auto p:{&s.d,&s.psi,&s.k,&s.h})checkpoint.write(reinterpret_cast<const char*>(p->data()),m.n*8);

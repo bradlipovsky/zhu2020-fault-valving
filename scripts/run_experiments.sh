@@ -15,6 +15,12 @@ for n in 8192 16384 32768; do
     --profile inputs/T1e8_restart.csv --output "results/restart_T1e8_n$n" \
     > "results/restart_T1e8_n$n.log" 2>&1
 done
+for n in 8192 16384; do
+  cp "results/restart_T1e8_n$n/final_state.bin" "results/restart_T1e8_n$n/phase1_state.bin"
+  build/valving --n "$n" --years 35 --T 1e8 --profile inputs/T1e8_restart.csv \
+    --state "results/restart_T1e8_n$n/phase1_state.bin" --start-year 12 --append \
+    --output "results/restart_T1e8_n$n" >> "results/restart_T1e8_n$n.log" 2>&1
+done
 for exponent in 7 9 10; do
   duration=25
   if [ "$exponent" = 7 ]; then duration=12; fi
