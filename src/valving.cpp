@@ -4,6 +4,7 @@
 #include <fftw3.h>
 #include <algorithm>
 #include <chrono>
+#include <csignal>
 #include <cmath>
 #include <cstdint>
 #include <filesystem>
@@ -20,6 +21,8 @@ constexpr double mu=32.4e9, damping=4.68e6, vp=1e-9, v0=1e-6;
 constexpr double f0=.6, dc=.002, storage=1e-11, viscosity=1e-4;
 constexpr double rhog=9800, normal_gradient=22050, stress_scale=30e6;
 constexpr double kfloor=1e-19, L=1;
+volatile std::sig_atomic_t stop_requested=0;
+void request_stop(int signal){stop_requested=signal;}
 
 double interp(double x, const Vec& xp, const Vec& fp) {
     if(x<=xp.front()) return fp.front();
@@ -372,7 +375,7 @@ void tests() {
 }
 
 int main(int argc,char**argv) try {
-    int intervals=16384,stride=10;double T=1e8,years=120,H=578952.681034,rtol=1e-4,maxdt=3e5,perturb=1e-4;
+    int intervals=16384,stride=10,checkpoint_stride=500;double T=1e8,years=120,H=578952.681034,rtol=1e-4,maxdt=3e5,perturb=0;
     bool coupled=true,append=false;double start_year=0;
     std::string output="results/coupled",profile="",state_file="";
     for(int i=1;i<argc;++i) {
@@ -388,9 +391,11 @@ int main(int argc,char**argv) try {
         else if(a=="--perturb")perturb=std::stod(v);else if(a=="--output")output=v;
         else if(a=="--profile")profile=v;
         else if(a=="--state")state_file=v;else if(a=="--start-year")start_year=std::stod(v);
-        else if(a=="--stride")stride=std::stoi(v);else throw std::runtime_error("unknown argument "+a);
+        else if(a=="--stride")stride=std::stoi(v);
+        else if(a=="--checkpoint-stride")checkpoint_stride=std::stoi(v);
+        else throw std::runtime_error("unknown argument "+a);
     }
-    if(intervals<16 || rtol<=0 || years<=0 || stride<1 || H<=60000 || maxdt<=0)
+    if(intervals<16 || rtol<=0 || years<=0 || stride<1 || checkpoint_stride<1 || H<=60000 || maxdt<=0)
         throw std::runtime_error("invalid configuration");
     if(T!=1e7 && T!=1e8 && T!=1e9 && T!=1e10)
         throw std::runtime_error("T must be 1e7, 1e8, 1e9, or 1e10 s for the supplied depth profiles");
@@ -403,7 +408,12 @@ int main(int argc,char**argv) try {
     if(!state_file.empty()) {
         std::ifstream state(state_file,std::ios::binary);
         for(auto p:{&s.d,&s.psi,&s.k,&s.h})state.read(reinterpret_cast<char*>(p->data()),m.n*8);
-        if(!state || state.peek()!=EOF)throw std::runtime_error("checkpoint size does not match grid");
+        if(!state)throw std::runtime_error("checkpoint size does not match grid");
+        if(state.peek()!=EOF) {
+            double saved_time;state.read(reinterpret_cast<char*>(&saved_time),8);
+            if(!state || state.peek()!=EOF || std::abs(saved_time-start_year*year)>1e-5)
+                throw std::runtime_error("checkpoint grid or embedded time mismatch");
+        }
         s.h[0]=0;
     }
     // Archive top 30 km on the computational nodes. Float64 time and fields.
@@ -419,6 +429,7 @@ int main(int argc,char**argv) try {
     meta<<std::setprecision(17)<<"{\n\"n\": "<<m.n<<", \"nz\": "<<nz<<", \"dz\": "<<m.dz
         <<", \"height_m\": "<<H<<", \"width_m\": "<<m.W<<", \"T_s\": "<<T<<", \"q0_m_s\": "<<m.q0
         <<", \"rtol\": "<<rtol<<", \"max_dt_s\": "<<maxdt<<", \"years\": "<<years
+        <<", \"stride\": "<<stride<<", \"checkpoint_stride\": "<<checkpoint_stride
         <<", \"coupled\": "<<(coupled?"true":"false")<<", \"initial_state_perturbation\": "<<perturb
         <<", \"continuation_start_year\": "<<start_year
         <<", \"initial_profile\": \""<<profile<<"\", \"fields\": [\"slip_m\",\"velocity_m_s\",\"effective_stress_Pa\",\"permeability_m2\",\"flux_m_s\",\"psi\",\"kstar_m2\"]}\n";meta.close();
@@ -441,9 +452,28 @@ int main(int argc,char**argv) try {
             bin.write(reinterpret_cast<char*>(&val),8);
         }
     };
+    auto checkpoint=[&](double t) {
+        std::string path=output+"/checkpoint_state.bin";
+        std::ofstream file(path+".tmp",std::ios::binary);
+        for(auto p:{&s.d,&s.psi,&s.k,&s.h})file.write(reinterpret_cast<const char*>(p->data()),m.n*8);
+        file.write(reinterpret_cast<const char*>(&t),8); // time and fields are replaced atomically
+        file.close();if(!file)throw std::runtime_error("checkpoint write failed");
+        std::filesystem::rename(path+".tmp",path);
+        std::ofstream stamp(output+"/checkpoint.json.tmp");
+        stamp<<std::setprecision(17)<<"{\"time_s\": "<<t<<", \"time_years\": "<<t/year<<"}\n";
+        stamp.close();if(!stamp)throw std::runtime_error("checkpoint time write failed");
+        std::filesystem::rename(output+"/checkpoint.json.tmp",output+"/checkpoint.json");
+    };
+    std::signal(SIGTERM,request_stop);std::signal(SIGINT,request_stop);
     double t=start_year*year,dt=100,stop=years*year,last_report=-1,last_save=t;long accepted=0,rejected=0;
     auto start=std::chrono::steady_clock::now();if(!append)write(t);
     while(t<stop) {
+        if(stop_requested) {
+            if(last_save<t)write(t);
+            bin.flush();history.flush();checkpoint(t);
+            std::cout<<"Stopped safely at year "<<std::setprecision(17)<<t/year<<std::endl;
+            return 128+stop_requested;
+        }
         dt=std::min({dt,maxdt,stop-t});
         bool ok=false,use_rk=dt<1;double divisor=use_rk?1:3,exponent=use_rk?-.2:-1./3;
         try {
@@ -474,8 +504,10 @@ int main(int argc,char**argv) try {
             continue;
         }
         std::swap(s,fine);t+=dt;++accepted;
-        bool save=accepted%stride==0 || t-last_save>=.02*year || t>=stop;
+        bool checkpoint_due=accepted%checkpoint_stride==0 || t>=stop;
+        bool save=accepted%stride==0 || t-last_save>=.02*year || t>=stop || checkpoint_due;
         if(save){write(t);last_save=t;}
+        if(checkpoint_due){bin.flush();history.flush();checkpoint(t);}
         if(accepted%100==0 || t>=stop)history<<t<<','<<dt<<','<<*std::max_element(v.begin(),v.end())<<','<<accepted<<','<<rejected<<','<<error<<'\n';
         double elapsed=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
         if(elapsed-last_report>=30 || t>=stop) {
@@ -485,7 +517,7 @@ int main(int argc,char**argv) try {
         }
         dt*=std::clamp(.9*std::pow(std::max(error,1e-8),exponent),.5,2.0);
     }
-    std::ofstream checkpoint(output+"/final_state.bin",std::ios::binary);
-    for(auto p:{&s.d,&s.psi,&s.k,&s.h})checkpoint.write(reinterpret_cast<const char*>(p->data()),m.n*8);
+    std::ofstream final_checkpoint(output+"/final_state.bin",std::ios::binary);
+    for(auto p:{&s.d,&s.psi,&s.k,&s.h})final_checkpoint.write(reinterpret_cast<const char*>(p->data()),m.n*8);
     return 0;
 }catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}

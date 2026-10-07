@@ -11,6 +11,8 @@ report/*.fdb_latexmk
 report/*.toc
 /results/*/fields.bin
 /results/*/final_state.bin
+/results/*/checkpoint_state.bin
+/results/*/*.tmp
 /results/benchmark/
 /results/implicit_benchmark/
 /reference/paper.html

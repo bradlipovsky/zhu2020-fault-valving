@@ -12,7 +12,7 @@ with tempfile.TemporaryDirectory(prefix='restart-test-',dir=str(binary.parent)) 
     root=Path(directory)
     continuous=root/'continuous';split=root/'split'
     def run(out,end,extra=()):
-        subprocess.run([str(binary),'--n','512','--years',str(end),'--T','1e8',
+        subprocess.run([str(binary),'--n','512','--years',str(end),'--T','1e8','--perturb','1e-4',
             '--output',str(out),*extra],check=True,stdout=subprocess.DEVNULL)
     run(continuous,.03)
     run(split,.01)
