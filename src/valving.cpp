@@ -475,7 +475,13 @@ int main(int argc,char**argv) try {
             return 128+stop_requested;
         }
         dt=std::min({dt,maxdt,stop-t});
-        bool ok=false,use_rk=dt<1;double divisor=use_rk?1:3,exponent=use_rk?-.2:-1./3;
+        bool use_rk=dt<3000;
+        if(use_rk && coupled) {
+            m.permeability(s,k);
+            double cfl=dt*(*std::max_element(k.begin(),k.end()))/(storage*viscosity*m.dz*m.dz);
+            use_rk=cfl<.2; // otherwise use an implicit hydraulic stage
+        }
+        bool ok=false;double divisor=use_rk?1:3,exponent=use_rk?-.2:-1./3;
         try {
             if(use_rk) {
                 ok=m.dopri(s,dt,fine,full,mid,v);
