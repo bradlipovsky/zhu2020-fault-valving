@@ -1,0 +1,109 @@
+# Example input file for a quasidynamic earthquake cycle simulation with 
+# a vertical strike-slip fault and linear elastic off-fault material.
+
+#======================================================================
+# define the domain and problem type
+# set up the computational domain
+Ny = 251      # points in y-direction
+Nz = 2300     # points in z-direction
+Ly = 500      # (km) horizontal domain size
+Lz = 500      # (km) vertical domain size
+vL = 1e-9    # (m/s) loading velocity
+
+# controls grid stretching perpendicular to the fault: 
+# larger b means more grid stretching
+bCoordTrans = 10  
+
+# specify what problem to simulate
+bulkDeformationType = linearElastic    # off-fault constitutive law
+momentumBalanceType = quasidynamic     # form of the momentum balance equation
+guessSteadyStateICs = 1                # estimate steady-state initial conditions
+
+#=======================================================================
+# rate-and-state parameters
+stateLaw = agingLaw      # state variable evolution law
+
+DcVals = [2e-3 2e-3]     # state evolution distance (m) 
+DcDepths = [0 500]       # (km)
+
+# based on Blanpied et al. (1991, 1995), assuming a geotherm of 30 K/km
+aVals = [0.0105 0.03 0.07 0.173]            # direct effect parameter
+aDepths = [0 14.9 27.6 60]                  # (km)
+bVals = [0.02 0.0378 0.0356 0.0375 0.0424]  # state evolution effect parameter
+bDepths = [0 13.6 14.9 27.6 60]             # (km)
+
+sNVals = [0.0 11025.0]   # effective normal stress (MPa) 
+sNDepths = [0.0 500.0]   # (km)
+sN_floor = 1.0           # minimal effective normal stress
+
+#=======================================================================
+# off-fault material parameters
+muVals = [32.4 32.4]     # shear modulus (GPa) 
+muDepths = [0 500]       # (km)
+rhoVals = [2.7 2.7]      # rock density (g/cm^3)
+rhoDepths = [0 500]      # (km)
+
+#=======================================================================
+# hydraulic coupling 
+hydraulicCoupling = coupled     # options: no, uncoupled, coupled
+hydraulicTimeIntType = implicit # options: implicit, explicit
+
+# bottom boundary condition
+bcB_type = Q                    # options: Q, p
+bcB_flux = 3.3764e-10           # flux or pressure
+
+# Darcy flow
+# n beta dp/dt = d/dz(k/eta(dp/dz - rho g))
+pVals = [0.0 0.0]               # inital pore pressure (MPa)
+pDepths = [0 500]               
+n_pVals = [0.01 0.01]           # pore volume fraction
+n_pDepths = [0 500]             
+beta_pVals = [1 1]              # fluid and pore compressibiity (GPa^-1)      
+beta_pDepths = [0 500]          
+k_pVals = [1e-23 1e-23]         # inital permeability (km^2)
+k_pDepths = [0 500]             
+eta_pVals = [1e-13 1e-13]       # fluid viscosity (GPa.s)
+eta_pDepths = [0 500]
+rho_pVals = [1 1]               # fluid density (g/cm^3)
+rho_pDepths = [0 500]
+g = 9.8                         # gravity
+
+# permeability evolution with slip
+# dk/dt = -V/L (k* - kmax) - 1/T (k* - kmin)
+permSlipDependent = yes
+kL_pVals = [1 1]                # permeability enhancement evolution distance (m)
+kL_pDepths = [0 500]
+kT_pVals = [1e7 1e7]            # healing/sealing time scale (s)
+kT_pDepths = [0 500]
+kmin_pVals = [1e-25 1e-25 1e-23 1e-23] # mininum permeability (km^2)
+kmin_pDepths = [0 30 60 500]
+kmax_pVals = [1e-21 1e-21 1e-23 1e-23] # maximum permeability (km^2)
+kmax_pDepths = [0 30 60 500]
+
+# permeability evolution with effective normal stress (sigma - p)
+# k = kmin2 + (k* - kmin2) exp(-(sigma - p)/sigma*)
+permPressureDependent = yes
+sigma_pVals = [30 30]           # stress sensitivity parameter (MPa)
+sigma_pDepths = [0 500]
+kmin2_pVals = [1e-25 1e-25]     # mininum permeability (km^2)
+kmin2_pDepths = [0 500]
+maxBEIteration = 1000           # maximum iteration for implicit update
+BETol = 1e-8                    # error tolerance for implicit update
+
+#=======================================================================
+# settings for time integration
+timeIntegrator = RK43_WBE
+maxStepCount = 1e9      # maximum number of time steps
+initTime = 0            # initial time (s) 
+maxTime = 1e12          # final time (s)
+normType = L2_relative  # options: L2_absolute, L2_relative
+timeStepTol = 1e-8      # error tolerance for time integration
+timeIntInds = [psi slip permeability] # variables to use to compute time step
+stride1D = 10           # number of time steps between output of 1D fields
+stride2D = 0            # number of time steps between output of 2D fields
+
+# directory for input/output
+inputDir = in/grids_z/
+outputDir = data/T1e7_
+
+

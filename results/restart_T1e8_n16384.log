@@ -1,0 +1,17 @@
+t_year=0.6658446 dt=117959 Vmax=4.191277e-09 accepted=114 rejected=0 wall_s=29.187
+t_year=1.047367 dt=66065.85 Vmax=8.214076e-09 accepted=235 rejected=2 wall_s=59.38119
+t_year=1.316998 dt=58039.28 Vmax=1.027617e-08 accepted=346 rejected=16 wall_s=89.5218
+t_year=1.545321 dt=43719.96 Vmax=1.153826e-08 accepted=457 rejected=30 wall_s=119.6778
+t_year=1.755063 dt=37239.4 Vmax=1.406471e-08 accepted=566 rejected=46 wall_s=149.7269
+t_year=1.957278 dt=46639.26 Vmax=1.438819e-08 accepted=675 rejected=61 wall_s=180.0708
+t_year=2.144012 dt=77435.15 Vmax=6.082333e-09 accepted=784 rejected=75 wall_s=210.127
+t_year=2.334369 dt=35256.19 Vmax=1.725415e-08 accepted=890 rejected=92 wall_s=240.3468
+t_year=2.523647 dt=81881.48 Vmax=5.959667e-09 accepted=1000 rejected=105 wall_s=270.61
+t_year=2.713442 dt=40810.98 Vmax=1.614257e-08 accepted=1104 rejected=122 wall_s=300.823
+t_year=2.89344 dt=35870.48 Vmax=1.344306e-08 accepted=1208 rejected=137 wall_s=331.03
+t_year=3.08841 dt=84675.73 Vmax=5.482816e-09 accepted=1315 rejected=151 wall_s=361.1645
+t_year=3.290471 dt=71627.33 Vmax=1.28546e-08 accepted=1419 rejected=167 wall_s=391.3514
+t_year=3.481911 dt=44422.36 Vmax=1.606623e-08 accepted=1520 rejected=186 wall_s=421.4564
+t_year=3.682082 dt=40675.19 Vmax=1.016688e-08 accepted=1625 rejected=201 wall_s=451.4605
+t_year=3.893233 dt=86503.64 Vmax=5.165426e-09 accepted=1729 rejected=216 wall_s=481.4824
+t_year=4.121544 dt=106767.4 Vmax=9.414587e-09 accepted=1833 rejected=231 wall_s=511.4931

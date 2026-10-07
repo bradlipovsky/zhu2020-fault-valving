@@ -1,0 +1,16 @@
+/build/
+/reference/data/
+/reference/scycle/
+*.part
+__pycache__/
+report/*.aux
+report/*.log
+report/*.out
+report/*.fls
+report/*.fdb_latexmk
+report/*.toc
+/results/*/fields.bin
+/results/*/final_state.bin
+/results/benchmark/
+/results/implicit_benchmark/
+/reference/paper.html

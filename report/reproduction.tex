@@ -1,0 +1,307 @@
+\documentclass[11pt]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,graphicx,booktabs,array,float}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[font=small,labelfont=bf]{caption}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+\newcommand{\figpage}[3]{\clearpage\begin{figure}[p]\centering
+\includegraphics[width=\textwidth,height=.79\textheight,keepaspectratio]{../figures/#1.pdf}
+\caption{#2}\label{#3}\end{figure}\clearpage}
+\title{Earthquake cycles and evolving fault permeability:\\a reproducibility study of Zhu et al. (2020)}
+\author{Computational research report}
+\date{7 October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+Permeability changes couple fault slip to the redistribution of pore pressure.
+We implement the model of Zhu et al.\ \cite{zhu} in C++ and assess which parts of
+the published calculation can be recovered from its equations, inputs, and
+archived outputs. Independent evaluation recovers the constitutive curves and
+steady pressure profile in Figure~1. The archive permits reconstruction of all
+six main and six supplementary figures, including the migrating pressure pulses
+and swarm sequence. These archived trajectories are distinguished throughout
+from new numerical simulations. The new solver passes analytical and numerical
+verification tests; its comparison with the original calculation uses explicitly
+documented, approximate restart states. An exact independent reproduction of
+the published earthquake sequence is not established by replotting the archive.
+\end{abstract}
+
+\section{Scope and sources}
+Fault healing reduces permeability between earthquakes. If fluid supply from
+depth continues, pressure increases and effective normal stress decreases.
+Slip can then increase permeability and permit the pressure perturbation to
+advance. Zhu et al.\ \cite{zhu} showed that this feedback can produce aseismic
+slip fronts and swarm-like seismicity. The objective here is to recover that
+calculation while keeping the distinction between a new model solution and an
+archived solution explicit.
+
+Three sources constrain the exercise: the article and its supplement, the OSF
+archive \cite{osf}, and the Scycle branch \texttt{Zhu\_et\_al\_2020}
+\cite{scycle}. All ten archive files, including the data-description PDF, were
+downloaded and checked against their OSF SHA-256 digests. Nine files contain
+simulation fields. The source branch supplies four input files, the stretched
+depth grid, and plotting examples, but the OSF files do not include the
+frictional state or shear traction needed for an exact restart.
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{p{.19\textwidth}p{.34\textwidth}p{.39\textwidth}}
+\toprule
+Published figure & Calculation in this report & Reproducibility status\\
+\midrule
+1 & Geometry redrawn; constitutive and steady-flow equations evaluated anew & Independent constitutive reproduction.\\
+2--5 & Archived slip, velocity, pressure, permeability, and flux replotted & Archived numerical results recovered; new sequence not thereby validated.\\
+6 & Advancing fronts extracted from archived velocity fields & Qualitative reconstruction with declared threshold and time windows.\\
+S1--S6 & Archived time histories, alternate cycles, and long-healing cases replotted & Archived results recovered with revised plotting conventions.\\
+New C++ runs & Coupled evolution from approximate archived states & Independent numerical integration, with initialization and resolution limitations.\\
+\bottomrule
+\end{tabular}
+\caption{The provenance of each result. Figures in this report are newly generated plots; original published raster figures are retained only as reference material.}
+\end{table}
+
+\section{Mechanical and hydraulic model}
+The fault occupies $y=0$ in a rectangular antiplane elastic domain
+$0\leq y\leq L_y$, $0\leq z\leq L_z$, with depth $z$ positive downward.
+Slip is the displacement discontinuity across the fault. The remote boundary
+moves at $V_p/2$ on the modeled side; the upper and lower boundaries have zero
+shear traction. The elastic displacement satisfies $\nabla^2 u=0$.
+For a cosine slip mode with vertical wavenumber $\kappa_j=j\pi/L_z$, the exact
+elastic traction operator is
+\begin{equation}
+ \widehat{\tau}^{\rm qs}_j=K_j\widehat{d}_j,\qquad
+ K_j=-\frac{\mu\kappa_j}{2\tanh(\kappa_j L_y)},\quad
+ K_0=-\frac{\mu}{2L_y},
+ \label{eq:elastic}
+\end{equation}
+where $d=\delta-V_pt$ is the slip deficit, with any initial elastic stress
+represented separately. Equation~\eqref{eq:elastic} retains the finite-domain
+boundary conditions without solving for off-fault displacement at every step.
+It is evaluated with discrete cosine transforms on a uniform depth grid.
+
+The quasi-dynamic traction balance and regularized rate-and-state law are
+\begin{align}
+ \tau^{\rm qs}-\eta_{\rm rad}V
+ &= (\sigma-p)f(V,\psi),\qquad V=\dot\delta,\\
+ f(V,\psi)&=a\,\operatorname{asinh}\left[\frac{V}{2V_0}e^{\psi/a}\right],\\
+ \dot\psi&=\frac{b}{d_c}\left[V_0e^{(f_0-\psi)/b}-V\right].
+\end{align}
+Here $\psi$ is the logarithmic aging state, $a$ and $b$ are depth-dependent
+friction parameters, and $d_c$ is the state evolution distance. The radiation
+damping term approximates the energy carried away by elastic waves. The
+original input files impose a minimum effective stress of 1~MPa in friction;
+we retain that prescription and identify it explicitly below.
+
+Fluid flow is confined to the fault zone. The governing hydraulic equations are
+\begin{align}
+ n\beta\,\partial_t p&=\partial_z q,&
+ q&=\frac{k}{\eta}(\partial_z p-\rho g),\label{eq:fluid}\\
+ k&=k_{\min,2}+(k^*-k_{\min,2})
+       e^{-(\sigma-p)/\sigma^*},\label{eq:k}\\
+ \partial_t k^*&=\frac{V}{L}(k_{\max}-k^*)
+                 -\frac{k^*-k_{\min}}{T}.\label{eq:ks}
+\end{align}
+Positive $q$ denotes upward flow. Pressure is zero at the surface and the
+bottom flux is $q_0$. Compression reduces permeability through
+Equation~\eqref{eq:k}; slip and healing compete through Equation~\eqref{eq:ks}.
+The distinction between $k_{\min,2}$ and $k_{\min}$ is needed because the
+original input files taper the slip-dependent bounds at depth while keeping
+the pressure-dependent floor constant. They are both $10^{-19}$~m$^2$ above
+30~km. The model excludes dilatancy, thermal pressurization, fluid exchange
+with the country rock, and changes in storage, as does the featured paper model.
+
+For steady sliding, the reference permeability is
+\begin{equation}
+ k^*_{\rm ss}=\frac{k_{\max}V_p/L+k_{\min}/T}{V_p/L+1/T}.
+\end{equation}
+At depth in a region of constant properties, a constant effective stress
+requires $k_\infty=\eta q_0/(\partial_z\sigma-\rho g)$. Consequently,
+\begin{equation}
+ (\sigma-p)_\infty=-\sigma^*\log\left(
+ \frac{k_\infty-k_{\min,2}}{k^*_{\rm ss}-k_{\min,2}}\right).
+ \label{eq:plateau}
+\end{equation}
+This provides an independent scale for Figure~1: approximately 39.4~MPa in
+the featured case. The nonlinear permeability law makes pressure follow the
+normal-stress gradient after the shallow transition.
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lll}
+\toprule
+Parameter & Value & Meaning\\\midrule
+$\mu$, $\eta_{\rm rad}$ & 32.4~GPa, 4.68~MPa\,s\,m$^{-1}$ & Elasticity and radiation damping\\
+$V_p$, $V_0$, $f_0$ & $10^{-9}$~m\,s$^{-1}$, $10^{-6}$~m\,s$^{-1}$, 0.6 & Friction reference values\\
+$d_c$, $L$ & 0.002~m, 1~m & State and permeability slip distances\\
+$n$, $\beta$, $\eta$ & 0.01, $10^{-9}$~Pa$^{-1}$, $10^{-4}$~Pa\,s & Fluid storage and viscosity\\
+$\rho$, $g$, $\sigma^*$ & 1000~kg\,m$^{-3}$, 9.8~m\,s$^{-2}$, 30~MPa & Gravity and stress sensitivity\\
+$\partial_z\sigma$ & 22.05~MPa\,km$^{-1}$ & Original input normal-stress gradient\\
+$T$ & $10^7$, $10^8$, $10^9$, $10^{10}$~s & Healing times 0.317--317~yr\\
+$q_0$ & $3\times10^{-9}$~m\,s$^{-1}$ & Except the $10^7$~s case\\
+\bottomrule
+\end{tabular}
+\caption{Principal parameters. The exact piecewise-linear $a(z)$ and $b(z)$ profiles and depth-dependent permeability bounds are retained in the original input files. A year is 365 days.}
+\end{table}
+
+\section{Details recovered from the implementation}
+Several choices needed to run the model are more specific in the source inputs
+than in the article's parameter table.
+
+\begin{enumerate}
+\item The input normal stress is $22.05z$~MPa for $z$ in km. Friction uses
+$\max(1~\mathrm{MPa},\sigma-p)$, while the permeability law uses the unmodified
+$\sigma-p$. Adding archived pressure to archived effective stress therefore
+does not recover the input normal stress where the frictional floor is active.
+\item Both bounds in Equation~\eqref{eq:ks} interpolate linearly between their
+shallow values at 30~km and a common constant at 60~km. That constant is
+$10^{-17}$, $9.1\times10^{-17}$, $5\times10^{-16}$, and
+$9.091\times10^{-16}$~m$^2$ in the four source input files. The $T=10^{10}$~s
+archive instead implies approximately $9.09\times10^{-16}$~m$^2$ at depth,
+a small input/archive discrepancy.
+\item The original files declare $L_z=500$~km, but their supplied grid and all
+archived depth vectors end at 578.952681~km. The new calculations use that
+actual extent and $L_y=500$~km. This choice can be changed at the command line.
+\item The short-healing input uses $q_0=3.3764\times10^{-10}$~m\,s$^{-1}$;
+the article reports $3.3\times10^{-10}$~m\,s$^{-1}$. We use the input value
+in new simulations and leave archived fields unchanged.
+\item Archived permeability is in km$^2$, despite the SI units used in the
+published plots. The reconstruction converts it to m$^2$ before plotting.
+Archived pressure and effective stress are in MPa, and depth is in km.
+\end{enumerate}
+
+These details do not introduce new physical mechanisms. They specify the
+particular implementation that generated the available results and prevent
+silent differences in a new calculation.
+
+\section{Numerical verification and new integrations}
+The C++ code combines the spectral elastic operator with conservative hydraulic
+finite volumes. The hydraulic unknown is excess pressure $h=p-\rho gz$, so
+the gravitational flux cancels analytically. Face conductivities are arithmetic
+averages; the lower node has a half control volume and the prescribed incoming
+flux. Pressure stages use a nonlinear backward-Euler solve. At a midpoint
+stage this produces the implicit-midpoint pressure update for the full step.
+Step doubling estimates the temporal error in slip, state, reference
+permeability, and pressure. Long steps use Newton iteration with a cosine-transform
+elastic Jacobian and a preconditioned conjugate-gradient solve; steps shorter
+than 3000~s use an explicit mechanical midpoint. This switch changes the
+numerical solution procedure, not the governing equations.
+
+The verification suite tests an elastic cosine mode and uniform loading, the
+frictional traction balance over slip rates $10^{-20}$--10~m\,s$^{-1}$,
+preservation of a discrete steady Darcy flux, an exact discrete diffusion
+eigenmode, and fluid mass balance. The largest pressure error in the steady
+test is about $2\times10^{-6}$~Pa; the manufactured diffusion error is below
+$10^{-9}$~Pa and its integrated mass-balance error is below $10^{-14}$~m of
+fluid volume per area. A uniform spring-slider test gives a temporal error
+ratio of 4.003 when the time step is halved, consistent with second-order
+midpoint integration. These tests verify individual operators and temporal
+order. They do not establish spatial convergence of a nonlinear earthquake
+sequence.
+
+An approximate restart provides a stricter comparison with the archived
+interseismic evolution than an arbitrarily phased fresh cycle. We recover
+$k^*$ algebraically from pressure and permeability. To recover state, write
+$\psi=f_0+b\log(V_0\theta/d_c)$, for which
+$\dot\theta=1-V\theta/d_c$. Starting with $\theta=1$~s at the first archived
+sample, we integrate this law using each archived slip increment, assuming
+constant velocity over that interval. We then infer traction from the
+friction law and archived velocity. The restart is taken approximately four
+years into each archive. Changing the assumed initial $\theta$ from 1 to
+$2\times10^6$~s changes reconstructed $\theta$ by at most about 1.6\% at
+these restart times. This bound quantifies memory of the assumed initial
+state; it does not bound error from temporal sampling or interpolation.
+
+\IfFileExists{simulation_results.tex}{\input{simulation_results.tex}}{%
+New integration diagnostics are generated by \texttt{scripts/analyze\_cpp.py}.}
+
+\section{Figure reconstruction and interpretation}
+Figure~\ref{fig:1} recovers the steady effective-stress plateau and the
+permeability laws by direct calculation. The archived results in
+Figures~\ref{fig:2}--\ref{fig:5} show the intended physical feedback: sealing
+reduces fluid escape, the growing pressure perturbation weakens the fault,
+and slip permits further upward transport. The swarm sequence is present in
+the supplied data and is visible in the enlarged time window. Its recovery
+here is a successful data and plotting reproduction.
+
+For Figure~\ref{fig:6}, we define the advancing front as the shallowest
+$V=10^{-10}$~m\,s$^{-1}$ crossing below 2~km. The displayed 25-year windows
+start at 12, 6, 20, and 25 years into the four archives, respectively. They
+exclude the initial postseismic retreat and are explicitly chosen plotting
+windows; the article does not state its corresponding offsets or threshold.
+Linear fits over declared advancing intervals give approximately 0.409,
+0.126, and 0.033~km\,yr$^{-1}$ for $T=3.17$, 31.7, and 317~yr. These are
+close to the published scales of 0.38, 0.12, and 0.03~km\,yr$^{-1}$, but do
+not reproduce the exact graphical construction. The short-healing case has
+repeated pulses, so its window-averaged migration rate is not a measure of
+the much faster individual pulse fronts labelled in the published figure.
+
+All reconstructed maps retain every saved time sample and use every fifth
+depth node, giving 50~m spacing above 20~km. The archive itself resolves
+10~m there. The sample-index axes expand short seismic intervals but are not
+physical time axes. Cumulative slip is referenced separately at each depth
+to its value at the beginning of the plotted window. Interseismic profiles
+are sampled at the captioned intervals. Red coseismic profiles are interpolated
+at one-second intervals within archived bursts with maximum velocity exceeding
+$10^{-3}$~m\,s$^{-1}$. These conventions are reproducible but need not match
+every contour or annotation in the original plotting scripts.
+
+\section{What remains unreproduced}
+The constitutive and steady-flow results are independently recovered, and the
+deposited transient fields recover the principal published patterns. An exact,
+independent, resolution-converged reproduction of the complete earthquake
+cycles, individual swarm events, and slow-slip recurrence is not established
+in this exercise. The archive lacks exact restart state and traction, and the
+new code uses a spectral elastic operator and second-order hydraulic volumes
+instead of the original fourth-order summation-by-parts discretization.
+Agreement between archived figures cannot resolve those differences.
+
+The two supplementary movies and the peer-review document are not reproduced
+as new simulations. No claim is made that the plotted source trajectories
+were generated by the new C++ code. The bounded result is a transparent
+implementation, a recoverable set of published figures, and quantitative tests
+that expose the remaining initialization and numerical comparisons. A complete
+sequence benchmark requires saved original states and stresses, followed by
+spatial and temporal convergence tests across both interseismic fronts and
+coseismic events.
+
+\begin{thebibliography}{9}
+\bibitem{zhu} Zhu, W., Allison, K.~L., Dunham, E.~M., and Yang, Y. (2020).
+Fault valving and pore pressure evolution in simulations of earthquake
+sequences and aseismic slip. \emph{Nature Communications}, 11, 4833.
+\href{https://doi.org/10.1038/s41467-020-18598-z}{doi:10.1038/s41467-020-18598-z}.
+\bibitem{osf} Zhu et al. (2020). Simulation data and source-data information.
+Open Science Framework. \href{https://doi.org/10.17605/OSF.IO/9YGRP}{doi:10.17605/OSF.IO/9YGRP}.
+\bibitem{scycle} Scycle source code, branch \texttt{Zhu\_et\_al\_2020},
+commit \texttt{d65e248900e193add0cc901ee7ee4d8ee7a2d50a}.\par
+\url{https://bitbucket.org/kallison/scycle/src/Zhu_et_al_2020/}.
+\end{thebibliography}
+
+\figpage{figure1}{Independent reconstruction of published Figure~1. (a) Geometry and the original piecewise-linear friction profiles. (b) Pressure-dependent permeability for four reference permeabilities. (c) Healing without slip and enhancement during slip, with the competing process omitted in each limiting calculation. (d) Pressure, normal stress, effective stress, and permeability under steady upward flux. The featured parameters are $T=10^8$~s, $q_0=3\times10^{-9}$~m\,s$^{-1}$, and $\sigma^*=30$~MPa.}{fig:1}
+
+\figpage{figure2}{Reconstruction of published Figure~2 from the authors' archived $T=10^8$~s simulations. The upper row holds pore pressure fixed; the lower row includes fault valving. Velocity is plotted against physical time and saved sample index. Right panels show cumulative slip relative to each depth's initial value; blue curves are separated by 1.5~yr, and red curves represent one-second seismic snapshots. The advancing aseismic fronts and swarm sequence are recovered from the archive. These panels are not output from the new solver.}{fig:2}
+
+\figpage{figure3}{Reconstruction of published Figure~3 from the archived $T=10^8$~s fault-valving case. Left panels show effective stress, permeability, and upward flux. Right panels show profiles every 1.5~yr, with color progressing from purple at early times to yellow at late times; dashed black curves are independently calculated steady-sliding profiles. Nonpositive flux, if present, is masked on logarithmic maps. Profile colors and spacing differ from the original phase-based presentation.}{fig:3}
+
+\figpage{figure4}{Reconstruction of published Figure~4 from the archived swarm interval, 30.5--31.8~yr after the first saved sample and 2--10~km depth. The upper panels show slip velocity against physical time and saved sample index. Lower panels show effective stress and permeability. The ascending pressurization front accompanies repeated slip bursts. The calculation recovers the archived sequence; it does not independently generate these events.}{fig:4}
+
+\figpage{figure5}{Reconstruction of published Figure~5 from the archived $T=10^7$~s case. The panels show velocity against time and sample index, effective stress, and permeability. Repeated aseismic pulses ascend from the base of the locked region. The source input flux is $3.3764\times10^{-10}$~m\,s$^{-1}$, slightly larger than the rounded value in the article caption.}{fig:5}
+
+\figpage{figure6}{Reconstruction of the comparison in published Figure~6 using an operational front definition. Curves mark the shallowest $V=10^{-10}$~m\,s$^{-1}$ crossing below 2~km in the archived simulations. Window starts are 12, 6, 20, and 25~yr for increasing $T$. Longer healing times yield slower advancing fronts. The threshold and offsets are stated choices because the published graphical definition is not supplied. The short-healing curve includes repeated advance and retreat; its mean slope is not an individual pulse speed.}{fig:6}
+
+\figpage{supplement1}{Reconstruction of Supplementary Figure~1. Archived velocity, effective stress, permeability, and upward fluid flux at depths nearest 5, 10, 15, and 20~km in the featured $T=10^8$~s case. Colors identify depth. The histories show pressure and permeability changing together over a cycle.}{fig:s1}
+
+\figpage{supplement2}{Reconstruction of Supplementary Figure~2 using the two alternate-cycle archives, \texttt{T1e8-sup1.mat} and \texttt{T1e8-sup2.mat}. Each row shows velocity against physical time and saved sample index. Their durations are those of the deposited files, approximately 28.8 and 22.4~yr. The differences between cycles indicate that the featured sequence is not exactly periodic.}{fig:s2}
+
+\figpage{supplement3}{Reconstruction of Supplementary Figure~3 for $T=10^9$~s (31.7~yr). Fixed-pressure and fault-valving velocity maps are compared with cumulative-slip profiles. Blue curves are separated by 4~yr, and red curves represent one-second seismic snapshots. The full deposited reference interval is shown; the coupled interval is approximately 134~yr.}{fig:s3}
+
+\figpage{supplement4}{Reconstruction of Supplementary Figure~4 for $T=10^9$~s. Effective stress, permeability, and upward flux are shown as time--depth maps and profiles separated by 4~yr. Purple-to-yellow color indicates increasing time; black dashed profiles are independent steady-sliding solutions. Healing is slower than in the featured case, reducing the strength of the valving cycle.}{fig:s4}
+
+\figpage{supplement5}{Reconstruction of Supplementary Figure~5 for $T=10^{10}$~s (317~yr). The panels compare fixed-pressure and coupled simulations using archived velocities and slip. Blue curves are separated by 4~yr, and red curves represent one-second seismic snapshots. Reference and coupled windows retain their deposited durations.}{fig:s5}
+
+\figpage{supplement6}{Reconstruction of Supplementary Figure~6 for $T=10^{10}$~s. Effective stress, permeability, and upward flux are shown with profiles every 4~yr. The long healing time keeps the fault relatively permeable through much of the cycle. The archived weak pressure cycling is recovered, while this panel makes no claim about a new independently converged earthquake sequence.}{fig:s6}
+
+\IfFileExists{../figures/cpp_comparison.pdf}{%
+\figpage{cpp_comparison}{New C++ integrations compared with the authors' archived featured case. The numerical integrations begin from the approximate reconstructed state about four years into the archive. Columns distinguish archived fields from the new solutions; the plotted time window is their common completed interval. These are new solver results, subject to the restart and resolution limitations discussed in the text.}{fig:cpp}}
+{}
+\end{document}

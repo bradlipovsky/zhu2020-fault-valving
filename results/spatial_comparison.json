@@ -1,0 +1,9 @@
+{
+  "common_end_years": 1.6855270462634118,
+  "coarse_fine_rms": {
+    "slip": 4.193980444070196e-05,
+    "effective_normal_stress": 0.0008365499922245073,
+    "permeability": 0.0002740546554069817,
+    "slip_velocity": 0.010869341433168957
+  }
+}

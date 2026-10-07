@@ -1,0 +1,14 @@
+\begin{table}[h]
+\centering\small
+\begin{tabular}{rrrrrr}\toprule
+$T$ (yr) & $\Delta z$ (m) & Duration (yr) & Stress RMS (MPa) & $\log_{10}k$ RMS & $\log_{10}V$ RMS\\\midrule
+317 & 35.34 & 19.71 & 0.000813 & 8.19e-06 & 0.00209 \\
+0.317 & 35.34 & 7.97 & 0.0381 & 0.0123 & 0.0412 \\
+3.17 & 35.34 & 3.19 & 0.0941 & 0.00831 & 0.0695 \\
+3.17 & 17.67 & 1.69 & 0.0658 & 0.00809 & 0.0582 \\
+3.17 & 70.67 & 3.08 & 0.0842 & 0.00709 & 0.0734 \\
+31.7 & 35.34 & 19.24 & 0.00253 & 2.75e-05 & 0.00163 \\
+\bottomrule\end{tabular}
+\caption{New C++ runs compared with the archived fields over 2--24.5 km depth and each completed time window. Logarithmic errors are in decades. Each run starts near four years into its archive. RMS values include the full sampled time window, not only its endpoint.}
+\end{table}
+The finer featured-case run covers 1.69 years after the approximate restart. Its effective-stress RMS difference from the archive is 0.0658 MPa, and its logarithmic slip-rate RMS difference is 0.0582 decades. These are comparisons with a reconstructed initial condition, rather than errors relative to an exact solution. Over the common 1.69-year interval, the two finest featured-case meshes differ by 0.000837 MPa RMS in effective stress. Two-grid agreement alone does not establish asymptotic convergence or resolve the later swarm sequence.
