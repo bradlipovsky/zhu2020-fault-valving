@@ -6,6 +6,7 @@ import struct
 import subprocess
 import sys
 import tempfile
+import time
 
 binary=Path(sys.argv[1]).resolve()
 with tempfile.TemporaryDirectory(prefix='restart-test-',dir=str(binary.parent)) as directory:
@@ -35,3 +36,21 @@ with tempfile.TemporaryDirectory(prefix='restart-test-',dir=str(binary.parent)) 
     assert bad.returncode!=0
     assert hashlib.sha256((split/'fields.bin').read_bytes()).hexdigest()==digest
     print('PASS: checkpoint continuation; normalized trajectory difference',error)
+    # A stopped run must retain an atomic full state and its embedded time.
+    interrupted=root/'interrupted'
+    process=subprocess.Popen([str(binary),'--n','512','--years','10','--T','1e8',
+        '--perturb','1e-4','--max-dt','10000','--checkpoint-stride','5',
+        '--output',str(interrupted)],stdout=subprocess.DEVNULL)
+    deadline=time.monotonic()+5
+    while not (interrupted/'checkpoint_state.bin').exists() and time.monotonic()<deadline:
+        time.sleep(.005)
+    assert (interrupted/'checkpoint_state.bin').exists(), 'No periodic checkpoint'
+    process.terminate();assert process.wait(timeout=5)==143
+    checkpoint=interrupted/'checkpoint_state.bin'
+    saved_time=struct.unpack('d',checkpoint.read_bytes()[-8:])[0]
+    target=saved_time/31536000+.005
+    subprocess.run([str(binary),'--n','512','--years',str(target),'--T','1e8',
+        '--perturb','1e-4','--output',str(interrupted),'--state',str(checkpoint),
+        '--start-year',repr(saved_time/31536000),'--append'],check=True,stdout=subprocess.DEVNULL)
+    assert abs(json.loads((interrupted/'checkpoint.json').read_text())['time_years']-target)<1e-12
+    print('PASS: periodic checkpoint, graceful termination, and continuation from embedded time')

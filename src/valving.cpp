@@ -168,7 +168,7 @@ struct Model {
         r.h[n-1]=2*(q0-previous)/(storage*dz);
         return true;
     }
-    // Dormand--Prince 5(4) for subsecond steps: all four equations are explicit.
+    // Dormand--Prince 5(4) when hydraulically stable: all four equations are explicit.
     // The hydraulic CFL condition is checked at every stage. This avoids the
     // cost of repeated implicit solves during effectively undrained ruptures.
     bool dopri(const State& s,double dt,State& high,State& low,State& stage,Vec& v) {
@@ -341,6 +341,10 @@ void tests() {
     double surface=kfloor/viscosity*(h[1]-h[0])/m.dz;
     require(std::abs(mass+dt*surface)<1e-10,"discrete fluid conservation");
     std::cout<<"diffusion_error_Pa "<<err<<"\nmass_balance_error_m "<<std::abs(mass+dt*surface)<<'\n';
+    require(m.all_rates(s,r,v,dt),"explicit hydraulic stability condition");err=0;
+    for(int i=0;i<m.n;++i)err=std::max(err,std::abs(r.h[i]+eig*s.h[i]));
+    require(err<1e-15,"explicit hydraulic eigenmode derivative");
+    std::cout<<"explicit_diffusion_rate_error_Pa_s "<<err<<'\n';
     // Uniform spring-slider limit: the spectral zero mode gives stiffness mu/2W.
     // Compare implicit midpoint integrations to a refined numerical reference.
     Model q(64,1e8,500e3,500e3,true);State init(q.n);q.initialize(init,0);q.q0=0;
@@ -375,7 +379,8 @@ void tests() {
 }
 
 int main(int argc,char**argv) try {
-    int intervals=16384,stride=10,checkpoint_stride=500;double T=1e8,years=120,H=578952.681034,rtol=1e-4,maxdt=3e5,perturb=0;
+    int intervals=16384,stride=10,checkpoint_stride=500;
+    double T=1e8,years=120,H=578952.681034,rtol=1e-4,maxdt=3e5,perturb=0,rk_max_dt=3000;
     bool coupled=true,append=false;double start_year=0;
     std::string output="results/coupled",profile="",state_file="";
     for(int i=1;i<argc;++i) {
@@ -393,9 +398,10 @@ int main(int argc,char**argv) try {
         else if(a=="--state")state_file=v;else if(a=="--start-year")start_year=std::stod(v);
         else if(a=="--stride")stride=std::stoi(v);
         else if(a=="--checkpoint-stride")checkpoint_stride=std::stoi(v);
+        else if(a=="--rk-max-dt")rk_max_dt=std::stod(v);
         else throw std::runtime_error("unknown argument "+a);
     }
-    if(intervals<16 || rtol<=0 || years<=0 || stride<1 || checkpoint_stride<1 || H<=60000 || maxdt<=0)
+    if(intervals<16 || rtol<=0 || years<=0 || stride<1 || checkpoint_stride<1 || H<=60000 || maxdt<=0 || rk_max_dt<0)
         throw std::runtime_error("invalid configuration");
     if(T!=1e7 && T!=1e8 && T!=1e9 && T!=1e10)
         throw std::runtime_error("T must be 1e7, 1e8, 1e9, or 1e10 s for the supplied depth profiles");
@@ -430,6 +436,7 @@ int main(int argc,char**argv) try {
         <<", \"height_m\": "<<H<<", \"width_m\": "<<m.W<<", \"T_s\": "<<T<<", \"q0_m_s\": "<<m.q0
         <<", \"rtol\": "<<rtol<<", \"max_dt_s\": "<<maxdt<<", \"years\": "<<years
         <<", \"stride\": "<<stride<<", \"checkpoint_stride\": "<<checkpoint_stride
+        <<", \"rk_max_dt_s\": "<<rk_max_dt
         <<", \"coupled\": "<<(coupled?"true":"false")<<", \"initial_state_perturbation\": "<<perturb
         <<", \"continuation_start_year\": "<<start_year
         <<", \"initial_profile\": \""<<profile<<"\", \"fields\": [\"slip_m\",\"velocity_m_s\",\"effective_stress_Pa\",\"permeability_m2\",\"flux_m_s\",\"psi\",\"kstar_m2\"]}\n";meta.close();
@@ -475,7 +482,7 @@ int main(int argc,char**argv) try {
             return 128+stop_requested;
         }
         dt=std::min({dt,maxdt,stop-t});
-        bool use_rk=dt<3000;
+        bool use_rk=dt<rk_max_dt;
         if(use_rk && coupled) {
             m.permeability(s,k);
             double cfl=dt*(*std::max_element(k.begin(),k.end()))/(storage*viscosity*m.dz*m.dz);

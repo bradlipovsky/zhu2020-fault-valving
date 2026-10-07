@@ -16,6 +16,8 @@ import subprocess
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('directory',type=Path)
+parser.add_argument('--rk-max-dt',type=float,default=None,
+                    help='Override the explicit-stage threshold in seconds')
 args=parser.parse_args()
 path=args.directory.resolve();meta=json.loads((path/'metadata.json').read_text())
 state=path/'checkpoint_state.bin'
@@ -42,6 +44,7 @@ command=[str(ROOT/'build'/'valving'),'--output',str(path),'--n',str(meta['n']-1)
     '--T',str(meta['T_s']),'--years',str(meta['years']),'--height',str(meta['height_m']),
     '--rtol',str(meta['rtol']),'--max-dt',str(meta['max_dt_s']),
     '--stride',str(meta.get('stride',10)),
+    '--rk-max-dt',str(meta.get('rk_max_dt_s',1) if args.rk_max_dt is None else args.rk_max_dt),
     '--perturb',str(meta['initial_state_perturbation']),
     '--state',str(state),'--start-year',repr(time/31536000),'--append']
 if meta['initial_profile']:command+=['--profile',meta['initial_profile']]
