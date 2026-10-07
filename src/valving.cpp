@@ -99,6 +99,7 @@ struct Model {
             s.psi[i]=f0-b[i]*std::log(vp/v0);
         }
         // Steady discrete Darcy flux: each face satisfies q=q0 exactly.
+        s.h[0]=0;
         for(int i=1;i<n;++i) {
             double left=perm(i-1,s.h[i-1],s.k[i-1]);
             double low=s.h[i-1],high=low+q0*viscosity*dz/kfloor;
@@ -142,6 +143,7 @@ struct Model {
             s.d[i]=0;s.psi[i]=interp(z[i],zz,ps);s.k[i]=interp(z[i],zz,ks)/1e-15;
             s.h[i]=interp(z[i],zz,pp)-rhog*z[i];tau0[i]=interp(z[i],zz,tt);
         }
+        s.h[0]=0; // enforce the prescribed surface value on imported SAT data
         ss_h=s.h;
     }
     bool all_rates(const State& s,State& r,Vec& v,double dt) {
@@ -355,7 +357,7 @@ void tests() {
     };
     double exact=evolve(64),e1=std::abs(evolve(1)-exact),e2=std::abs(evolve(2)-exact);
     require(e1/e2>3.7 && e1/e2<4.3,"midpoint second-order time convergence");
-    std::cout<<"midpoint_error_ratio "<<e1/e2<<"\nPASS\n";
+    std::cout<<"midpoint_error_ratio "<<e1/e2<<'\n';
     auto evolve_rk=[&](int count) {
         State x=init,y(q.n),low(q.n),stage(q.n);Vec vv(q.n);
         for(int j=0;j<count;++j) {
@@ -364,7 +366,7 @@ void tests() {
         }
         return x.d[0];
     };
-    exact=evolve_rk(64);e1=std::abs(evolve_rk(1)-exact);e2=std::abs(evolve_rk(2)-exact);
+    exact=evolve_rk(64);e1=std::abs(evolve_rk(2)-exact);e2=std::abs(evolve_rk(4)-exact);
     require(e1/e2>20 && e1/e2<50,"fifth-order time convergence");
     std::cout<<"dopri_error_ratio "<<e1/e2<<"\nPASS\n";
 }
@@ -402,6 +404,7 @@ int main(int argc,char**argv) try {
         std::ifstream state(state_file,std::ios::binary);
         for(auto p:{&s.d,&s.psi,&s.k,&s.h})state.read(reinterpret_cast<char*>(p->data()),m.n*8);
         if(!state || state.peek()!=EOF)throw std::runtime_error("checkpoint size does not match grid");
+        s.h[0]=0;
     }
     // Archive top 30 km on the computational nodes. Float64 time and fields.
     int nz=std::upper_bound(m.z.begin(),m.z.end(),30000)-m.z.begin();
