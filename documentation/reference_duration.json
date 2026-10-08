@@ -1,0 +1,82 @@
+{
+  "purpose": "Independent-model duration check; excluded from final figure inputs",
+  "reason": "The completed 200-year reference contains only one large earthquake and no complete recurrence interval.",
+  "archived_directory": ".tmp/reference-200year-duration-check-20261008T075640Z",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "configuration_text": "# Independent model; all values are SI except explicitly named years.\n# See documentation/independence.md for assumed inputs.\nn = 131072\nthreads = 4\nLy = 500000\nLz = 500000\nmu = 32400000000\nradiation = 4680000\nVp = 1e-09\nV0 = 1e-06\nf0 = 0.6\ndc = 0.002\nrho = 1000\ngravity = 9.800000000000001\nviscosity = 0.0001\nstorage = 9.999999999999999e-12\nnormal_gradient = 22000\nstress_scale = 30000000\nkmin = 1e-19\nkmax = 1e-15\nL = 1\nT = 100000000\ninflux = 3e-09\na_surface = 0.01\na_15km = 0.03\na_deep_slope = 3e-06\nab_shallow = -0.01\nab_corner = 13500\nvw_bottom = 17000\nperturbation = 0.0001\nperturb_depth = 12000\nperturb_width = 1000\ninitial_locking_depth = 17000\ninitial_transition_width = 1500\ninitial_velocity_fraction = 0.0001\nyears = 200\ntolerance = 1e-05\ndt_max = 1000000\nfine_depth = 30000\nstretch_scale = 10000\nmaximum_spacing = 1000\nsurface_ratio = 8\nsurface_scale = 1000\noutput_years = 0.025\noutput_seconds = 0.5\noutput_depth = 30000\noutput_spacing = 30\nseismic_threshold = 0.001\nfixed_pressure = 1\n",
+  "provenance": {
+    "case": "reference",
+    "command": [
+      "build/valving",
+      "configs/reference.cfg",
+      "data/reference"
+    ],
+    "pid": 2604917,
+    "start_utc": "2026-10-08T06:01:26Z",
+    "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+    "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+    "config_sha256": "63b11d3f927898fe642177acea6faeb3e97700ed0ac974b4ccbade180cd4ea40",
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+    "exit_code": 0,
+    "end_utc": "2026-10-08T07:51:23Z"
+  },
+  "completion": {
+    "completed": true,
+    "time_s": 6311520000,
+    "years": 200,
+    "accepted_steps": 42596,
+    "rejected_steps": 11246,
+    "elapsed_s": 6590.689724236,
+    "n": 131072,
+    "dynamic_nodes": 10742,
+    "dz_m": 3.814697265625,
+    "tolerance": 1e-05,
+    "minimum_Lb_cells": 11.4614441087039,
+    "minimum_hstar_cells": 43.5508992742563
+  },
+  "analysis_summary": {
+    "large_event_count": 1,
+    "complete_cycles_s": [],
+    "events": [
+      {
+        "start_s": 4176890771.4615707,
+        "end_s": 4176890994.498453,
+        "peak_s": 4176890793.8529058,
+        "peak_velocity": 4.512513817945448,
+        "nucleation_depth_m": 14139.175415039062,
+        "shallow_m": 13.3514404296875,
+        "deep_m": 20143.508911132812,
+        "rupture_intervals_m": [
+          [
+            13.3514404296875,
+            20143.508911132812
+          ]
+        ],
+        "max_slip_m": 2.792255401611328,
+        "large": true,
+        "complete": true
+      }
+    ],
+    "final_time_years": 200.0
+  },
+  "replacement_years": 400,
+  "replacement_config_sha256": "cfa1c2b4d294999915cf2197ef3c704d2420c9c91a5230837d14e24bc812a078",
+  "replacement_command": [
+    "python3",
+    "scripts/reproduce.py",
+    "--simulate-only",
+    "--cases",
+    "reference",
+    "--jobs",
+    "1",
+    "--status-file",
+    "data/reference_extension_status.json"
+  ],
+  "replacement_initialization": "Fresh independent initialization; no restart or fields imported from the 200-year trial."
+}

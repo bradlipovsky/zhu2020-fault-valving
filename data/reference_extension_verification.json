@@ -1,0 +1,16 @@
+{
+  "purpose": "Verify fresh extended run repeats its independently generated initial trajectory",
+  "configuration_differences": {
+    "years": [
+      200.0,
+      400.0
+    ]
+  },
+  "checked_snapshots": 500,
+  "checked_prefix_bytes": 12016016,
+  "identical_field_prefix": true,
+  "sha256": "035309b854b5417d5bc33c621397b20a615626392e4cc7472c4d4ff24abcdb6a",
+  "old_directory": ".tmp/reference-200year-duration-check-20261008T075640Z",
+  "new_directory": "data/reference",
+  "model_source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512"
+}

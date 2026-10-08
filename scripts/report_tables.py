@@ -426,6 +426,18 @@ report compilation, source-bundle compilation, and artifact audit in sequence:
 \begin{verbatim}
 python3 scripts/reproduce.py --jobs 12
 \end{verbatim}
+The initial 200-year fixed-pressure reference completed successfully but
+contained only one large earthquake, with no complete recurrence interval.
+That duration check is recorded in
+{\small\path{documentation/reference_duration.json}} and excluded from the final
+figure inputs. The reference configuration was extended to 400 years and
+rerun from the same independent initial conditions. The concurrent replacement
+run used a separate progress file:
+\begin{verbatim}
+python3 scripts/reproduce.py --simulate-only --cases reference \
+  --jobs 1 --status-file data/reference_extension_status.json
+\end{verbatim}
+The standard regeneration command now uses the 400-year reference directly.
 \begin{center}\small\begin{tabular}{lrrrrr}
 \toprule
 Case & Years & Fault nodes & FFT points & Accepted steps & Solver time (min)\\\midrule

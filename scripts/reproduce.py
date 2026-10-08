@@ -20,6 +20,7 @@ def main():
     parser.add_argument('--postprocess-only',action='store_true')
     parser.add_argument('--cases',nargs='+')
     parser.add_argument('--jobs',type=int,default=12)
+    parser.add_argument('--status-file',default='data/run_status.json',help='Separate progress file for concurrent case batches.')
     parser.add_argument('--fresh',action='store_true',help='Move existing generated cases aside before regenerating.')
     args=parser.parse_args()
     root=Path(__file__).resolve().parent.parent;os.chdir(str(root))
@@ -79,7 +80,7 @@ def main():
                     outcomes.append(dict(case=case,exit_code=code));available.append(slot);del active[case]
                     print('EXIT',case,code,flush=True)
                 else:running.append(dict(case=case,pid=proc.pid))
-            save_json('data/run_status.json',dict(runner_pid=os.getpid(),running=running,pending=pending,
+            save_json(args.status_file,dict(runner_pid=os.getpid(),running=running,pending=pending,
                 outcomes=outcomes,elapsed_s=time.time()-started,source_sha256=source_hash))
             if active:time.sleep(10)
         if any(o['exit_code'] for o in outcomes):raise RuntimeError('A model run failed; inspect its run.log')

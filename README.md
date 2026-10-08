@@ -57,6 +57,11 @@ python3 scripts/reproduce.py --postprocess-only
 
 `data/run_status.json` and per-case `run.log` expose live progress. The numerical
 data are generated entirely by this executable; the paper is a comparison target.
+The fixed-pressure reference runs for 400 years: an initial 200-year trial
+contained only one large earthquake and no recurrence interval. Its duration
+check is recorded in `documentation/reference_duration.json`; the shorter trial
+is excluded from the final figure inputs. Concurrent case batches can use
+`--status-file` to keep their progress records separate.
 Results and reproduction status will be tabulated panel by panel in the report.
 No published panel is substituted for a generated numerical result.
 
