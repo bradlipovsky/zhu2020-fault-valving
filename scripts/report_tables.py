@@ -24,6 +24,13 @@ def front_speed(a,field='migration_segments'):
     values=[s['speed_m_per_year'] for s in a[field] if s['r2']>=.8]
     return float(np.median(values)) if values else None
 
+def event_differences(event,reference):
+    return dict(onset_s=event['start_s']-reference['start_s'],
+        duration_percent=100*((event['end_s']-event['start_s'])/(reference['end_s']-reference['start_s'])-1),
+        peak_speed_percent=100*(event['peak_velocity']/reference['peak_velocity']-1),
+        maximum_slip_percent=100*(event['max_slip_m']/reference['max_slip_m']-1)
+            if reference['max_slip_m']>0 else None)
+
 def main():
     panels={p:json.loads(Path('data/panels',p+'.json').read_text()) for p in PANELS}
     analyses={c:json.loads(Path('data',c,'analysis.json').read_text()) for c in MAIN_CASES+VALIDATION_CASES}
@@ -338,11 +345,7 @@ Case & \shortstack{Onset\\difference (s)} & \shortstack{Duration\\difference (\%
     for case in ['baseline_coarse','baseline_fine','baseline_tight']:
         event=validation[case]['first_seismic_event'];difference=None
         if event and reference:
-            difference=dict(onset_s=event['start_s']-reference['start_s'],
-                duration_percent=100*((event['end_s']-event['start_s'])/(reference['end_s']-reference['start_s'])-1),
-                peak_speed_percent=100*(event['peak_velocity']/reference['peak_velocity']-1),
-                maximum_slip_percent=100*(event['max_slip_m']/reference['max_slip_m']-1)
-                    if reference['max_slip_m']>0 else None)
+            difference=event_differences(event,reference)
         validation[case]['first_event_difference_from_baseline']=difference
         values=[difference[key] if difference else None for key in
             ['onset_s','duration_percent','peak_speed_percent','maximum_slip_percent']]
@@ -373,8 +376,9 @@ slip measurement; they do not establish convergence of subsequent event sequence
             'it applies only to this first-onset statistic.\n').format(number(coarse_change),number(fine_change),
                 number(onset_order['apparent_order']))
     horizon=min(analyses[case]['final_time_years'] for case in validation)
-    large_times={case:[e['end_s']/YEAR for e in analyses[case]['events']
+    large_events={case:[e for e in analyses[case]['events']
         if e['complete'] and e['large'] and e['end_s']/YEAR<=horizon] for case in validation}
+    large_times={case:[e['end_s']/YEAR for e in events] for case,events in large_events.items()}
     comparison+=('We also compare every validation case over the first {} years, '
         'the common duration available in all runs. This window includes startup.\n').format(number(horizon))
     comparison+=r'''\begin{center}\begin{tabular}{lrrrr}
@@ -393,6 +397,14 @@ Case & \shortstack{Fast intervals\\(resolved ruptures)} & \shortstack{Large\\eve
             median_recurrence_years=float(np.median(intervals)) if len(intervals) else None,
             matched_ordinal_large_events=matched,large_event_time_differences_years=differences,
             maximum_absolute_large_event_time_difference_years=max(map(abs,differences)) if differences else None)
+        paired=[]
+        for ordinal,(event,reference) in enumerate(zip(large_events[case],large_events['baseline']),1):
+            paired.append(dict(ordinal=ordinal,case_end_year=event['end_s']/YEAR,
+                baseline_end_year=reference['end_s']/YEAR,**event_differences(event,reference)))
+        common['paired_large_event_differences']=paired
+        for metric in ['duration_percent','peak_speed_percent','maximum_slip_percent']:
+            values=[abs(pair[metric]) for pair in paired if pair[metric] is not None]
+            common['maximum_absolute_'+metric]=max(values) if values else None
         validation[case]['common_horizon_comparison']=common
         comparison+=' & '.join([tex(case),'{} ({})'.format(event_count,resolved_count),str(len(times)),number(common['median_recurrence_years']),
             number(common['maximum_absolute_large_event_time_difference_years'])])+r'\\'+'\n'
@@ -408,6 +420,23 @@ difference; the event counts expose missing or additional events. The numerical
 summary retains every paired difference and recurrence interval. Event counts
 and recurrence over this common window test sequence sensitivity, although they
 do not alone establish convergence of individual swarm ruptures.
+\begin{center}\begin{tabular}{lrrr}
+\toprule
+Case & \shortstack{Maximum duration\\difference (\%)} & \shortstack{Maximum peak-speed\\difference (\%)} & \shortstack{Maximum slip\\difference (\%)}\\
+\midrule
+'''
+    for case in validation:
+        common=validation[case]['common_horizon_comparison']
+        values=[common['maximum_absolute_'+metric] for metric in
+            ['duration_percent','peak_speed_percent','maximum_slip_percent']]
+        comparison+=' & '.join([tex(case)]+[number(value) for value in values])+r'\\'+'\n'
+    comparison+=r'''\bottomrule\end{tabular}\end{center}
+These maximum absolute differences use the same chronological large-event pairs
+over the common duration. Every signed difference, event number, and pair of end
+times is retained in the numerical summary. Close agreement for the first rupture
+does not imply close agreement in later slip, peak speed, or duration. Pairing
+by event number measures sequence sensitivity; it does not establish that the
+paired ruptures correspond physically when the catalogs contain different events.
 
 Exact friction profiles, prestress, startup procedure, spatial grid, and the
 authors' saved cycle states cannot be recovered from the article and supplement.

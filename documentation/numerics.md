@@ -179,6 +179,11 @@ counts and large-event recurrence intervals exclude events ending beyond that
 duration. Large-event timing differences pair events in chronological order,
 without fitting a time shift or choosing the closest event. All paired differences
 are retained, and event counts expose unequal catalog lengths.
+The same chronological large-event pairs also compare duration, peak speed, and
+maximum slip. The report gives their largest absolute relative differences and
+the numerical summary retains every signed difference. These measure sensitivity
+of the sequence, including later ruptures; event-number pairing does not establish
+physical correspondence when event counts or rupture patterns differ.
 Figure 6 uses the independently computed |V|=Vp contour; its definition is an
 analysis assumption because the paper does not specify its exact extraction rule.
 The quantitative tracker retains two choices at every saved time: the shallowest
