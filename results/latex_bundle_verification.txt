@@ -1,0 +1,1 @@
+PASS: standalone LaTeX bundle compiles and reproduces the report text

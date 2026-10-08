@@ -18,7 +18,9 @@ def make(case,offset=4):
         z=f['depth'][:]*1000;t=f['time'][:].ravel();j=np.argmin(abs((t-t[0])/YEAR-offset))
         slip=f['slip'][:,:j+1];theta=np.ones(len(z));memory=np.ones(len(z))
         for i in range(1,j+1):
-            ds=np.maximum(slip[:,i]-slip[:,i-1],0);u=ds/.002;decay=np.exp(-u)
+            ds=slip[:,i]-slip[:,i-1]
+            if np.any(ds<0):raise ValueError('Reverse slip requires a signed aging-state reconstruction')
+            u=ds/.002;decay=np.exp(-u)
             integral=np.ones_like(u);sel=u>1e-10;integral[sel]=-np.expm1(-u[sel])/u[sel]
             theta=theta*decay+(t[i]-t[i-1])*integral;memory*=decay
         a=np.interp(z,[0,14900,27600,60000],[.0105,.03,.07,.173])

@@ -36,7 +36,8 @@ def label(ax,letter,title):
 
 def mesh(ax,d,key,window=None,depth=(0,25),steps=False,letter='',bar=True):
     t=d['t']; j=np.ones(len(t),dtype=bool) if window is None else (t>=window[0])&(t<=window[1])
-    k=(d['z']>=depth[0])&(d['z']<=depth[1]); z=d['z'][k]
+    grid=d.get('flux_z',d['z']) if key=='flux' else d['z']
+    k=(grid>=depth[0])&(grid<=depth[1]); z=grid[k]
     x=np.arange(j.sum()) if steps else t[j]
     a=d[key][k][:,j]
     opts={}
@@ -51,7 +52,7 @@ def mesh(ax,d,key,window=None,depth=(0,25),steps=False,letter='',bar=True):
         a=np.ma.masked_less_equal(a,0);a=np.ma.log10(a);title='Upward fluid flux';unit=r'$\log_{10}[q/(\mathrm{m\,s^{-1}})]$'
         opts=dict(vmin=-11,vmax=-7,cmap='viridis')
     im=ax.pcolormesh(x,z,a,shading='auto',rasterized=True,**opts)
-    ax.set_ylim(depth[::-1]);ax.set_xlim(x[0],x[-1]);ax.set_xlabel('Saved sample index' if steps else 'Time (yr)')
+    ax.set_ylim(depth[::-1]);ax.set_xlim(window if window is not None and not steps else (x[0],x[-1]));ax.set_xlabel('Saved sample index' if steps else 'Time (yr)')
     label(ax,letter,title)
     if bar:plt.colorbar(im,ax=ax,label=unit,pad=.02,shrink=.9)
     return im
@@ -75,11 +76,12 @@ def slip_profiles(ax,d,window,interval,letter):
 def sequence(name,ref,case,end,interval=1.5):
     fig,axs=plt.subplots(2,3,figsize=(12,7),gridspec_kw={'width_ratios':[1.15,1,.8]})
     for row,d in enumerate([load(ref),load(case)]):
-        stop=min(end if row else 1e6,d['t'][-1])
-        if ref=='T1e8-ref' and row==0:stop=56
+        ref_end=56 if ref=='T1e8-ref' else 190
+        stop=min(end if row else ref_end,d['t'][-1])
         mesh(axs[row,0],d,'slip_velocity',(0,stop),letter='ac'[row])
         mesh(axs[row,1],d,'slip_velocity',(0,stop),steps=True,letter='')
-        slip_profiles(axs[row,2],d,(0,stop),interval,'bd'[row])
+        # Maps show a representative interval; slip uses the longer archive.
+        slip_profiles(axs[row,2],d,(0,d['t'][-1]),interval,'bd'[row])
         axs[row,0].text(.03,.94,'Fixed pressure' if row==0 else 'Fault valving',transform=axs[row,0].transAxes,color='white')
     save(fig,name)
 
@@ -120,10 +122,10 @@ def figure1():
     fig=plt.figure(figsize=(11,10));gs=fig.add_gridspec(2,2)
     sub=gs[0,0].subgridspec(1,2,width_ratios=[1.2,1]);ax=fig.add_subplot(sub[0,0])
     ax.add_patch(plt.Rectangle((0,0),1,25,color='#eef4f7'))
-    ax.plot([0,0],[0,25],lw=6,color='#65acc6');ax.text(.1,4,'Elastic half-space\n'+r'$\mu=32.4$ GPa')
+    ax.plot([0,0],[0,25],lw=6,color='#65acc6');ax.text(.1,4,'Antiplane elastic domain\n'+r'$\mu=32.4$ GPa')
     ax.text(.1,10,'Rate-and-state friction\nPermeability evolution\nUpward Darcy flow')
     ax.annotate('',xy=(0,3),xytext=(0,22),arrowprops=dict(arrowstyle='->',lw=2,color='#2468ad'))
-    ax.text(.03,24,r'$q=q_0$ at bottom');ax.text(.03,1,r'$p=0$ at surface');ax.text(.45,19,r'$u=V_pt/2$')
+    ax.text(.03,24,'Fluid supply from depth');ax.text(.03,1,r'$p=0$ at surface');ax.text(.45,19,r'$u=V_pt/2$')
     ax.set_ylim(25,0);ax.set_xlim(-.05,1);ax.set_xticks([]);label(ax,'a','Model geometry')
     ax=fig.add_subplot(sub[0,1]);z=np.linspace(0,30,1000)
     a=np.interp(z,[0,14.9,27.6,60],[.0105,.03,.07,.173]);b=np.interp(z,[0,13.6,14.9,27.6,60],[.02,.0378,.0356,.0375,.0424])
@@ -184,10 +186,10 @@ def supplements():
     for row,case in enumerate(['T1e8-sup1','T1e8-sup2']):
         d=load(case);mesh(axs[row,0],d,'slip_velocity',letter='ac'[row]);mesh(axs[row,1],d,'slip_velocity',steps=True,letter='bd'[row])
     save(fig,'supplement2')
-    sequence('supplement3','T1e9-ref','T1e9',140,4)
-    hydraulic('supplement4','T1e9',130,4)
-    sequence('supplement5','T1e10-ref','T1e10',280,4)
-    hydraulic('supplement6','T1e10',280,4)
+    sequence('supplement3','T1e9-ref','T1e9',80,4)
+    hydraulic('supplement4','T1e9',80,4)
+    sequence('supplement5','T1e10-ref','T1e10',180,4)
+    hydraulic('supplement6','T1e10',180,4)
 
 if __name__=='__main__':
     figure1();print('Figure 1',flush=True)

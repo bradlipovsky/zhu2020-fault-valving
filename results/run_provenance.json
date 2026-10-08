@@ -1,0 +1,80 @@
+{
+  "compiler": "g++ (GCC) 8.5.0 20210514 (Red Hat 8.5.0-28)",
+  "platform": "Linux-4.18.0-553.22.1.el8_10.x86_64-x86_64-with-centos-8.10-Green_Obsidian",
+  "fftw_version": "3.3.10",
+  "phase1": {
+    "commit": "3fc1f32e536d6c8bc22be45808764ef0d764448a",
+    "description": "Initial intervals of all six coupled runs: T1e8 meshes through 12 yr, T1e7 through 12 yr, T1e9 and T1e10 through 25 yr. Midpoint throughout."
+  },
+  "featured_continuations": {
+    "commit": "0eb8f1d7c26181bcf2b2485fd2b22daf1624d15f",
+    "description": "T1e8 n=16384 from 12 to 35 yr; the first n=8192 continuation was interrupted and excluded from the final outputs."
+  },
+  "other_continuations": {
+    "commit": "ea45b1487a14f5889458d2c5344cd3124236637f",
+    "description": "T1e7 from 12 to 48 yr and T1e9 from 25 to 80 yr. The first T1e10 continuation was interrupted and excluded from final outputs."
+  },
+  "time_refinement": {
+    "commit": "0eb8f1d7c26181bcf2b2485fd2b22daf1624d15f",
+    "description": "T1e8 n=16384, 1 yr, rtol=2.5e-5. No subsecond time steps."
+  },
+  "current_source_sha256": {
+    "src/valving.cpp": "345f82b2eceed22dec9a6c25078cdc385a1eeab0222b3cf16a42bdce3d16bd85",
+    "CMakeLists.txt": "9a3d443902209ba8a149a2454a2057216dd48f217419ad3192f50804d52bf259",
+    "scripts/initial_profiles.py": "9fa3e2e093512364d049335044f4fc88051a9f009b5d43ecec7038a4903d1aa8"
+  },
+  "notes": "Initial binaries were compiled with GCC 8.5.0 -O3 and FFTW 3.3.10 built with AVX2. Archived SAT surface-pressure residuals are <=1.904 Pa; final code projects these to the exact Dirichlet condition. Final source reruns are not claimed to be bitwise identical to older-phase outputs.",
+  "resumed_continuations": {
+    "commit": "0149f41b9fa0a8a6101d5bd3720583204baca698",
+    "description": "T1e8 n=8192 was restarted at year 12 and T1e10 at year 25 after termination signals; their retained early continuations end at the switch times recorded below. This revision also extends T1e8 n=32768 from year 12 to its recorded switch. Uses exact surface-pressure projection and periodic checkpoints."
+  },
+  "seismic_time_test": {
+    "commit": "ea45b1487a14f5889458d2c5344cd3124236637f",
+    "description": "T1e8 n=16384, both rtol=1e-4 and 2.5e-5 from the identical phase-one checkpoint at year 12 to year 14.7."
+  },
+  "optimized_continuations": {
+    "commit": "93e47a9d7ab323d57f4eea2defa730d40e45256d",
+    "rk_max_dt_s": 3000,
+    "runs": {
+      "restart_T1e8_n8192": {
+        "start_year": 25.60831534886151,
+        "end_year": 35,
+        "checkpoint": "phase2_state.bin"
+      },
+      "restart_T1e8_n32768": {
+        "start_year": 14.81536457172121,
+        "end_year": 16,
+        "checkpoint": "phase2_state.bin"
+      },
+      "restart_T1e10_n16384": {
+        "start_year": 79.22354122367307,
+        "end_year": 129.391561536739,
+        "checkpoint": "phase2_state.bin"
+      }
+    }
+  },
+  "integrator_benchmark": {
+    "commit": "a92dca512c903ca659cf9340765f7e8a0ef9c50d",
+    "directory": "time_stepping_candidate",
+    "rk_max_dt_s": 3000,
+    "description": "Same equations and tolerance as seismic_time_baseline; expanded fifth-order stages when hydraulic CFL < 0.2, with every stage checked against CFL < 0.4."
+  },
+  "threaded_continuation": {
+    "commit": "5c3861339bae1edfd96f948743f9516211c531a6",
+    "run": "restart_T1e10_n16384",
+    "start_year": 129.391561536739,
+    "end_year": 180,
+    "checkpoint": "phase3_state.bin",
+    "worker_threads": 8,
+    "description": "Independent depth-node friction evaluations parallelized with OpenMP; recorded seismic benchmark gives byte-identical fields, final state and step history."
+  },
+  "threading_benchmark": {
+    "commit": "5c3861339bae1edfd96f948743f9516211c531a6",
+    "script": "scripts/check_threading.py",
+    "directories": [
+      "threading_serial",
+      "threading_parallel"
+    ],
+    "description": "One and eight threads, same one-second seismic continuation; fields, final state and history compared byte for byte."
+  }
+}

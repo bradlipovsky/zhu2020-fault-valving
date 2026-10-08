@@ -23,9 +23,12 @@ steady pressure profile in Figure~1. The archive permits reconstruction of all
 six main and six supplementary figures, including the migrating pressure pulses
 and swarm sequence. These archived trajectories are distinguished throughout
 from new numerical simulations. The new solver passes analytical and numerical
-verification tests; its comparison with the original calculation uses explicitly
-documented, approximate restart states. An exact independent reproduction of
-the published earthquake sequence is not established by replotting the archive.
+verification tests and generates coupled pressure fronts and seismic slip from
+documented, approximate restart states. On the two finest meshes, the first
+featured-case earthquake occurs 38--39 days earlier than in the archive, while
+the two meshes differ by 1.13 days. Temporal refinement changes its onset by
+169~s. These calculations recover the principal feedback but do not establish
+an exact independent reproduction of the published earthquake sequence.
 \end{abstract}
 
 \section{Scope and sources}
@@ -44,6 +47,12 @@ downloaded and checked against their OSF SHA-256 digests. Nine files contain
 simulation fields. The source branch supplies four input files, the stretched
 depth grid, and plotting examples, but the OSF files do not include the
 frictional state or shear traction needed for an exact restart.
+The C++ implementation, initial profiles, diagnostics, figure scripts, and
+LaTeX source are available in the
+\href{https://github.com/bradlipovsky/zhu2020-fault-valving}{project repository}.
+Its release includes a standalone report-source bundle and the full newly
+computed field records; the original archive is retrieved separately through
+its checksum-verified download manifest.
 
 \begin{table}[h]
 \centering\small
@@ -92,6 +101,11 @@ friction parameters, and $d_c$ is the state evolution distance. The radiation
 damping term approximates the energy carried away by elastic waves. The
 original input files impose a minimum effective stress of 1~MPa in friction;
 we retain that prescription and identify it explicitly below.
+The new implementation assumes the fixed slip direction of the investigated
+sequences, $V\geq0$, and rejects trial steps with reverse slip. It does not clip
+negative velocities. All archived and accepted new velocities in this study
+have the assumed sign. Simulating reversal would require retaining the signed
+aging law and the original implementation's $|V|$ in permeability evolution.
 
 Fluid flow is confined to the fault zone. The governing hydraulic equations are
 \begin{align}
@@ -184,8 +198,22 @@ stage this produces the implicit-midpoint pressure update for the full step.
 Step doubling estimates the temporal error in slip, state, reference
 permeability, and pressure. Long steps use Newton iteration with a cosine-transform
 elastic Jacobian and a preconditioned conjugate-gradient solve; steps shorter
-than 3000~s use an explicit mechanical midpoint. This switch changes the
+than 3000~s can use an explicit mechanical midpoint. A fully coupled
+Dormand--Prince 5(4) method is also available. Early integrations use it only
+below one second. The final solver permits it below 3000~s when
+$\Delta t\,\max(k)/(n\beta\eta\Delta z^2)<0.2$, and checks a limit of 0.4 at
+every stage. Other stages retain implicit pressure. These switches change the
 numerical solution procedure, not the governing equations.
+
+The final implementation optionally evaluates the independent nodal friction
+solves with OpenMP, using eight threads by default. The elastic transforms,
+hydraulic solves, and floating-point reductions retain their original order.
+A one-second seismic continuation from an identical checkpoint produces
+byte-identical field records, final states, and step histories with one and
+eight threads. Recorded wall times are 125 and 51~s, respectively. The late
+continuation of the longest-healing case uses this
+parallel version; its switch checkpoint is retained. This optimization changes
+execution time without changing the tested numerical trajectory.
 
 The verification suite tests an elastic cosine mode and uniform loading, the
 frictional traction balance over slip rates $10^{-20}$--10~m\,s$^{-1}$,
@@ -195,9 +223,44 @@ test is about $2\times10^{-6}$~Pa; the manufactured diffusion error is below
 $10^{-9}$~Pa and its integrated mass-balance error is below $10^{-14}$~m of
 fluid volume per area. A uniform spring-slider test gives a temporal error
 ratio of 4.003 when the time step is halved, consistent with second-order
-midpoint integration. These tests verify individual operators and temporal
+midpoint integration. The Dormand--Prince test approaches fifth order, with an
+error ratio of about 28.4 on the tested steps. Checkpoint continuation is also
+compared with uninterrupted integration. These tests verify individual operators and temporal
 order. They do not establish spatial convergence of a nonlinear earthquake
 sequence.
+
+An integration from the identical 12-year checkpoint through year 14.7 tests
+the expanded fifth-order range against the earlier subsecond-only rule.
+Wall time decreases from 555 to 480~s in this recorded comparison. The first
+sampled seismic crossing changes by approximately 2~s and the effective-stress
+difference is 0.5~Pa RMS. This is smaller than the separate tolerance-refinement
+difference. The sampled peak changes from 1.04 to 1.00~m\,s$^{-1}$, within the
+variation seen in the separate tolerance comparison. The coarser and finer featured-case runs and the $T=10^{10}$~s
+run use the expanded range in later continuations; their switch states,
+times, and source revisions are retained with the results.
+
+The reported integrations retain their source-version history in
+\texttt{results/run\_provenance.json}. The final implementation sets imported
+surface pressure to exactly zero; the early integrations retained the tiny
+surface residual in the archived data, at most 1.904~Pa across the four cases.
+The continuation records identify which version was used. The repository
+therefore preserves the actual computational provenance rather than implying
+that all outputs were generated by the final source revision.
+
+Reducing the featured-case time tolerance from $10^{-4}$ to $2.5\times10^{-5}$
+over the first year changes effective stress by about 34~Pa RMS and
+$\log_{10}V$ by about $5.7\times10^{-4}$ decades RMS over 2--24.5~km depth.
+This comparison includes interpolation between saved output times. The temporal
+difference is smaller than the corresponding differences from the original
+archive and between spatial resolutions.
+
+A separate temporal refinement starts from the identical 12-year checkpoint
+and integrates through the first earthquake. Reducing the tolerance by the
+same factor shifts the first 1~mm\,s$^{-1}$ crossing approximately 169~s earlier
+(Figure~\ref{fig:cpptime}). The sampled peak velocity changes from 1.04 to
+0.97~m\,s$^{-1}$. The event-time shift is small compared with the tens of days
+separating the new and archived events, while the roughly 7\% amplitude change
+precludes a claim of fully converged rupture waveforms.
 
 An approximate restart provides a stricter comparison with the archived
 interseismic evolution than an arbitrarily phased fresh cycle. We recover
@@ -209,11 +272,40 @@ constant velocity over that interval. We then infer traction from the
 friction law and archived velocity. The restart is taken approximately four
 years into each archive. Changing the assumed initial $\theta$ from 1 to
 $2\times10^6$~s changes reconstructed $\theta$ by at most about 1.6\% at
-these restart times. This bound quantifies memory of the assumed initial
-state; it does not bound error from temporal sampling or interpolation.
+these restart times. This conditional sensitivity quantifies memory of the
+assumed initial state; it does not bound error from temporal sampling,
+interpolation, or an original initial state outside that tested range.
 
 \IfFileExists{simulation_results.tex}{\input{simulation_results.tex}}{%
 New integration diagnostics are generated by \texttt{scripts/analyze\_cpp.py}.}
+\IfFileExists{event_timing.tex}{\input{event_timing.tex}}{}
+
+The first featured-case seismic crossing occurs 37.97 and 39.11 days earlier
+than in the archive on the 35.34 and 17.67~m meshes, respectively. The 1.13-day
+change between these two meshes is smaller than the 19.82-day change between
+the coarser pair. Spatial refinement therefore reduces their mutual timing
+difference but leaves an offset from the archive. The tested temporal changes
+are much smaller than this offset. These comparisons motivate further checks
+of the reconstructed state and original discretization; they do not establish
+convergence of the full swarm sequence.
+
+Before the first earthquake, the new solutions retain the upward advance of
+the slipping region (Figure~\ref{fig:cpp}). The later featured-case calculation
+also generates repeated shallow slip bursts, but their timings and depth
+extents differ from the deposited sequence (Figure~\ref{fig:cppcycle}). The effective-stress,
+permeability, and flux maps show the accompanying hydraulic front
+(Figure~\ref{fig:cpphydraulics}). Thus the new integration recovers the coupled
+feedback qualitatively while its later trajectory separates from the archive.
+A shifted sharp front can produce a substantial pointwise field difference,
+so the tabulated RMS values should be read together with these maps.
+
+The short-healing case generates repeated ascending aseismic pulses during
+the interval before its earthquake (Figure~\ref{fig:cppcases}). The two
+longer-healing cases also exhibit upward slip-front evolution. Their
+intermediate bursts and large ruptures occur at different times from the archive. These calculations test all four published healing-time
+regimes. Spatial refinement was performed only for the featured case; the
+other three cases use one resolution. Their recurrence times and event
+amplitudes are therefore not established as independently converged predictions.
 
 \section{Figure reconstruction and interpretation}
 Figure~\ref{fig:1} recovers the steady effective-stress plateau and the
@@ -244,7 +336,9 @@ to its value at the beginning of the plotted window. Interseismic profiles
 are sampled at the captioned intervals. Red coseismic profiles are interpolated
 at one-second intervals within archived bursts with maximum velocity exceeding
 $10^{-3}$~m\,s$^{-1}$. These conventions are reproducible but need not match
-every contour or annotation in the original plotting scripts.
+every contour or annotation in the original plotting scripts. Cumulative-slip
+panels use the longer deposited sequence, while velocity maps emphasize a
+representative earlier interval, following the published comparisons.
 
 \section{What remains unreproduced}
 The constitutive and steady-flow results are independently recovered, and the
@@ -255,9 +349,12 @@ in this exercise. The archive lacks exact restart state and traction, and the
 new code uses a spectral elastic operator and second-order hydraulic volumes
 instead of the original fourth-order summation-by-parts discretization.
 Agreement between archived figures cannot resolve those differences.
+The fixed-pressure reference histories in Figures~\ref{fig:2}, \ref{fig:s3},
+and \ref{fig:s5} were reconstructed from the archive. Although the new solver
+supports fixed pressure, the new sequence integrations reported here examine
+the coupled cases.
 
-The two supplementary movies and the peer-review document are not reproduced
-as new simulations. No claim is made that the plotted source trajectories
+The two supplementary movies were not recreated. No claim is made that the plotted source trajectories
 were generated by the new C++ code. The bounded result is a transparent
 implementation, a recoverable set of published figures, and quantitative tests
 that expose the remaining initialization and numerical comparisons. A complete
@@ -273,11 +370,12 @@ sequences and aseismic slip. \emph{Nature Communications}, 11, 4833.
 \bibitem{osf} Zhu et al. (2020). Simulation data and source-data information.
 Open Science Framework. \href{https://doi.org/10.17605/OSF.IO/9YGRP}{doi:10.17605/OSF.IO/9YGRP}.
 \bibitem{scycle} Scycle source code, branch \texttt{Zhu\_et\_al\_2020},
-commit \texttt{d65e248900e193add0cc901ee7ee4d8ee7a2d50a}.\par
+commit\par
+\texttt{d65e248900e193add0cc901ee7ee4d8ee7a2d50a}.\par
 \url{https://bitbucket.org/kallison/scycle/src/Zhu_et_al_2020/}.
 \end{thebibliography}
 
-\figpage{figure1}{Independent reconstruction of published Figure~1. (a) Geometry and the original piecewise-linear friction profiles. (b) Pressure-dependent permeability for four reference permeabilities. (c) Healing without slip and enhancement during slip, with the competing process omitted in each limiting calculation. (d) Pressure, normal stress, effective stress, and permeability under steady upward flux. The featured parameters are $T=10^8$~s, $q_0=3\times10^{-9}$~m\,s$^{-1}$, and $\sigma^*=30$~MPa.}{fig:1}
+\figpage{figure1}{Independent reconstruction of published Figure~1. (a) Schematic of the upper fault and the original piecewise-linear friction profiles; the prescribed basal flux lies at the full computational depth, 578.95~km. (b) Pressure-dependent permeability for four reference permeabilities. (c) Healing without slip and enhancement during slip, with the competing process omitted in each limiting calculation. (d) Pressure, normal stress, effective stress, and permeability under steady upward flux. The featured parameters are $T=10^8$~s, $q_0=3\times10^{-9}$~m\,s$^{-1}$, and $\sigma^*=30$~MPa.}{fig:1}
 
 \figpage{figure2}{Reconstruction of published Figure~2 from the authors' archived $T=10^8$~s simulations. The upper row holds pore pressure fixed; the lower row includes fault valving. Velocity is plotted against physical time and saved sample index. Right panels show cumulative slip relative to each depth's initial value; blue curves are separated by 1.5~yr, and red curves represent one-second seismic snapshots. The advancing aseismic fronts and swarm sequence are recovered from the archive. These panels are not output from the new solver.}{fig:2}
 
@@ -293,15 +391,27 @@ commit \texttt{d65e248900e193add0cc901ee7ee4d8ee7a2d50a}.\par
 
 \figpage{supplement2}{Reconstruction of Supplementary Figure~2 using the two alternate-cycle archives, \texttt{T1e8-sup1.mat} and \texttt{T1e8-sup2.mat}. Each row shows velocity against physical time and saved sample index. Their durations are those of the deposited files, approximately 28.8 and 22.4~yr. The differences between cycles indicate that the featured sequence is not exactly periodic.}{fig:s2}
 
-\figpage{supplement3}{Reconstruction of Supplementary Figure~3 for $T=10^9$~s (31.7~yr). Fixed-pressure and fault-valving velocity maps are compared with cumulative-slip profiles. Blue curves are separated by 4~yr, and red curves represent one-second seismic snapshots. The full deposited reference interval is shown; the coupled interval is approximately 134~yr.}{fig:s3}
+\figpage{supplement3}{Reconstruction of Supplementary Figure~3 for $T=10^9$~s (31.7~yr). Fixed-pressure and fault-valving velocity maps cover 190 and 80~yr, respectively. Cumulative-slip profiles use the full deposited intervals, approximately 318 and 134~yr. Blue curves are separated by 4~yr, and red curves represent one-second seismic snapshots.}{fig:s3}
 
 \figpage{supplement4}{Reconstruction of Supplementary Figure~4 for $T=10^9$~s. Effective stress, permeability, and upward flux are shown as time--depth maps and profiles separated by 4~yr. Purple-to-yellow color indicates increasing time; black dashed profiles are independent steady-sliding solutions. Healing is slower than in the featured case, reducing the strength of the valving cycle.}{fig:s4}
 
-\figpage{supplement5}{Reconstruction of Supplementary Figure~5 for $T=10^{10}$~s (317~yr). The panels compare fixed-pressure and coupled simulations using archived velocities and slip. Blue curves are separated by 4~yr, and red curves represent one-second seismic snapshots. Reference and coupled windows retain their deposited durations.}{fig:s5}
+\figpage{supplement5}{Reconstruction of Supplementary Figure~5 for $T=10^{10}$~s (317~yr). Fixed-pressure and coupled velocity maps cover 190 and 180~yr, respectively. Slip panels use the full deposited intervals, approximately 330 and 280~yr. Blue curves are separated by 4~yr, and red curves represent one-second seismic snapshots.}{fig:s5}
 
 \figpage{supplement6}{Reconstruction of Supplementary Figure~6 for $T=10^{10}$~s. Effective stress, permeability, and upward flux are shown with profiles every 4~yr. The long healing time keeps the fault relatively permeable through much of the cycle. The archived weak pressure cycling is recovered, while this panel makes no claim about a new independently converged earthquake sequence.}{fig:s6}
 
+\IfFileExists{../figures/cpp_cycle.pdf}{%
+\figpage{cpp_cycle}{Independent C++ continuation of the featured fault-valving model, compared with the authors' archive over the same time interval. The upper row is archived and the lower row is newly integrated at 35.34~m spacing, starting from the reconstructed state about four years into the archive. Columns show velocity against physical time, velocity against saved sample index, and effective stress. The index panels expand rapid events; their spacing is not a measure of physical duration. These maps test the sequence of pressurization, aseismic migration, and seismic slip.}{fig:cppcycle}}
+{}
 \IfFileExists{../figures/cpp_comparison.pdf}{%
-\figpage{cpp_comparison}{New C++ integrations compared with the authors' archived featured case. The numerical integrations begin from the approximate reconstructed state about four years into the archive. Columns distinguish archived fields from the new solutions; the plotted time window is their common completed interval. These are new solver results, subject to the restart and resolution limitations discussed in the text.}{fig:cpp}}
+\figpage{cpp_comparison}{New C++ integrations compared with the authors' archived featured case over the first 12 years after the approximate restart, before the first earthquake. The restart lies about four years into the archive. Columns distinguish archived fields from the new solutions. The comparison tests interseismic front evolution at 35.34 and 17.67~m spacing, subject to the initialization and discretization limitations discussed in the text.}{fig:cpp}}
+{}
+\IfFileExists{../figures/cpp_healing_cases.pdf}{%
+\figpage{cpp_healing_cases}{New C++ integrations for healing times of 0.317, 31.7, and 317~yr, compared with the corresponding archived velocity fields. Each row uses the same time interval in the archive and the new calculation, measured from its approximate restart about four years into the archive. The new runs use 35.34~m grid spacing. Differences in pulse propagation and seismic timing are direct tests of the independent model implementation, subject to initialization and discretization uncertainty.}{fig:cppcases}}
+{}
+\IfFileExists{../figures/cpp_time_accuracy.pdf}{%
+\figpage{cpp_time_accuracy}{Temporal refinement through the first featured-case earthquake at 35.34~m spacing. Both calculations start from the identical state saved at year 12 after the approximate restart. The curves show the maximum velocity between 2 and 25~km depth, with a common time origin at the baseline run's first crossing of 1~mm\,s$^{-1}$. Their relative timing is retained. This comparison isolates the time-tolerance effect for this event and grid; it does not establish convergence of the later swarm.}{fig:cpptime}}
+{}
+\IfFileExists{../figures/cpp_hydraulics.pdf}{%
+\figpage{cpp_hydraulics}{Hydraulic evolution in the new C++ featured-case calculation at 35.34~m spacing, compared with the corresponding archived interval. Rows show effective stress, permeability, and upward fluid flux. Permeability and flux color scales are logarithmic; nonpositive flux is masked. The new flux is evaluated on control-volume faces and plotted at its own depth coordinates. This comparison tests pressure and permeability changes accompanying the newly generated slip sequence.}{fig:cpphydraulics}}
 {}
 \end{document}

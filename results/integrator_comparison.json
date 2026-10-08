@@ -1,0 +1,45 @@
+{
+  "complete": true,
+  "old_wall_s": 554.6893,
+  "new_wall_s": 480.0505,
+  "first_onset_shift_s": -1.8637966886956292,
+  "peak_velocity_old_m_s": 1.0414177419733064,
+  "peak_velocity_new_m_s": 0.9997975973233612,
+  "peak_velocity_refined_old_m_s": 0.9711392237625466,
+  "old_new": {
+    "slip": {
+      "rms": 3.113880634639099e-07,
+      "max_abs": 4.69019990822217e-05
+    },
+    "effective_normal_stress": {
+      "rms": 5.082916164962002e-07,
+      "max_abs": 6.134928430867603e-05
+    },
+    "permeability": {
+      "rms": 1.8080011384376492e-06,
+      "max_abs": 0.000272848432437911
+    },
+    "slip_velocity": {
+      "rms": 3.1212522240779856e-05,
+      "max_abs": 0.004004381059758977
+    }
+  },
+  "new_refined_old": {
+    "slip": {
+      "rms": 3.134424498431097e-06,
+      "max_abs": 0.00022366066352333402
+    },
+    "effective_normal_stress": {
+      "rms": 0.0008797636124392062,
+      "max_abs": 0.04104234194468859
+    },
+    "permeability": {
+      "rms": 0.00021430043811108444,
+      "max_abs": 0.017897754838827495
+    },
+    "slip_velocity": {
+      "rms": 0.005922145174452414,
+      "max_abs": 0.30907547814992675
+    }
+  }
+}

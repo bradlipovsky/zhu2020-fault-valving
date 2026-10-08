@@ -1,164 +1,170 @@
 {
   "restart_T1e10_n16384": {
     "case": "T1e10",
-    "end_years": 19.71427891933029,
+    "end_years": 180.0,
     "spacing_m": 35.3364673482666,
     "offset_years": 4.002094756385144,
-    "complete": false,
+    "comparison_years": 180.0,
+    "complete": true,
     "effective_normal_stress": {
-      "rms": 0.0008130919893108692,
-      "final_rms": 0.0007001207542588653,
-      "maximum_absolute": 0.0033292066144241517
+      "rms": 0.8986059748046141,
+      "final_rms": 0.207642697638393,
+      "maximum_absolute": 5.976446556627934
     },
     "permeability": {
-      "rms": 8.191005677814476e-06,
-      "final_rms": 6.027884169606787e-06,
-      "maximum_absolute": 4.569464618242591e-05
+      "rms": 0.04255422900428483,
+      "final_rms": 0.020777280832568537,
+      "maximum_absolute": 0.18208170922590305
     },
     "slip_velocity": {
-      "rms": 0.002094410702062326,
-      "final_rms": 0.0026444219143476255,
-      "maximum_absolute": 0.02541778427791641
+      "rms": 0.6622356448223052,
+      "final_rms": 0.3598065499902196,
+      "maximum_absolute": 6.12847326088613
     },
     "slip": {
-      "rms": 0.0003255606795419805,
-      "final_rms": 0.00034838074984442664,
-      "maximum_absolute": 0.0009571149374547616
+      "rms": 1.2187092020576955,
+      "final_rms": 0.5729495846949421,
+      "maximum_absolute": 4.841912000468374
     }
   },
   "restart_T1e7_n16384": {
     "case": "T1e7",
-    "end_years": 7.9668567564041375,
+    "end_years": 48.0,
     "spacing_m": 35.3364673482666,
     "offset_years": 3.9890052490008174,
-    "complete": false,
+    "comparison_years": 44.81833715681217,
+    "complete": true,
     "effective_normal_stress": {
-      "rms": 0.038139356818710855,
-      "final_rms": 0.03404825838572406,
-      "maximum_absolute": 2.6547795002701484
+      "rms": 0.2522385245257188,
+      "final_rms": 0.2468835243059702,
+      "maximum_absolute": 5.240549341117703
     },
     "permeability": {
-      "rms": 0.012264468685946118,
-      "final_rms": 0.008087770396191291,
-      "maximum_absolute": 0.5892553973593806
+      "rms": 0.17518260884733364,
+      "final_rms": 0.11546634471228195,
+      "maximum_absolute": 2.173494966112173
     },
     "slip_velocity": {
-      "rms": 0.04121528012010155,
-      "final_rms": 0.03340506078848109,
-      "maximum_absolute": 2.229858450528205
+      "rms": 0.2991012509367111,
+      "final_rms": 0.21326194829994258,
+      "maximum_absolute": 6.094417149452692
     },
     "slip": {
-      "rms": 0.0004122085125516504,
-      "final_rms": 0.0006592540214813515,
-      "maximum_absolute": 0.007093787268008252
+      "rms": 0.008535445887617675,
+      "final_rms": 0.010337068467657428,
+      "maximum_absolute": 0.15731649373288192
     }
   },
   "restart_T1e8_n16384": {
     "case": "T1e8",
-    "end_years": 3.1889336006887046,
+    "end_years": 35.0,
     "spacing_m": 35.3364673482666,
     "offset_years": 3.9184925088129146,
-    "complete": false,
+    "comparison_years": 35.0,
+    "complete": true,
     "effective_normal_stress": {
-      "rms": 0.094064119298672,
-      "final_rms": 0.10558662009920046,
-      "maximum_absolute": 0.9132910855165406
+      "rms": 2.90365086592101,
+      "final_rms": 4.10473339558599,
+      "maximum_absolute": 25.476819635320602
     },
     "permeability": {
-      "rms": 0.008305242847892094,
-      "final_rms": 0.0030568081483243227,
-      "maximum_absolute": 0.16517334218810475
+      "rms": 0.3746128803126474,
+      "final_rms": 0.2052595873581839,
+      "maximum_absolute": 3.467713649875682
     },
     "slip_velocity": {
-      "rms": 0.06949166076361704,
-      "final_rms": 0.053507733301071156,
-      "maximum_absolute": 1.7767020990821205
+      "rms": 1.3073370345347277,
+      "final_rms": 1.1302540129133432,
+      "maximum_absolute": 13.72010069618933
     },
     "slip": {
-      "rms": 0.0024777032775863696,
-      "final_rms": 0.0019828850815308665,
-      "maximum_absolute": 0.02101391170958468
+      "rms": 0.20691466792708085,
+      "final_rms": 0.3892631988414072,
+      "maximum_absolute": 0.9554204227331584
     }
   },
   "restart_T1e8_n32768": {
     "case": "T1e8",
-    "end_years": 1.6855270462634118,
+    "end_years": 16.0,
     "spacing_m": 17.6682336741333,
     "offset_years": 3.9184925088129146,
-    "complete": false,
+    "comparison_years": 16.0,
+    "complete": true,
     "effective_normal_stress": {
-      "rms": 0.06575104637210817,
-      "final_rms": 0.11100308613455068,
-      "maximum_absolute": 0.8193486927055673
+      "rms": 0.6629432200695156,
+      "final_rms": 1.958390780893419,
+      "maximum_absolute": 21.22881116645861
     },
     "permeability": {
-      "rms": 0.008091974721393436,
-      "final_rms": 0.011432702234950827,
-      "maximum_absolute": 0.1528896920861058
+      "rms": 0.06205335759979902,
+      "final_rms": 0.1712873254406878,
+      "maximum_absolute": 1.9472797584929573
     },
     "slip_velocity": {
-      "rms": 0.058243693515674926,
-      "final_rms": 0.10013507825925426,
-      "maximum_absolute": 1.7091488805264508
+      "rms": 0.3012816826432741,
+      "final_rms": 0.845929568858467,
+      "maximum_absolute": 9.288871539395654
     },
     "slip": {
-      "rms": 0.002301413928361665,
-      "final_rms": 0.0031575822012212865,
-      "maximum_absolute": 0.020961542511314758
+      "rms": 0.013042970740792564,
+      "final_rms": 0.02782289348745511,
+      "maximum_absolute": 0.31822234175956765
     }
   },
   "restart_T1e8_n8192": {
     "case": "T1e8",
-    "end_years": 3.076185925627568,
+    "end_years": 35.0,
     "spacing_m": 70.6729346965332,
     "offset_years": 3.9184925088129146,
-    "complete": false,
+    "comparison_years": 35.0,
+    "complete": true,
     "effective_normal_stress": {
-      "rms": 0.0842357847967404,
-      "final_rms": 0.09163220203195103,
-      "maximum_absolute": 0.7711964919381558
+      "rms": 3.1240717935276505,
+      "final_rms": 3.105301959761475,
+      "maximum_absolute": 25.50814370703055
     },
     "permeability": {
-      "rms": 0.007088142768361785,
-      "final_rms": 0.004502019189177888,
-      "maximum_absolute": 0.1494193298087687
+      "rms": 0.4167671475246927,
+      "final_rms": 0.2268563928358229,
+      "maximum_absolute": 3.534051796100375
     },
     "slip_velocity": {
-      "rms": 0.07342630872598856,
-      "final_rms": 0.07027473696066806,
-      "maximum_absolute": 1.7823369579138664
+      "rms": 1.4128031438054847,
+      "final_rms": 0.9618415101783016,
+      "maximum_absolute": 15.743590389466835
     },
     "slip": {
-      "rms": 0.002388933579057172,
-      "final_rms": 0.002217934468476285,
-      "maximum_absolute": 0.01946457186048588
+      "rms": 0.16689627337196242,
+      "final_rms": 0.2104209903936067,
+      "maximum_absolute": 1.3088897045845296
     }
   },
   "restart_T1e9_n16384": {
     "case": "T1e9",
-    "end_years": 19.23863203957382,
+    "end_years": 80.0,
     "spacing_m": 35.3364673482666,
     "offset_years": 3.9952152283824924,
-    "complete": false,
+    "comparison_years": 80.0,
+    "complete": true,
     "effective_normal_stress": {
-      "rms": 0.0025306523322109775,
-      "final_rms": 0.002134934738141845,
-      "maximum_absolute": 0.0064594574731131615
+      "rms": 1.9362768513398247,
+      "final_rms": 1.5902883323159205,
+      "maximum_absolute": 17.440227277056657
     },
     "permeability": {
-      "rms": 2.7542775661980245e-05,
-      "final_rms": 2.2535739259537056e-05,
-      "maximum_absolute": 0.0002409879152409644
+      "rms": 0.1454342567252822,
+      "final_rms": 0.07229468705246161,
+      "maximum_absolute": 0.9898683317206736
     },
     "slip_velocity": {
-      "rms": 0.0016268058341717957,
-      "final_rms": 0.008024788312869286,
-      "maximum_absolute": 0.11723695776285048
+      "rms": 0.630818053587921,
+      "final_rms": 0.5204697493539238,
+      "maximum_absolute": 7.705646330195773
     },
     "slip": {
-      "rms": 0.00013025578737147438,
-      "final_rms": 0.00014354621333564273,
-      "maximum_absolute": 0.0008828057661998123
+      "rms": 0.5173231838953106,
+      "final_rms": 0.5628801413676049,
+      "maximum_absolute": 3.1767576258169954
     }
   }
 }

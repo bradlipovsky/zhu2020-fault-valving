@@ -1,0 +1,14 @@
+{
+  "T1e7": {
+    "maximum_relative_deep_Darcy_flux_error": 2.985578451131232e-11
+  },
+  "T1e8": {
+    "maximum_relative_deep_Darcy_flux_error": 1.2407652683066317e-10
+  },
+  "T1e9": {
+    "maximum_relative_deep_Darcy_flux_error": 3.872543397065442e-10
+  },
+  "T1e10": {
+    "maximum_relative_deep_Darcy_flux_error": 7.000677815227618e-11
+  }
+}

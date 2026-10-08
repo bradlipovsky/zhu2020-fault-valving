@@ -1,0 +1,15 @@
+{
+  "start_year": 129.39156146573407,
+  "end_year": 129.39156149744386,
+  "serial_wall_s": 125.11592598899733,
+  "parallel_wall_s": 51.236571179993916,
+  "speedup": 2.4419262083222835,
+  "threads": 8,
+  "bitwise_identical": true,
+  "source_commit": "5c3861339bae1edfd96f948743f9516211c531a6",
+  "source_sha256": "345f82b2eceed22dec9a6c25078cdc385a1eeab0222b3cf16a42bdce3d16bd85",
+  "initial_state_sha256": "ec563aef38c3ae88782ad18ac38339246c788276a0fa55301b275713d73ccccc",
+  "fields.bin_sha256": "a312ea62e6a9b9b3f1c9adf207024fae615092af7aaf0e566bd315e04ae6839c",
+  "final_state.bin_sha256": "810c7c5df375528b0423b101f2bf928084615cfc02cf8d2ebcc845ccbe100085",
+  "history.csv_sha256": "5411ba6b4a7cb95b7f175c2a607f1f7675a8558fc053be8039e5e2c2cb1ebfc0"
+}
