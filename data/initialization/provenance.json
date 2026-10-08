@@ -1,0 +1,22 @@
+{
+  "case": "initialization",
+  "command": [
+    "build/valving",
+    "configs/initialization.cfg",
+    "data/initialization"
+  ],
+  "pid": 2604927,
+  "start_utc": "2026-10-08T06:01:26Z",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "e2e17a3647d05edc283e353217d12c755a3ac44af1bb70a8b753d38a9af042dd",
+  "cpu_affinity": [
+    40,
+    41,
+    42,
+    43
+  ],
+  "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+  "exit_code": 0,
+  "end_utc": "2026-10-08T21:02:32Z"
+}
