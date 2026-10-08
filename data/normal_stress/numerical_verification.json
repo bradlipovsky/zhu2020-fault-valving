@@ -1,0 +1,119 @@
+{
+  "case": "normal_stress",
+  "checks_passed": true,
+  "scope": "Completed 100-year normal-stress sensitivity case and comparison with a verified immutable prefix of the continuing baseline. This tests an input assumption, not numerical convergence or project completion.",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "f789940e1093386db96f943dc154dfde00653ada8d55da104c158d75604c3982",
+  "years": 100,
+  "accepted_steps": 287400,
+  "saved_profiles": 7227,
+  "maximum_accepted_error": 0.9999929329773422,
+  "minimum_effective_pa": 106034.03974139423,
+  "minimum_Lb_cells": 7.370137680606603,
+  "minimum_hstar_cells": 26.44724832603442,
+  "checks": [
+    "Successful completed run, source/executable/configuration hashes, archived configuration, end time and mesh.",
+    "Finite complete history, consecutive accepted steps, increasing time, consistent step durations and accepted errors at most one.",
+    "Positive effective stress, permeability bounds and whole-history resolution minima.",
+    "Complete binary records, mesh coordinates, finite fields and exact saved time/step agreement with history.",
+    "Positive saved stress, constitutive permeability bounds and permeability no greater than reference permeability.",
+    "Effective stress constant in every fixed-pressure saved profile when that option is enabled."
+  ],
+  "simulation_command": [
+    "build/valving",
+    "configs/normal_stress.cfg",
+    "data/normal_stress"
+  ],
+  "analysis_command": [
+    "python3",
+    "scripts/analyze.py",
+    "normal_stress"
+  ],
+  "analysis_sha256": "2db1ad5e5f54dc9c4a27268bc36b9e950dc8c6c7bf7477c0e922af766fcafd81",
+  "output_verification_sha256": "6cd7022aace5a6c3f1dda7cb7fcbf5b48db35b97b66efa3e4c96610a630cf837",
+  "common_horizon_comparison": {
+    "horizon_years": 100,
+    "configuration_differences": {
+      "normal_gradient": [
+        22000.0,
+        23000.0
+      ],
+      "years": [
+        200.0,
+        100.0
+      ]
+    },
+    "normal_stress_complete_threshold_intervals": 22,
+    "normal_stress_resolved_ruptures": 22,
+    "baseline_complete_threshold_intervals": 21,
+    "baseline_resolved_ruptures": 20,
+    "normal_stress_large_events": 4,
+    "baseline_large_events": 4,
+    "normal_stress_recurrence_years": [
+      27.62918356957751,
+      26.302429889535382,
+      26.8431650373269
+    ],
+    "baseline_recurrence_years": [
+      27.33736296245514,
+      25.395384945710074,
+      25.927395582838926
+    ],
+    "baseline_prefix": {
+      "history_prefix_bytes": 172994403,
+      "history_prefix_sha256": "891f780bf8d5fcc3b5afe24b67ee773a2dd899f1e0e45d5312d3bfec5cf4711d",
+      "fields_prefix_bytes": 173355504,
+      "fields_prefix_sha256": "bc125b7da9018e1e1647c3e24957e18494260c1a017579d3eddb380e5bd3e22b"
+    },
+    "chronological_large_event_pairs": [
+      {
+        "ordinal": 1,
+        "baseline_end_year": 8.106092413866739,
+        "normal_stress_end_year": 8.271804849267584,
+        "end_time_difference_years": 0.16571243540084532,
+        "onset_s": 5229485.701010346,
+        "duration_percent": 0.967815596640742,
+        "peak_speed_percent": 11.642380796448638,
+        "maximum_slip_percent": 4.963747267935825
+      },
+      {
+        "ordinal": 2,
+        "baseline_end_year": 35.44345537632188,
+        "normal_stress_end_year": 35.900988418845095,
+        "end_time_difference_years": 0.45753304252321525,
+        "onset_s": 14438641.725401402,
+        "duration_percent": 8.791024583069262,
+        "peak_speed_percent": 8.243049919570144,
+        "maximum_slip_percent": 5.407564712703383
+      },
+      {
+        "ordinal": 3,
+        "baseline_end_year": 60.83884032203195,
+        "normal_stress_end_year": 62.20341830838048,
+        "end_time_difference_years": 1.364577986348525,
+        "onset_s": 43062802.91298509,
+        "duration_percent": 11.127151290224768,
+        "peak_speed_percent": 12.278045160423655,
+        "maximum_slip_percent": -11.663272507259325
+      },
+      {
+        "ordinal": 4,
+        "baseline_end_year": 86.76623590487087,
+        "normal_stress_end_year": 89.04658334570738,
+        "end_time_difference_years": 2.280347440836502,
+        "onset_s": 71962292.44718838,
+        "duration_percent": -0.1639996197439153,
+        "peak_speed_percent": 11.019742978498481,
+        "maximum_slip_percent": 7.158227412783513
+      }
+    ],
+    "maximum_absolute_differences": {
+      "end_time_difference_years": 2.280347440836502,
+      "duration_percent": 11.127151290224768,
+      "peak_speed_percent": 12.278045160423655,
+      "maximum_slip_percent": 11.663272507259325
+    },
+    "interpretation": "All chronological large-event pairs are retained without selecting nearest times. Parameter sensitivity can change event identities; the pairs do not imply physically identical ruptures. All final comparisons will also be generated by scripts/report_tables.py from completed case analyses."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "case": "normal_stress",
+  "command": [
+    "build/valving",
+    "configs/normal_stress.cfg",
+    "data/normal_stress"
+  ],
+  "pid": 2604928,
+  "start_utc": "2026-10-08T06:01:26Z",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "f789940e1093386db96f943dc154dfde00653ada8d55da104c158d75604c3982",
+  "cpu_affinity": [
+    44,
+    45,
+    46,
+    47
+  ],
+  "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+  "exit_code": 0,
+  "end_utc": "2026-10-08T20:51:52Z"
+}

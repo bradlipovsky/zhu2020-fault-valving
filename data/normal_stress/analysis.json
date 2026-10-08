@@ -1,0 +1,838 @@
+{
+  "case": "normal_stress",
+  "configuration": {
+    "n": 131072.0,
+    "threads": 4.0,
+    "Ly": 500000.0,
+    "Lz": 500000.0,
+    "mu": 32400000000.0,
+    "radiation": 4680000.0,
+    "Vp": 1e-09,
+    "V0": 1e-06,
+    "f0": 0.6,
+    "dc": 0.002,
+    "rho": 1000.0,
+    "gravity": 9.8,
+    "viscosity": 0.0001,
+    "storage": 1e-11,
+    "normal_gradient": 23000.0,
+    "stress_scale": 30000000.0,
+    "kmin": 1e-19,
+    "kmax": 1e-15,
+    "L": 1.0,
+    "T": 100000000.0,
+    "influx": 3e-09,
+    "a_surface": 0.01,
+    "a_15km": 0.03,
+    "a_deep_slope": 3e-06,
+    "ab_shallow": -0.01,
+    "ab_corner": 13500.0,
+    "vw_bottom": 17000.0,
+    "perturbation": 0.0001,
+    "perturb_depth": 12000.0,
+    "perturb_width": 1000.0,
+    "initial_locking_depth": 17000.0,
+    "initial_transition_width": 1500.0,
+    "initial_velocity_fraction": 0.0001,
+    "years": 100.0,
+    "tolerance": 1e-05,
+    "dt_max": 1000000.0,
+    "fine_depth": 30000.0,
+    "stretch_scale": 10000.0,
+    "maximum_spacing": 1000.0,
+    "surface_ratio": 8.0,
+    "surface_scale": 1000.0,
+    "output_years": 0.025,
+    "output_seconds": 0.5,
+    "output_depth": 30000.0,
+    "output_spacing": 30.0,
+    "seismic_threshold": 0.001,
+    "fixed_pressure": 0.0
+  },
+  "events": [
+    {
+      "start_s": 248562709.31855655,
+      "end_s": 248562843.7450789,
+      "slip_start_s": 248562709.69371557,
+      "slip_end_s": 248562843.7450789,
+      "onset_bracket_s": [
+        248562709.31855655,
+        248562709.69371557
+      ],
+      "peak_s": 248562717.00953203,
+      "peak_velocity": 2.5623455608279886,
+      "nucleation_depth_m": 13864.517211914062,
+      "shallow_m": 9553.909301757812,
+      "deep_m": 18041.610717773438,
+      "rupture_intervals_m": [
+        [
+          9553.909301757812,
+          18041.610717773438
+        ]
+      ],
+      "max_slip_m": 1.0277905464172363,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 254460480.4980753,
+      "end_s": 254460506.57381815,
+      "slip_start_s": 254460480.8491047,
+      "slip_end_s": 254460506.57381815,
+      "onset_bracket_s": [
+        254460480.4980753,
+        254460480.8491047
+      ],
+      "peak_s": 254460486.45493504,
+      "peak_velocity": 1.6407551758632444,
+      "nucleation_depth_m": 9546.279907226562,
+      "shallow_m": 7814.4073486328125,
+      "deep_m": 11892.318725585938,
+      "rupture_intervals_m": [
+        [
+          7814.4073486328125,
+          11892.318725585938
+        ]
+      ],
+      "max_slip_m": 0.540343165397644,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 261038199.1282576,
+      "end_s": 261038308.7112467,
+      "slip_start_s": 261038199.35708725,
+      "slip_end_s": 261038308.7112467,
+      "onset_bracket_s": [
+        261038199.1282576,
+        261038199.35708725
+      ],
+      "peak_s": 261038209.8739564,
+      "peak_velocity": 2.205341049414469,
+      "nucleation_depth_m": 7730.4840087890625,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 16183.853149414062,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          16183.853149414062
+        ]
+      ],
+      "max_slip_m": 1.9173290729522705,
+      "large": true,
+      "complete": true
+    },
+    {
+      "start_s": 823630741.2781384,
+      "end_s": 823630874.7958574,
+      "slip_start_s": 823630741.5634853,
+      "slip_end_s": 823630874.7958574,
+      "onset_bracket_s": [
+        823630741.2781384,
+        823630741.5634853
+      ],
+      "peak_s": 823630770.1184107,
+      "peak_velocity": 1.45283240934072,
+      "nucleation_depth_m": 14539.718627929688,
+      "shallow_m": 13513.565063476562,
+      "deep_m": 17053.604125976562,
+      "rupture_intervals_m": [
+        [
+          13513.565063476562,
+          17053.604125976562
+        ]
+      ],
+      "max_slip_m": 0.3605642318725586,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1095975115.7491968,
+      "end_s": 1095975238.0364301,
+      "slip_start_s": 1095975116.0950084,
+      "slip_end_s": 1095975238.0364301,
+      "onset_bracket_s": [
+        1095975115.7491968,
+        1095975116.0950084
+      ],
+      "peak_s": 1095975125.249538,
+      "peak_velocity": 2.3191625112848335,
+      "nucleation_depth_m": 13967.514038085938,
+      "shallow_m": 10183.334350585938,
+      "deep_m": 17591.476440429688,
+      "rupture_intervals_m": [
+        [
+          10183.334350585938,
+          17591.476440429688
+        ]
+      ],
+      "max_slip_m": 0.8897991180419922,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1105178280.3657584,
+      "end_s": 1105178304.6496062,
+      "slip_start_s": 1105178280.548788,
+      "slip_end_s": 1105178304.6496062,
+      "onset_bracket_s": [
+        1105178280.3657584,
+        1105178280.548788
+      ],
+      "peak_s": 1105178286.941302,
+      "peak_velocity": 0.9857183999780955,
+      "nucleation_depth_m": 10156.631469726562,
+      "shallow_m": 9374.618530273438,
+      "deep_m": 11293.411254882812,
+      "rupture_intervals_m": [
+        [
+          9374.618530273438,
+          11293.411254882812
+        ]
+      ],
+      "max_slip_m": 0.18747973442077637,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1113954093.5581365,
+      "end_s": 1113954112.2556496,
+      "slip_start_s": 1113954093.6649876,
+      "slip_end_s": 1113954112.2556496,
+      "onset_bracket_s": [
+        1113954093.5581365,
+        1113954093.6649876
+      ],
+      "peak_s": 1113954098.7353797,
+      "peak_velocity": 1.0070899651382554,
+      "nucleation_depth_m": 9569.168090820312,
+      "shallow_m": 8562.088012695312,
+      "deep_m": 10484.695434570312,
+      "rupture_intervals_m": [
+        [
+          8562.088012695312,
+          10484.695434570312
+        ]
+      ],
+      "max_slip_m": 0.1898026466369629,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1125457251.4764225,
+      "end_s": 1125457272.0180278,
+      "slip_start_s": 1125457251.70502,
+      "slip_end_s": 1125457272.0180278,
+      "onset_bracket_s": [
+        1125457251.4764225,
+        1125457251.70502
+      ],
+      "peak_s": 1125457256.6200273,
+      "peak_velocity": 1.0632008178162853,
+      "nucleation_depth_m": 7951.7364501953125,
+      "shallow_m": 6704.3304443359375,
+      "deep_m": 10065.078735351562,
+      "rupture_intervals_m": [
+        [
+          6704.3304443359375,
+          10065.078735351562
+        ]
+      ],
+      "max_slip_m": 0.34761643409729004,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1128025188.3351538,
+      "end_s": 1128025210.752262,
+      "slip_start_s": 1128025188.5896192,
+      "slip_end_s": 1128025210.752262,
+      "onset_bracket_s": [
+        1128025188.3351538,
+        1128025188.5896192
+      ],
+      "peak_s": 1128025194.6297147,
+      "peak_velocity": 1.5114999088580603,
+      "nucleation_depth_m": 6906.5093994140625,
+      "shallow_m": 5624.7711181640625,
+      "deep_m": 8142.4713134765625,
+      "rupture_intervals_m": [
+        [
+          5624.7711181640625,
+          8142.4713134765625
+        ]
+      ],
+      "max_slip_m": 0.3507448434829712,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1132948994.7863777,
+      "end_s": 1132949032.126546,
+      "slip_start_s": 1132948994.8882341,
+      "slip_end_s": 1132949032.126546,
+      "onset_bracket_s": [
+        1132948994.7863777,
+        1132948994.8882341
+      ],
+      "peak_s": 1132949006.9900377,
+      "peak_velocity": 2.14336764359017,
+      "nucleation_depth_m": 5624.7711181640625,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 13662.338256835938,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          13662.338256835938
+        ]
+      ],
+      "max_slip_m": 1.6644643545150757,
+      "large": true,
+      "complete": true
+    },
+    {
+      "start_s": 1594990885.3609586,
+      "end_s": 1594991025.5974016,
+      "slip_start_s": 1594990885.957779,
+      "slip_end_s": 1594991025.5974016,
+      "onset_bracket_s": [
+        1594990885.3609586,
+        1594990885.957779
+      ],
+      "peak_s": 1594990917.5872936,
+      "peak_velocity": 1.7682097724048684,
+      "nucleation_depth_m": 14348.983764648438,
+      "shallow_m": 13124.465942382812,
+      "deep_m": 17114.639282226562,
+      "rupture_intervals_m": [
+        [
+          13124.465942382812,
+          17114.639282226562
+        ]
+      ],
+      "max_slip_m": 0.4287846088409424,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1907207037.4659522,
+      "end_s": 1907207179.1718621,
+      "slip_start_s": 1907207037.9839184,
+      "slip_end_s": 1907207179.1718621,
+      "onset_bracket_s": [
+        1907207037.4659522,
+        1907207037.9839184
+      ],
+      "peak_s": 1907207046.7105834,
+      "peak_velocity": 2.2762663180666105,
+      "nucleation_depth_m": 13738.632202148438,
+      "shallow_m": 9851.455688476562,
+      "deep_m": 18163.681030273438,
+      "rupture_intervals_m": [
+        [
+          9851.455688476562,
+          18163.681030273438
+        ]
+      ],
+      "max_slip_m": 0.9690279960632324,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1922229301.6788597,
+      "end_s": 1922229327.3294806,
+      "slip_start_s": 1922229301.9858747,
+      "slip_end_s": 1922229327.3294806,
+      "onset_bracket_s": [
+        1922229301.6788597,
+        1922229301.9858747
+      ],
+      "peak_s": 1922229307.4211502,
+      "peak_velocity": 1.1994556745024179,
+      "nucleation_depth_m": 9820.938110351562,
+      "shallow_m": 8745.193481445312,
+      "deep_m": 11621.475219726562,
+      "rupture_intervals_m": [
+        [
+          8745.193481445312,
+          11621.475219726562
+        ]
+      ],
+      "max_slip_m": 0.26986217498779297,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1962990560.1619258,
+      "end_s": 1962990593.6085477,
+      "slip_start_s": 1962990560.3254335,
+      "slip_end_s": 1962990593.6085477,
+      "onset_bracket_s": [
+        1962990560.1619258,
+        1962990560.3254335
+      ],
+      "peak_s": 1962990567.7592282,
+      "peak_velocity": 2.2750677730676454,
+      "nucleation_depth_m": 6364.8223876953125,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 13002.395629882812,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          13002.395629882812
+        ]
+      ],
+      "max_slip_m": 1.702887773513794,
+      "large": true,
+      "complete": true
+    },
+    {
+      "start_s": 1967841102.7047157,
+      "end_s": 1967841121.2853768,
+      "slip_start_s": 1967841102.88255,
+      "slip_end_s": 1967841121.2853768,
+      "onset_bracket_s": [
+        1967841102.7047157,
+        1967841102.88255
+      ],
+      "peak_s": 1967841107.31852,
+      "peak_velocity": 0.6508310813596432,
+      "nucleation_depth_m": 5079.2694091796875,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 5983.3526611328125,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          322.3419189453125
+        ],
+        [
+          2084.7320556640625,
+          5983.3526611328125
+        ]
+      ],
+      "max_slip_m": 0.3257160186767578,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1967841143.4755642,
+      "end_s": 1967841157.3528483,
+      "slip_start_s": 1967841143.5014927,
+      "slip_end_s": 1967841157.3528483,
+      "onset_bracket_s": [
+        1967841143.4755642,
+        1967841143.5014927
+      ],
+      "peak_s": 1967841150.9850001,
+      "peak_velocity": 0.007813948849581502,
+      "nucleation_depth_m": 410.0799560546875,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 886.9171142578125,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          886.9171142578125
+        ]
+      ],
+      "max_slip_m": 0.035836219787597656,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 1971254492.6076505,
+      "end_s": 1971254513.705687,
+      "slip_start_s": 1971254492.6631372,
+      "slip_end_s": 1971254513.705687,
+      "onset_bracket_s": [
+        1971254492.6076505,
+        1971254492.6631372
+      ],
+      "peak_s": 1971254503.803267,
+      "peak_velocity": 0.7719841889901061,
+      "nucleation_depth_m": 1386.6424560546875,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 6612.7777099609375,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          6612.7777099609375
+        ]
+      ],
+      "max_slip_m": 0.5467491149902344,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 2368240287.000065,
+      "end_s": 2368240409.2384953,
+      "slip_start_s": 2368240287.4703126,
+      "slip_end_s": 2368240409.2384953,
+      "onset_bracket_s": [
+        2368240287.000065,
+        2368240287.4703126
+      ],
+      "peak_s": 2368240300.537358,
+      "peak_velocity": 0.9078227000235327,
+      "nucleation_depth_m": 13956.069946289062,
+      "shallow_m": 13422.012329101562,
+      "deep_m": 16633.987426757812,
+      "rupture_intervals_m": [
+        [
+          13422.012329101562,
+          16633.987426757812
+        ]
+      ],
+      "max_slip_m": 0.25570058822631836,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 2648914082.373264,
+      "end_s": 2648914234.443281,
+      "slip_start_s": 2648914082.959593,
+      "slip_end_s": 2648914234.443281,
+      "onset_bracket_s": [
+        2648914082.373264,
+        2648914082.959593
+      ],
+      "peak_s": 2648914100.2498035,
+      "peak_velocity": 2.419852444160161,
+      "nucleation_depth_m": 13746.261596679688,
+      "shallow_m": 10213.851928710938,
+      "deep_m": 18163.681030273438,
+      "rupture_intervals_m": [
+        [
+          10213.851928710938,
+          18163.681030273438
+        ]
+      ],
+      "max_slip_m": 1.0187206268310547,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 2659473473.427301,
+      "end_s": 2659473496.456811,
+      "slip_start_s": 2659473473.617501,
+      "slip_end_s": 2659473496.456811,
+      "onset_bracket_s": [
+        2659473473.427301,
+        2659473473.617501
+      ],
+      "peak_s": 2659473478.409405,
+      "peak_velocity": 0.792890963106688,
+      "nucleation_depth_m": 10244.369506835938,
+      "shallow_m": 9523.391723632812,
+      "deep_m": 11293.411254882812,
+      "rupture_intervals_m": [
+        [
+          9523.391723632812,
+          11293.411254882812
+        ]
+      ],
+      "max_slip_m": 0.16936540603637695,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 2810096429.2201467,
+      "end_s": 2810096458.590495,
+      "slip_start_s": 2810096429.2624226,
+      "slip_end_s": 2810096458.590495,
+      "onset_bracket_s": [
+        2810096429.2201467,
+        2810096429.2624226
+      ],
+      "peak_s": 2810096437.5106125,
+      "peak_velocity": 1.8479556295978699,
+      "nucleation_depth_m": 1882.5531005859375,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 12403.488159179688,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          12403.488159179688
+        ]
+      ],
+      "max_slip_m": 1.7681093215942383,
+      "large": true,
+      "complete": true
+    },
+    {
+      "start_s": 2811653648.7071776,
+      "end_s": 2811653658.564492,
+      "slip_start_s": 2811653648.7722025,
+      "slip_end_s": 2811653658.564492,
+      "onset_bracket_s": [
+        2811653648.7071776,
+        2811653648.7722025
+      ],
+      "peak_s": 2811653652.577982,
+      "peak_velocity": 0.1047696495184872,
+      "nucleation_depth_m": 612.2589111328125,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 1901.6265869140625,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          1901.6265869140625
+        ]
+      ],
+      "max_slip_m": 0.08374786376953125,
+      "large": false,
+      "complete": true
+    }
+  ],
+  "complete_cycles_s": [
+    [
+      261038308.7112467,
+      1132949032.126546
+    ],
+    [
+      1132949032.126546,
+      1962990593.6085477
+    ],
+    [
+      1962990593.6085477,
+      2810096458.590495
+    ]
+  ],
+  "resolution": {
+    "n": 131072,
+    "dynamic_nodes": 10742,
+    "dz_m": 3.814697265625,
+    "minimum_Lb_cells": 7.3701376806066,
+    "minimum_hstar_cells": 26.4472483260344
+  },
+  "event_definition": "Catalog every maximum accepted-step speed excursion > 1e-3 m/s; measure slip between saved threshold crossings; resolved rupture requires a connected >= 0.01 m footprint; large if top < 2 km and span > 10 km",
+  "selected_cycle_s": [
+    1962990593.6085477,
+    2810096458.590495
+  ],
+  "selection_rule": "last complete large-event cycle; entire run if none",
+  "selected_cycle_complete": true,
+  "large_event_count": 4,
+  "recurrence_years": [
+    27.62918356957751,
+    26.302429889535382,
+    26.8431650373269
+  ],
+  "median_recurrence_years": 26.8431650373269,
+  "selected_event_count": 7,
+  "selected_small_ruptures": 6,
+  "selected_unresolved_intervals": 0,
+  "sample_depths": {
+    "5000": {
+      "sample_depth_m": 4991.5313720703125,
+      "effective_min_mpa": 20.20751,
+      "effective_max_mpa": 40.126744,
+      "effective_range_mpa": 19.919234,
+      "permeability_min": 1.8940479228327763e-19,
+      "permeability_max": 3.9641925436977466e-16,
+      "flux_min": 1.5162003597080087e-11,
+      "flux_max": 4.956628174568323e-08
+    },
+    "10000": {
+      "sample_depth_m": 10004.043579101562,
+      "effective_min_mpa": 23.062168,
+      "effective_max_mpa": 56.120264,
+      "effective_range_mpa": 33.058096,
+      "permeability_min": 2.1813905636002086e-19,
+      "permeability_max": 2.922279814592893e-16,
+      "flux_min": 3.5241899676297095e-11,
+      "flux_max": 2.8594801193548847e-08
+    },
+    "15000": {
+      "sample_depth_m": 15012.741088867188,
+      "effective_min_mpa": 30.08635,
+      "effective_max_mpa": 53.581524,
+      "effective_range_mpa": 23.495174,
+      "permeability_min": 4.152420205236597e-18,
+      "permeability_max": 2.1209820142788948e-16,
+      "flux_min": 1.040230346305293e-09,
+      "flux_max": 2.154213518679171e-08
+    },
+    "20000": {
+      "sample_depth_m": 19994.735717773438,
+      "effective_min_mpa": 45.140748,
+      "effective_max_mpa": 49.16418,
+      "effective_range_mpa": 4.023432,
+      "permeability_min": 1.6160301718287156e-17,
+      "permeability_max": 4.5830342193916974e-17,
+      "flux_min": 2.6137523256863915e-09,
+      "flux_max": 5.904891242636268e-09
+    }
+  },
+  "migration_segments": [
+    {
+      "start_year": 1.3807192846438603,
+      "end_year": 5.613336280580112,
+      "depth_start_m": 19974.97101214652,
+      "depth_end_m": 16734.947865045087,
+      "speed_m_per_year": 792.5719153683301,
+      "r2": 0.9986804370058308,
+      "samples": 159
+    },
+    {
+      "start_year": 6.840003482317774,
+      "end_year": 8.193928093930964,
+      "depth_start_m": 19983.771692919217,
+      "depth_end_m": 17318.47180540827,
+      "speed_m_per_year": 1839.248011952955,
+      "r2": 0.9815039134522645,
+      "samples": 52
+    },
+    {
+      "start_year": 11.15929342455795,
+      "end_year": 12.830637816938319,
+      "depth_start_m": 16853.153114484678,
+      "depth_end_m": 14400.885182345011,
+      "speed_m_per_year": 1500.0840287651993,
+      "r2": 0.9238609745668723,
+      "samples": 70
+    },
+    {
+      "start_year": 15.426788853545345,
+      "end_year": 19.408278532401297,
+      "depth_start_m": 19962.618959043197,
+      "depth_end_m": 15781.238437095564,
+      "speed_m_per_year": 1004.376970009182,
+      "r2": 0.9932047594795642,
+      "samples": 155
+    },
+    {
+      "start_year": 19.564835805989453,
+      "end_year": 21.321485192619807,
+      "depth_start_m": 18896.413399461,
+      "depth_end_m": 16514.13930041578,
+      "speed_m_per_year": 1338.3461963788075,
+      "r2": 0.8785823296833528,
+      "samples": 69
+    }
+  ],
+  "shallow_migration_segments": [],
+  "leading_migration_segments": [
+    {
+      "start_year": 1.3807192846438603,
+      "end_year": 12.841587779791702,
+      "depth_start_m": 19974.97101214652,
+      "depth_end_m": 13567.821914419497,
+      "speed_m_per_year": 522.8043859814667,
+      "r2": 0.9790957499484421,
+      "samples": 458
+    },
+    {
+      "start_year": 19.43390749830231,
+      "end_year": 21.73560361959085,
+      "depth_start_m": 15762.788068397094,
+      "depth_end_m": 13683.425615004198,
+      "speed_m_per_year": 817.2913205551725,
+      "r2": 0.9500815852780792,
+      "samples": 110
+    }
+  ],
+  "leading_shallow_migration_segments": [
+    {
+      "start_year": 22.07021138642556,
+      "end_year": 26.719237661216336,
+      "depth_start_m": 9504.427890003933,
+      "depth_end_m": 2040.5959213229075,
+      "speed_m_per_year": 1490.2463491541362,
+      "r2": 0.9979749010452456,
+      "samples": 205
+    }
+  ],
+  "front_definition": "Speed increases through Vp with depth; interpolate log speed; retain crossings at 2--23 km. Leading selects the shallowest crossing, deepest selects the deepest. migration_segments and shallow_migration_segments describe the deepest choice; leading_* describes the leading choice. These extrema can change branches; fits split at large depth jumps, data gaps, and seismic intervals.",
+  "slow_slip": {
+    "15000": {
+      "sample_depth_m": 15012.741088867188,
+      "threshold_m_s": 1.1000000000000001e-09,
+      "episodes": [
+        {
+          "start_s": 2268516086.793588,
+          "end_s": 2319229810.7588754,
+          "peak_s": 2269354316.2898245,
+          "duration_years": 1.6070209383884455,
+          "peak_velocity": 8.231377357503789e-09,
+          "net_slip_m": 0.13393211364746094
+        }
+      ],
+      "median_interval_years": null,
+      "interval_coefficient_of_variation": null,
+      "median_duration_years": 1.6070209383884455,
+      "median_net_slip_m": 0.13393211364746094
+    },
+    "18000": {
+      "sample_depth_m": 18014.907836914062,
+      "threshold_m_s": 1.1000000000000001e-09,
+      "episodes": [
+        {
+          "start_s": 2085531497.972306,
+          "end_s": 2154864878.905042,
+          "peak_s": 2086325535.17813,
+          "duration_years": 2.1970422634400637,
+          "peak_velocity": 1.2325428677684158e-08,
+          "net_slip_m": 0.21068263053894043
+        },
+        {
+          "start_s": 2499893715.706144,
+          "end_s": 2571353880.308206,
+          "peak_s": 2500685779.5294833,
+          "duration_years": 2.2644359711151107,
+          "peak_velocity": 9.957791036185881e-09,
+          "net_slip_m": 0.19758296012878418
+        }
+      ],
+      "median_interval_years": 13.13028380964818,
+      "interval_coefficient_of_variation": null,
+      "median_duration_years": 2.2307391172775874,
+      "median_net_slip_m": 0.2041327953338623
+    },
+    "20000": {
+      "sample_depth_m": 19994.735717773438,
+      "threshold_m_s": 1.1000000000000001e-09,
+      "episodes": [
+        {
+          "start_s": 2008606034.7116191,
+          "end_s": 2128733517.0252037,
+          "peak_s": 2051945545.0092065,
+          "duration_years": 3.8066102084310773,
+          "peak_velocity": 2.6144417741846837e-09,
+          "net_slip_m": 0.23510432243347168
+        }
+      ],
+      "median_interval_years": null,
+      "interval_coefficient_of_variation": null,
+      "median_duration_years": 3.8066102084310773,
+      "median_net_slip_m": 0.23510432243347168
+    }
+  },
+  "phase_diagnostics": {
+    "sample_depth_m": 10004.043579101562,
+    "maximum_effective_stress_since_window_start_years": 18.530181534829456,
+    "pressure_drop_from_window_start_mpa": 28.680164,
+    "first_partial_ruptures": [
+      {
+        "peak_since_window_start_years": 0.1537035043847562,
+        "footprint_top_m": 2084.7320556640625,
+        "footprint_bottom_m": 5983.3526611328125,
+        "max_slip_m": 0.3257160186767578,
+        "peak_velocity": 0.6508310813596432
+      },
+      {
+        "peak_since_window_start_years": 0.153704888092011,
+        "footprint_top_m": 13.3514404296875,
+        "footprint_bottom_m": 886.9171142578125,
+        "max_slip_m": 0.035836219787597656,
+        "peak_velocity": 0.007813948849581502
+      }
+    ],
+    "rupture_selection": "First two complete partial events in chronological order; each depth interval is its longest connected >=1 cm footprint. The full event catalog is retained."
+  },
+  "truncated_event_count": 0,
+  "minimum_effective_pa": 106034.03974139423,
+  "maximum_velocity": 2.5623455608279886,
+  "negative_velocity_samples": 0,
+  "minimum_flux": 8.618167811336175e-12,
+  "final_time_years": 100.0
+}
