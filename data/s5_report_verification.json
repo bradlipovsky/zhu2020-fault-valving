@@ -1,0 +1,115 @@
+{
+  "scope": "S5 reference report metrics checked against the previously audited completed scientific case; full report compilation and package checks use a marked short-run fixture only.",
+  "source_file": "scripts/report_tables.py",
+  "source_sha256": "95887c093a557446f2c9c8d9b445d0aac36d43e334665dda7bdb2c68270d8173",
+  "checks_passed": true,
+  "scientific_metrics": {
+    "complete_cycle": true,
+    "slip_cycle_count": 2,
+    "sample_depth_m": 13.3514404296875,
+    "accumulated_slip_m": 5.571863174438477,
+    "partial_to_large_peak_hours": 2.3653857172860038,
+    "published_slip_scale_m": 12.0,
+    "published_source": "Supplementary Fig. 5b, PDF page 6; approximate visual scale only",
+    "partial_footprint_m": [
+      10122.299194335938,
+      17892.837524414062
+    ],
+    "last_partial_event": {
+      "start_s": 14069298653.647697,
+      "end_s": 14069298955.879887,
+      "slip_start_s": 14069298655.058846,
+      "slip_end_s": 14069298955.879887,
+      "onset_bracket_s": [
+        14069298653.647697,
+        14069298655.058846
+      ],
+      "peak_s": 14069298705.139853,
+      "peak_velocity": 3.125868990694964,
+      "nucleation_depth_m": 14917.373657226562,
+      "shallow_m": 10122.299194335938,
+      "deep_m": 17892.837524414062,
+      "rupture_intervals_m": [
+        [
+          10122.299194335938,
+          17892.837524414062
+        ]
+      ],
+      "max_slip_m": 1.5075035095214844,
+      "large": false,
+      "complete": true
+    },
+    "closing_large_event": {
+      "start_s": 14069307194.631905,
+      "end_s": 14069307577.746584,
+      "slip_start_s": 14069307194.728243,
+      "slip_end_s": 14069307577.746584,
+      "onset_bracket_s": [
+        14069307194.631905,
+        14069307194.728243
+      ],
+      "peak_s": 14069307220.528435,
+      "peak_velocity": 16.07738249086184,
+      "nucleation_depth_m": 524.5208740234375,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 19002.914428710938,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          19002.914428710938
+        ]
+      ],
+      "max_slip_m": 2.788905143737793,
+      "large": true,
+      "complete": true
+    }
+  },
+  "scientific_text": "For the fixed-pressure $T=10^{10}$ s case in Supplementary Fig. 5a,b, the last resolved partial rupture spans 10.1--17.9 km by the connected 1 cm criterion and peaks 2.37 hours before the closing large event. The published time map places a deep partial rupture much earlier in its cycle. This temporal separation differs even though the published image does not identify event boundaries equivalent to our speed threshold.\n\nThe two calculated cycles accumulate 5.57 m of slip at the shallowest saved depth of 13.4 m. The published two-cycle profiles in Supplementary Fig. 5b extend to approximately 12 m of shallow slip; this is a visual scale, not a digitized curve or model input.\nOur time map ends at the closing earthquake, whereas the published map includes a postearthquake tail. The accepted-step view separates brief ruptures, but its spacing also reflects the adaptive method and saved-profile cadence. No separate spatial refinement establishes convergence of this long-healing reference.\n",
+  "scientific_case_audit_sha256": "5623b141aadd140c42d6c2502be2cf41c6dfb97cd116141b9160b7b40df6f0fd",
+  "scientific_panel_sha256": "c697e27156998785e0eb133eddb9e8fcfd6d9869576e8f4d8311fa2b0837a275",
+  "fixture_commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 0.3573312759399414
+    },
+    {
+      "command": [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320/report",
+      "exit_code": 0,
+      "elapsed_s": 0.9345417022705078
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 3.360069513320923
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 1.6332728862762451
+    }
+  ],
+  "fixture_overfull_boxes": 0,
+  "elapsed_s": 6.33627462387085,
+  "fixture_pdf_excluded_from_deliverables": true
+}

@@ -31,6 +31,46 @@ def event_differences(event,reference):
         maximum_slip_percent=100*(event['max_slip_m']/reference['max_slip_m']-1)
             if reference['max_slip_m']>0 else None)
 
+def reference_sequence(a,slip):
+    """Compare S5 timing and accumulated slip without assigning published event IDs."""
+    start,end=a['selected_cycle_s']
+    events=[e for e in a['events'] if e['complete'] and start<=e['start_s'] and e['end_s']<=end]
+    large=[e for e in events if e['large']]
+    partial=[e for e in events if not e['large'] and e['rupture_intervals_m']
+             and large and e['end_s']<large[-1]['start_s']]
+    metric=dict(complete_cycle=a['selected_cycle_complete'],
+        slip_cycle_count=len(slip['cycle_bounds_s']),sample_depth_m=float(slip['depth_m'][0]),
+        accumulated_slip_m=float(slip['values'][-1,0]),partial_to_large_peak_hours=None,
+        published_slip_scale_m=12.,published_source='Supplementary Fig. 5b, PDF page 6; approximate visual scale only')
+    prose=r'For the fixed-pressure $T=10^{10}$ s case in Supplementary Fig. 5a,b, '
+    if a['selected_cycle_complete'] and partial:
+        event=partial[-1];top,bottom=max(event['rupture_intervals_m'],key=lambda x:x[1]-x[0])
+        gap=(large[-1]['peak_s']-event['peak_s'])/3600
+        metric.update(partial_to_large_peak_hours=gap,partial_footprint_m=[top,bottom],
+                      last_partial_event=event,closing_large_event=large[-1])
+        prose+=('the last resolved partial rupture spans {}--{} km by the connected '
+            '1 cm criterion and peaks {} hours before the closing large event. '
+            'The published time map places a deep partial rupture much earlier in its cycle. '
+            'This temporal separation differs even though the published image does not '
+            'identify event boundaries equivalent to our speed threshold.\n\n').format(
+                number(top/1000),number(bottom/1000),number(gap))
+    else:
+        prose+='the selected output does not provide a complete cycle with a resolved preceding partial rupture.\n\n'
+    if metric['slip_cycle_count']==2:
+        prose+=('The two calculated cycles accumulate {} m of slip at the shallowest saved depth '
+            'of {} m. The published two-cycle profiles in Supplementary Fig. 5b extend to '
+            'approximately 12 m of shallow slip; this is a visual scale, not a digitized '
+            'curve or model input.\n').format(number(metric['accumulated_slip_m']),number(metric['sample_depth_m']))
+    else:
+        prose+='Fewer than two complete calculated cycles are available for the two-cycle slip comparison.\n'
+    if a['selected_cycle_complete']:
+        prose+=('Our time map ends at the closing earthquake, whereas the published map includes '
+                'a postearthquake tail. ')
+    prose+=('The accepted-step view separates brief ruptures, but its spacing '
+        'also reflects the adaptive method and saved-profile cadence. No separate spatial '
+        'refinement establishes convergence of this long-healing reference.\n')
+    return prose,metric
+
 def main():
     panels={p:json.loads(Path('data/panels',p+'.json').read_text()) for p in PANELS}
     analyses={c:json.loads(Path('data',c,'analysis.json').read_text()) for c in MAIN_CASES+VALIDATION_CASES}
@@ -255,6 +295,10 @@ times or demonstrate grid convergence of the long-healing cases.
 Entries from runs with fewer than two complete large events include startup;
 they cannot establish the amplitude of a repeating cycle.
 '''
+    with np.load('data/panels/S5b.npz') as slip:
+        prose,metric=reference_sequence(analyses['verylong_reference'],slip)
+    comparison+='\n'+prose
+    metrics['verylong_reference']=metric
     comparison+=r'''\subsection{Aseismic pulse diagnostics}
 For the short-healing case, a local episode has $|V|\geq1.1V_p$ for at least
 0.01 yr, with the maximum speed over the whole fault remaining below
