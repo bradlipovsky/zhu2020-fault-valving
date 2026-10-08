@@ -38,12 +38,12 @@ def main():
         'The panel audit classifies {} as independently reproduced, {} as partial, and {} as not reproduced. '
         'The two independently reproduced panels are the constitutive-law limits in Fig. 1b,c. '
         'The baseline calculation produces {} large events over {} years. Its selected comparison window '
-        'lasts {} years and contains {} smaller seismic events. Operator tests verify steady Darcy flow, '
+        'lasts {} years and contains {} smaller resolved ruptures. Operator tests verify steady Darcy flow, '
         'friction inversion, elasticity, fluid conservation, and fourth-order temporal convergence. '
         'The remaining trajectory comparisons retain explicit uncertainty from friction profiles, initial '
         'conditions, and numerical resolution; we do not claim recovery of the authors\' exact earthquake sequence.'
         ).format(counts['independently reproduced'],counts['partial'],counts['not reproduced'],
-                 baseline['large_event_count'],number(completed['baseline']['years']),number(duration),baseline['selected_small_events'])
+                 baseline['large_event_count'],number(completed['baseline']['years']),number(duration),baseline['selected_small_ruptures'])
     summary+='\n'+r'\end{abstract}'
     write('summary',summary)
 
@@ -91,19 +91,21 @@ again against a 2,500 s reference. These are temporal-order tests in a separate
     comparison=r'''\begin{center}
 \begin{tabular}{lrrrr}
 \toprule
-Case & $T$ (yr) & Large events & Median recurrence (yr) & Small events in window\\
+Case & $T$ (yr) & Large events & Median recurrence (yr) & Small ruptures in window\\
 \midrule
 '''
     for case in MAIN_CASES:
         a=analyses[case]
         comparison+=' & '.join([tex(case),number(a['configuration']['T']/YEAR),str(a['large_event_count']),
-            number(a['median_recurrence_years']),str(a['selected_small_events'])])+r'\\'+'\n'
+            number(a['median_recurrence_years']),str(a['selected_small_ruptures'])])+r'\\'+'\n'
     comparison+=r'''\bottomrule
 \end{tabular}
 \end{center}
 The reference cases hold the initial pore pressure fixed. Each median uses all
 complete large-event intervals in that run; early intervals may retain startup
 effects. The selected figure cycle is specified separately in each panel sidecar.
+Small-rupture counts require a resolved 1 cm slip footprint. Every speed-threshold
+interval remains in the catalog, including those without such a footprint.
 The main reference figure shows an approximately 50-year interval, while the
 featured fault-valving cycle ends at approximately 32 years. These are approximate
 readings of the displayed time axes, not digitized curves or input data.
@@ -362,23 +364,29 @@ slip measurement; they do not establish convergence of subsequent event sequence
         'the common duration available in all runs. This window includes startup.\n').format(number(horizon))
     comparison+=r'''\begin{center}\begin{tabular}{lrrrr}
 \toprule
-Case & \shortstack{Complete\\seismic events} & \shortstack{Large\\events} & \shortstack{Median recurrence\\(yr)} & \shortstack{Maximum timing\\difference (yr)}\\
+Case & \shortstack{Fast intervals\\(resolved ruptures)} & \shortstack{Large\\events} & \shortstack{Median recurrence\\(yr)} & \shortstack{Maximum timing\\difference (yr)}\\
 \midrule
 '''
     for case in validation:
-        event_count=sum(e['complete'] and e['end_s']/YEAR<=horizon for e in analyses[case]['events'])
+        events=[e for e in analyses[case]['events'] if e['complete'] and e['end_s']/YEAR<=horizon]
+        event_count=len(events);resolved_count=sum(bool(e['rupture_intervals_m']) for e in events)
         times=large_times[case];intervals=np.diff(times);matched=min(len(times),len(large_times['baseline']))
         differences=(np.asarray(times[:matched])-np.asarray(large_times['baseline'][:matched])).tolist()
-        common=dict(horizon_years=horizon,complete_seismic_events=event_count,large_events=len(times),
+        common=dict(horizon_years=horizon,complete_threshold_intervals=event_count,
+            resolved_ruptures=resolved_count,unresolved_threshold_intervals=event_count-resolved_count,large_events=len(times),
             large_event_end_years=times,recurrence_years=intervals.tolist(),
             median_recurrence_years=float(np.median(intervals)) if len(intervals) else None,
             matched_ordinal_large_events=matched,large_event_time_differences_years=differences,
             maximum_absolute_large_event_time_difference_years=max(map(abs,differences)) if differences else None)
         validation[case]['common_horizon_comparison']=common
-        comparison+=' & '.join([tex(case),str(event_count),str(len(times)),number(common['median_recurrence_years']),
+        comparison+=' & '.join([tex(case),'{} ({})'.format(event_count,resolved_count),str(len(times)),number(common['median_recurrence_years']),
             number(common['maximum_absolute_large_event_time_difference_years'])])+r'\\'+'\n'
     comparison+=r'''\bottomrule\end{tabular}\end{center}
-The timing difference pairs the first classified large event with the first,
+The first count includes all complete excursions above the seismic-speed
+threshold; the parenthesized count also requires a resolved 1 cm slip footprint.
+Brief threshold recrossings can increase the former without producing an
+additional resolved rupture. They are retained separately, without merging
+intervals or changing the detection threshold. The timing difference pairs the first classified large event with the first,
 the second with the second, and so on, without fitting a time shift or choosing
 the closest event. Only pairs present in both catalogs enter that
 difference; the event counts expose missing or additional events. The numerical

@@ -162,6 +162,10 @@ The report compares the first two complete partial events in chronological
 order, using each event's longest connected footprint. Maximum local slip does
 not select the events because a later swarm event can exceed an earlier
 partial rupture. The full catalog remains available in each analysis file.
+Small-rupture counts require a resolved 1 cm slip footprint. Complete threshold
+excursions without that footprint are counted separately, not discarded or merged.
+This distinguishes brief speed-threshold recrossings from additional resolved
+ruptures in the sequence comparison; no detection threshold is adjusted.
 The time of maximum effective stress near 10 km provides a separately defined
 drainage diagnostic; it is not equated automatically to a published phase boundary.
 Refinement and input-sensitivity comparisons use the common elapsed duration

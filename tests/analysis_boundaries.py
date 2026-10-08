@@ -77,6 +77,14 @@ def main():
             assert len(result['events'])==3 and all(e['complete'] for e in result['events'])
             partial=result['phase_diagnostics']['first_partial_ruptures']
             assert len(partial)==2 and np.allclose([e['max_slip_m'] for e in partial],[.2,.4])
+            # A brief threshold excursion with sub-centimetre slip remains in
+            # the catalog, but does not count as another resolved rupture.
+            increments[[2,3]]=.001;records['fields'][:,0,2:]=np.cumsum(increments)[:,None]
+            write_fixture();result=analyze('fixture')
+            assert len(result['events'])==3 and result['selected_event_count']==3
+            assert result['selected_small_ruptures']==2 and result['selected_unresolved_intervals']==1
+            partial=result['phase_diagnostics']['first_partial_ruptures']
+            assert np.allclose([e['max_slip_m'] for e in partial],[.4,2])
             # A seismic event outside the saved depth range still invalidates a slow-slip
             # episode. The accepted-step history carries that whole-fault maximum.
             t*=31557600;records['time']=t;speed[:]=1e-10;speed[2:6]=2e-9
@@ -92,6 +100,7 @@ def main():
     print('CATALOG BOUNDARY CHECKS PASSED: truncated events cannot close complete cycles.')
     print('PHASE DIAGNOSTIC CHECKS PASSED: connected rupture depths and pressure-minimum timing.')
     print('CATALOG ORDER CHECKS PASSED: first partials retained despite a larger later event.')
+    print('THRESHOLD CATALOG CHECKS PASSED: retain intervals without resolved slip footprints.')
     print('ASEISMIC CLASSIFICATION CHECKS PASSED: use the whole-fault accepted-step maximum.')
     print('MIGRATION FIT CHECKS PASSED: speed, depth selection, and seismic interruption.')
 

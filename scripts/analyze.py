@@ -127,12 +127,14 @@ def analyze(case):
         rupture_selection='First two complete partial events in chronological order; each depth interval is its longest connected >=1 cm footprint. The full event catalog is retained.')
     result=dict(case=case,configuration=cfg,events=events,complete_cycles_s=cycles,
         resolution={key:completed[key] for key in ['n','dynamic_nodes','dz_m','minimum_Lb_cells','minimum_hstar_cells']},
-        event_definition='maximum accepted-step speed >= 1e-3 m/s; connected event-slip footprint >= 0.01 m; large if top < 2 km and span > 10 km',
+        event_definition='Catalog every maximum accepted-step speed excursion >= 1e-3 m/s; a resolved rupture also has a connected >= 0.01 m slip footprint; large if footprint top < 2 km and span > 10 km',
         selected_cycle_s=selected,selection_rule='last complete large-event cycle; entire run if none',
         selected_cycle_complete=bool(cycles),large_event_count=len(large),
         recurrence_years=intervals.tolist(),
         median_recurrence_years=float(np.median(intervals)) if len(intervals) else None,
-        selected_event_count=len(selected_events),selected_small_events=sum(not e['large'] for e in selected_events),
+        selected_event_count=len(selected_events),
+        selected_small_ruptures=sum(not e['large'] and bool(e['rupture_intervals_m']) for e in selected_events),
+        selected_unresolved_intervals=sum(not e['rupture_intervals_m'] for e in selected_events),
         sample_depths=sample_depths,migration_segments=segments,shallow_migration_segments=shallow_segments,
         slow_slip=slow_slip,phase_diagnostics=phase_diagnostics,
         truncated_event_count=sum(not e['complete'] for e in events),
@@ -151,4 +153,5 @@ if __name__=='__main__':
     for case in args.cases:
         r=analyze(case)
         print(case,'large events',r['large_event_count'],'recurrence years',r['recurrence_years'],
-              'small events in selected cycle',r['selected_small_events'])
+              'small resolved ruptures in window',r['selected_small_ruptures'],
+              'unresolved threshold intervals',r['selected_unresolved_intervals'])
