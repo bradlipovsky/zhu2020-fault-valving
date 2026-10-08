@@ -1,0 +1,22 @@
+{
+  "case": "reference",
+  "command": [
+    "build/valving",
+    "configs/reference.cfg",
+    "data/reference"
+  ],
+  "pid": 2659803,
+  "start_utc": "2026-10-08T07:56:46Z",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "cfa1c2b4d294999915cf2197ef3c704d2420c9c91a5230837d14e24bc812a078",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+  "exit_code": 0,
+  "end_utc": "2026-10-08T14:31:00Z"
+}

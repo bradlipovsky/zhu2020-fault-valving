@@ -1,0 +1,3 @@
+{
+  "completed": true, "time_s": 12623040000, "years": 400, "accepted_steps": 164586, "rejected_steps": 37313, "elapsed_s": 23645.189939461, "n": 131072, "dynamic_nodes": 10742, "dz_m": 3.814697265625, "tolerance": 1e-05, "minimum_Lb_cells": 11.4614441087039, "minimum_hstar_cells": 43.5508992742563
+}

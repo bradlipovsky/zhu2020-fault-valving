@@ -1,0 +1,127 @@
+{
+  "case": "reference",
+  "scope": "Completed case and its two scientific panels only; ten other runs and the complete scientific report remain pending.",
+  "checks_passed": true,
+  "simulation_command": [
+    "build/valving",
+    "configs/reference.cfg",
+    "data/reference"
+  ],
+  "postprocess_commands": [
+    [
+      "python3",
+      "scripts/analyze.py",
+      "reference"
+    ],
+    [
+      "python3",
+      "scripts/prepare_panels.py",
+      "F2a",
+      "F2b"
+    ],
+    [
+      "python3",
+      "scripts/plot.py",
+      "F2a",
+      "F2b"
+    ]
+  ],
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "config_sha256": "cfa1c2b4d294999915cf2197ef3c704d2420c9c91a5230837d14e24bc812a078",
+  "accepted_steps": 164586,
+  "saved_profiles": 14041,
+  "minimum_Lb_cells": 11.4614441087039,
+  "minimum_hstar_cells": 43.5508992742563,
+  "checks": [
+    "Completed at configured 400 years with unchanged source, executable, and configuration hashes and exit code zero.",
+    "History and saved profiles reach the same terminal step and time; all accepted-step errors are at most one.",
+    "All saved fields and histories are finite with positive effective normal stress.",
+    "Panel coordinates, values, and cumulative-slip profiles match direct selections of this completed run exactly.",
+    "Slip panel retains the last two complete cycles; every current pipeline hash agrees with its sidecar."
+  ],
+  "panels": [
+    {
+      "panel": "F2a",
+      "status": "partial",
+      "data_sha256": "d922c4170d22692a5f90a725fea4b92f896a82dacdf7db82184989b7593a8c48",
+      "bytes": 6774082,
+      "window_years": [
+        335.1059034841916,
+        399.0803250089189
+      ],
+      "values_shape": [
+        2279,
+        833
+      ],
+      "comparison": {
+        "approximate_reference_years": 50,
+        "source": "Main Fig. 2a and accompanying published discussion; approximate displayed cycle, not simulation input or authors data",
+        "calculated_last_interval_years": 63.97442152472731,
+        "approximate_last_interval_difference_percent": 27.94884304945462,
+        "calculated_all_interval_median_years": 66.01812354959412,
+        "approximate_median_difference_percent": 32.036247099188245,
+        "recurrence_intervals_years": [
+          70.71196776170964,
+          66.89603667975702,
+          65.14021041943123,
+          63.97442152472731
+        ]
+      },
+      "figure_png_sha256": "eacae75d1f3dd8a36d21ec8e6205212e6dec12b2acf4a74cd781596c28570d32",
+      "figure_pdf_sha256": "85079c9ec175f54263f5e9963ebd1fa2217a0f687768bddfc76253bae7c7132c"
+    },
+    {
+      "panel": "F2b",
+      "status": "partial",
+      "data_sha256": "4e739057318b52278b3f2c7b5cd5cd02aaebba7c4cfba1c0a5ba52ec362ab4a6",
+      "bytes": 6011970,
+      "window_years": [
+        269.9656930647604,
+        399.0803250089189
+      ],
+      "values_shape": [
+        4593,
+        833
+      ],
+      "comparison": {
+        "approximate_reference_years": 50,
+        "source": "Main Fig. 2a and accompanying published discussion; approximate displayed cycle, not simulation input or authors data",
+        "calculated_last_interval_years": 63.97442152472731,
+        "approximate_last_interval_difference_percent": 27.94884304945462,
+        "calculated_all_interval_median_years": 66.01812354959412,
+        "approximate_median_difference_percent": 32.036247099188245,
+        "recurrence_intervals_years": [
+          70.71196776170964,
+          66.89603667975702,
+          65.14021041943123,
+          63.97442152472731
+        ]
+      },
+      "cycle_bounds_years": [
+        [
+          269.9656930647604,
+          335.1059034841916
+        ],
+        [
+          335.1059034841916,
+          399.0803250089189
+        ]
+      ],
+      "final_shallowest_slip_m": 3.7879271507263184,
+      "final_maximum_slip_m": 3.7879276275634766,
+      "figure_png_sha256": "aa513c2e6c09f79f6c2545c665e585cc603acc894c49187bf7e1d3a2a659fa6e",
+      "figure_pdf_sha256": "b121ab31dc26413a551f1412086e10c6ffcea587a167bd56a8341e38f13e89e2"
+    }
+  ],
+  "visual_review": {
+    "reference": "Published main Fig. 2, PDF page 5; visual comparison only",
+    "findings": [
+      "Velocity map has a locked upper region and deeper creep with a closing upward-propagating earthquake.",
+      "The last interval is 64.0 years versus approximately 50 years in the paper; intervals continue to shorten from 70.7 to 64.0 years, so a steady recurrence period is not established.",
+      "The accepted-step axis depends on this integrator and tolerance; it is not a physical-time comparison to the original numerical-step axis.",
+      "Stepped boundaries in the accepted-step map reflect the saved spatial-profile cadence.",
+      "Slip contours show two complete interseismic intervals and closing earthquakes; the original timing and detailed profiles are not recovered.",
+      "No separate spatial refinement sequence has been completed for this fixed-pressure reference case."
+    ]
+  }
+}
