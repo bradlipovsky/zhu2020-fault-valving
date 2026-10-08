@@ -10,9 +10,16 @@ import numpy as np
 
 ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/'scripts'))
-from analyze import analyze
+from analyze import analyze,fit_migration
 
 def main():
+    # Known translating front, followed by the same front interrupted by a quake.
+    front=[[float(t),9000-4200*t,1e-8] for t in np.arange(60)*.025]
+    fitted=fit_migration(front,2000,10000,.001)
+    assert len(fitted)==1 and abs(fitted[0]['speed_m_per_year']-4200)<1e-8
+    assert not fit_migration(front,13000,20000,.001)
+    front[30][2]=.01;fitted=fit_migration(front,2000,10000,.001)
+    assert len(fitted)==2 and all(abs(s['speed_m_per_year']-4200)<1e-8 for s in fitted)
     (ROOT/'.tmp').mkdir(exist_ok=True)
     original=Path.cwd()
     with tempfile.TemporaryDirectory(prefix='catalog-boundary-',dir=str(ROOT/'.tmp')) as temporary:
@@ -55,11 +62,21 @@ def main():
             records['fields'][:,0,:]+=(.5*np.cumsum(np.isin(np.arange(12),[10,11])))[:,None]
             records['fields'][9,2,:]=2.5e7
             write_fixture()
-            result=analyze('fixture');phase=result['phase_diagnostics'];event=phase['largest_partial_ruptures'][0]
-            assert len(phase['largest_partial_ruptures'])==1
+            result=analyze('fixture');phase=result['phase_diagnostics'];event=phase['first_partial_ruptures'][0]
+            assert len(phase['first_partial_ruptures'])==1
             assert event['footprint_top_m']==10000 and event['footprint_bottom_m']==20000
             assert event['max_slip_m']==1 and phase['pressure_drop_from_window_start_mpa']==5
             assert phase['maximum_effective_stress_since_window_start_years']==9/31557600
+            # A later, larger partial event must not replace either of the first
+            # two chronological events in the phase-comparison table.
+            speed[:]=1e-10;speed[[2,3,6,7,10]]=.01
+            records['fields'][:,1,:]=speed[:,None];records['fields'][:,0,:]=0
+            increments=np.zeros(len(t));increments[[2,3]]=.1;increments[[6,7]]=.2;increments[10]=2
+            records['fields'][:,0,2:]=np.cumsum(increments)[:,None]
+            write_fixture();result=analyze('fixture')
+            assert len(result['events'])==3 and all(e['complete'] for e in result['events'])
+            partial=result['phase_diagnostics']['first_partial_ruptures']
+            assert len(partial)==2 and np.allclose([e['max_slip_m'] for e in partial],[.2,.4])
             # A seismic event outside the saved depth range still invalidates a slow-slip
             # episode. The accepted-step history carries that whole-fault maximum.
             t*=31557600;records['time']=t;speed[:]=1e-10;speed[2:6]=2e-9
@@ -74,6 +91,8 @@ def main():
         finally:os.chdir(str(original))
     print('CATALOG BOUNDARY CHECKS PASSED: truncated events cannot close complete cycles.')
     print('PHASE DIAGNOSTIC CHECKS PASSED: connected rupture depths and pressure-minimum timing.')
+    print('CATALOG ORDER CHECKS PASSED: first partials retained despite a larger later event.')
     print('ASEISMIC CLASSIFICATION CHECKS PASSED: use the whole-fault accepted-step maximum.')
+    print('MIGRATION FIT CHECKS PASSED: speed, depth selection, and seismic interruption.')
 
 if __name__=='__main__':main()

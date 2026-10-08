@@ -6,6 +6,27 @@ import json
 import numpy as np
 from common import YEAR, fields, history, configuration, save_json, MAIN_CASES
 
+def fit_migration(front, depth_min, depth_max, seismic_threshold):
+    segments=[];group=[]
+    def close_group():
+        if len(group)>=5:
+            a=np.array(group);span=a[0,1]-a[-1,1];duration=a[-1,0]-a[0,0]
+            if span>=1000 and duration>=.1:
+                coef=np.polyfit(a[:,0],a[:,1],1);prediction=np.polyval(coef,a[:,0])
+                denom=np.sum((a[:,1]-a[:,1].mean())**2)
+                r2=1-np.sum((a[:,1]-prediction)**2)/denom if denom else 0
+                segments.append(dict(start_year=float(a[0,0]),end_year=float(a[-1,0]),
+                    depth_start_m=float(a[0,1]),depth_end_m=float(a[-1,1]),
+                    speed_m_per_year=float(-coef[0]),r2=float(r2),samples=len(a)))
+    for time,depth,speed in front:
+        usable=depth is not None and depth_min<=depth<=depth_max and speed<seismic_threshold
+        continuous=usable and (not group or (time-group[-1][0]<=.25 and -250<=depth-group[-1][1]<=30))
+        if not usable or not continuous:
+            close_group();group=[]
+        if usable:group.append([time,depth])
+    close_group()
+    return segments
+
 def analyze(case):
     z,r=fields(case); h=history(case); t=np.asarray(r['time']); v=np.asarray(r['fields'][:,1,:])
     completed=json.loads(Path('data',case,'completed.json').read_text())
@@ -63,25 +84,8 @@ def analyze(case):
             depth=float(zz[k]+weight*(zz[k+1]-zz[k]))
         else: depth=None
         front.append([float((t[it]-selected[0])/YEAR),depth,float(snapshot_maximum[it])])
-    segments=[]; group=[]
-    def close_group():
-        if len(group)>=5:
-            a=np.array(group); span=a[0,1]-a[-1,1]; duration=a[-1,0]-a[0,0]
-            if span>=1000 and duration>=.1:
-                coef=np.polyfit(a[:,0],a[:,1],1); prediction=np.polyval(coef,a[:,0])
-                denom=np.sum((a[:,1]-a[:,1].mean())**2)
-                r2=1-np.sum((a[:,1]-prediction)**2)/denom if denom else 0
-                segments.append(dict(start_year=float(a[0,0]),end_year=float(a[-1,0]),
-                    depth_start_m=float(a[0,1]),depth_end_m=float(a[-1,1]),
-                    speed_m_per_year=float(-coef[0]),r2=float(r2),samples=len(a)))
-    for row in front:
-        time,depth,speed=row
-        usable=depth is not None and 13000<=depth<=20000 and speed<cfg['seismic_threshold']
-        continuous=not group or (time-group[-1][0]<=.25 and -250<=depth-group[-1][1]<=30) if usable else False
-        if not usable or not continuous:
-            close_group();group=[]
-        if usable:group.append([time,depth])
-    close_group()
+    segments=fit_migration(front,13000,20000,cfg['seismic_threshold'])
+    shallow_segments=fit_migration(front,2000,10000,cfg['seismic_threshold'])
     intervals=np.diff([e['end_s'] for e in large])/YEAR
     slow_slip={}
     for depth in [15000,18000,20000]:
@@ -109,7 +113,7 @@ def analyze(case):
             median_net_slip_m=float(np.median([e['net_slip_m'] for e in episodes])) if episodes else None)
     k10=int(np.argmin(abs(z-10000)));peak10=int(np.argmax(Ne[:,k10]))
     partial=[e for e in selected_events if not e['large'] and e['rupture_intervals_m']]
-    partial=sorted(sorted(partial,key=lambda e:e['max_slip_m'],reverse=True)[:2],key=lambda e:e['peak_s'])
+    partial=partial[:2]
     ruptures=[]
     for event in partial:
         top,bottom=max(event['rupture_intervals_m'],key=lambda interval:interval[1]-interval[0])
@@ -119,8 +123,8 @@ def analyze(case):
     phase_diagnostics=dict(sample_depth_m=float(z[k10]),
         maximum_effective_stress_since_window_start_years=float((t[ids[peak10]]-selected[0])/YEAR),
         pressure_drop_from_window_start_mpa=float((Ne[peak10,k10]-Ne[0,k10])/1e6),
-        largest_partial_ruptures=ruptures,
-        rupture_selection='Two largest complete partial events by maximum local slip, listed chronologically; each depth interval is its longest connected >=1 cm footprint.')
+        first_partial_ruptures=ruptures,
+        rupture_selection='First two complete partial events in chronological order; each depth interval is its longest connected >=1 cm footprint. The full event catalog is retained.')
     result=dict(case=case,configuration=cfg,events=events,complete_cycles_s=cycles,
         resolution={key:completed[key] for key in ['n','dynamic_nodes','dz_m','minimum_Lb_cells','minimum_hstar_cells']},
         event_definition='maximum accepted-step speed >= 1e-3 m/s; connected event-slip footprint >= 0.01 m; large if top < 2 km and span > 10 km',
@@ -129,7 +133,8 @@ def analyze(case):
         recurrence_years=intervals.tolist(),
         median_recurrence_years=float(np.median(intervals)) if len(intervals) else None,
         selected_event_count=len(selected_events),selected_small_events=sum(not e['large'] for e in selected_events),
-        sample_depths=sample_depths,migration_segments=segments,slow_slip=slow_slip,phase_diagnostics=phase_diagnostics,
+        sample_depths=sample_depths,migration_segments=segments,shallow_migration_segments=shallow_segments,
+        slow_slip=slow_slip,phase_diagnostics=phase_diagnostics,
         truncated_event_count=sum(not e['complete'] for e in events),
         minimum_effective_pa=float(h['min_effective_pa'].min()),
         maximum_velocity=float(h['vmax_m_s'].max()),

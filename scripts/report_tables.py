@@ -20,8 +20,8 @@ def command(s):return r'\texttt{'+tex(s).replace('--','-{}-')+'}'
 
 def write(name,content):Path('report',name+'.tex').write_text(content+'\n')
 
-def front_speed(a):
-    values=[s['speed_m_per_year'] for s in a['migration_segments'] if s['r2']>=.8]
+def front_speed(a,field='migration_segments'):
+    values=[s['speed_m_per_year'] for s in a[field] if s['r2']>=.8]
     return float(np.median(values)) if values else None
 
 def main():
@@ -134,9 +134,19 @@ Calculated rates use upward portions of the $|V|=V_p$ contour between 13 and
 20 km, spanning at least 1 km and 0.1 yr, with linear-fit $R^2\geq0.8$.
 All fitted segments and their fit quality are saved, including rejected low-quality
 fits. The rate statistic therefore has an explicit definition and may differ
-from the authors' unspecified extraction procedure. The additional published
-4.56 km/yr shallow-front annotation is not equated to this deep-front statistic.
+from the authors' unspecified extraction procedure. A separate calculation uses
+the same fit criteria at 2--10 km depth to compare with the published shallow-front
+annotation of 4.56 km/yr. The depth interval is an explicit analysis choice.
 '''
+    shallow=front_speed(baseline,'shallow_migration_segments')
+    shallow_difference=None if shallow is None else 100*(shallow/4560-1)
+    metrics['baseline']['shallow_migration']=dict(depth_range_m=[2000,10000],published_rate_m_per_year=4560,
+        calculated_rate_m_per_year=shallow,relative_difference_percent=shallow_difference)
+    if shallow is None:
+        comparison+='No shallow segment satisfies the stated duration, distance, and fit-quality criteria.\n'
+    else:
+        comparison+=('The calculated shallow median is {} m/yr, a {}\\% difference '
+            'from the printed 4560 m/yr annotation.\n').format(number(shallow),number(shallow_difference))
     comparison+=r'''\begin{center}
 \begin{tabular}{lrrrr}
 \toprule
@@ -159,20 +169,23 @@ that the timing, rupture depths, or four phases of the published cycle match.
     comparison+=r'''\subsection{Rupture depths and drainage timing}
 The published description places two partial ruptures at approximately
 13--18 and 8--19 km depth before the final swarm and surface-reaching event.
-For a quantitative spatial comparison, we select the two partial events with
-the largest local slip in our comparison window, then list them in time order.
+For a quantitative spatial comparison, we list the first two complete partial
+events in chronological order within our comparison window.
 Their depth ranges are the longest connected components exceeding 1 cm of event
-slip. This rule does not select the events closest to the published footprints.
+slip. A later swarm event can have larger local slip than an earlier partial
+rupture, so maximum slip does not determine the order. The full event catalog
+is retained. This rule does not select the events closest to the published
+footprints or establish an automatic correspondence with the published phases.
 \begin{center}\begin{tabular}{lrrr}
 \toprule
 Time in window (yr) & Connected footprint (km) & Maximum slip (m) & Peak speed (m/s)\\
 \midrule
 '''
-    for event in phase['largest_partial_ruptures']:
+    for event in phase['first_partial_ruptures']:
         comparison+=' & '.join([number(event['peak_since_window_start_years']),
             number(event['footprint_top_m']/1000)+'--'+number(event['footprint_bottom_m']/1000),
             number(event['max_slip_m']),number(event['peak_velocity'])])+r'\\'+'\n'
-    if not phase['largest_partial_ruptures']:
+    if not phase['first_partial_ruptures']:
         comparison+=r'\multicolumn{4}{c}{No complete partial rupture with a resolved 1 cm footprint.}\\'+'\n'
     comparison+=r'\bottomrule\end{tabular}\end{center}'+'\n'
     comparison+=('At the sampled depth of {} km, effective stress reaches its window maximum '

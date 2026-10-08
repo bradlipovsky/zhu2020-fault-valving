@@ -158,8 +158,10 @@ than 10 km. The last complete large-event cycle is selected by a fixed
 rule. The published time origins and restarts are never imported or fitted.
 Threshold events truncated at either output boundary are retained with
 complete=false and cannot close a cycle or enter complete-event comparisons.
-The report compares the two largest complete partial events by local slip,
-ordered chronologically, using each event's longest connected footprint.
+The report compares the first two complete partial events in chronological
+order, using each event's longest connected footprint. Maximum local slip does
+not select the events because a later swarm event can exceed an earlier
+partial rupture. The full catalog remains available in each analysis file.
 The time of maximum effective stress near 10 km provides a separately defined
 drainage diagnostic; it is not equated automatically to a published phase boundary.
 Refinement and input-sensitivity comparisons use the common elapsed duration
@@ -170,6 +172,10 @@ without fitting a time shift or choosing the closest event. All paired differenc
 are retained, and event counts expose unequal catalog lengths.
 Figure 6 uses the independently computed |V|=Vp contour; its definition is an
 analysis assumption because the paper does not specify its exact extraction rule.
+Deep migration fits use 13--20 km; separate shallow fits use 2--10 km for
+comparison with the printed 4.56 km/year shallow-front annotation. Both require
+at least 1 km of upward motion over 0.1 year and report the median of segments
+with R-squared at least 0.8. All segment fits are retained in the analysis file.
 Slow-slip diagnostics at 15, 18, and 20 km count complete local intervals above
 1.1 Vp, longer than 0.01 yr, during which the maximum slip speed anywhere remains
 below 1e-3 m/s. Truncated intervals at a selected window edge are excluded.

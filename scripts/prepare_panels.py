@@ -125,6 +125,8 @@ def prepare(name):
             rates=[s['speed_m_per_year'] for s in analysis(case)['migration_segments'] if s['r2']>=.8]
             measured.append('{:.3g}'.format(float(np.median(rates))) if rates else 'unmeasured')
         discrepancy='Deep rates, short through verylong: '+', '.join(measured)+' m/year; published targets 2500, 380, 120, 30. Contour extraction is assumed.'
+        shallow=[s['speed_m_per_year'] for s in analysis('baseline')['shallow_migration_segments'] if s['r2']>=.8]
+        discrepancy+=' Baseline shallow rate: '+('{:.3g}'.format(float(np.median(shallow))) if shallow else 'unmeasured')+' m/year versus 4560.'
     elif name.startswith('F2'):
         case=spec['cases'][0];a=analysis(case);target=50 if case=='reference' else 32
         recurrence=a['median_recurrence_years']
@@ -133,9 +135,9 @@ def prepare(name):
                 recurrence,target,100*(recurrence/target-1)))
         discrepancy+=' Initial state and friction profiles remain uncertain.'
         if case=='baseline' and a['selected_cycle_complete']:
-            ruptures=a['phase_diagnostics']['largest_partial_ruptures']
+            ruptures=a['phase_diagnostics']['first_partial_ruptures']
             bounds=['{:.2f}--{:.2f}'.format(e['footprint_top_m']/1000,e['footprint_bottom_m']/1000) for e in ruptures]
-            discrepancy+=' Largest partial footprints: '+(', '.join(bounds)+' km.' if bounds else 'none.')
+            discrepancy+=' First partial footprints: '+(', '.join(bounds)+' km.' if bounds else 'none.')
     elif name.startswith('F3'):
         a=analysis('baseline');sample=a['sample_depths']['10000']
         if spec['field']==2:
