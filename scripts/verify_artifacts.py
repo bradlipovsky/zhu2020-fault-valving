@@ -5,7 +5,7 @@ import hashlib
 import json
 import subprocess
 import numpy as np
-from common import MAIN_CASES, save_json, configuration
+from common import MAIN_CASES, save_json, configuration, physical_depths
 from inventory import PANELS, GROUPS
 from reproduce import VALIDATION_CASES
 
@@ -39,6 +39,12 @@ def main():
         assert meta['data_command']==spec['data_command'] and meta['plot_command']==spec['plot_command']
         assert meta['status'] in ['independently reproduced','partial','not reproduced']
         with np.load(str(path),allow_pickle=False) as d:
+            if spec['kind']=='depth_histories':
+                assert np.array_equal(d['nominal_depth_m'],meta['nominal_depths_m']),name
+                assert np.array_equal(d['depth_m'],meta['sample_depths_m']),name
+                grid=physical_depths(meta['parameters'])
+                for nominal,actual in zip(d['nominal_depth_m'],d['depth_m']):
+                    assert actual in grid and abs(actual-nominal)==np.min(abs(grid-nominal)),name+' incorrect trace depth'
             for key in d.files:
                 values=d[key]
                 if values.dtype.kind in 'f':assert np.all(np.isfinite(values)),name+' '+key

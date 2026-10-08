@@ -605,5 +605,47 @@
     ],
     "exit_code": 0,
     "wall_s": 4.413959264755249
+  },
+  "depth_coordinate_report_update": {
+    "commands": [
+      [
+        "python3",
+        "scripts/prepare_panels.py"
+      ],
+      [
+        "python3",
+        "scripts/plot.py",
+        "S1a",
+        "S1b",
+        "S1c",
+        "S1d",
+        "S1"
+      ],
+      [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ]
+    ],
+    "exit_code": 0,
+    "wall_s": 19.842670440673828,
+    "overfull_boxes": 0,
+    "all_time_and_field_arrays_unchanged": true,
+    "trace_depths_match_cpp": true
   }
 }

@@ -119,7 +119,7 @@ def render(fig,slot,name):
         ax.legend(loc='best')
     elif kind=='depth_histories':
         ax=axes(fig,slot);t=(d['time_s']-float(d['origin_s']))/YEAR;field=int(d['field'])
-        for j,depth in enumerate(d['depth_m']):
+        for j,depth in enumerate(d['nominal_depth_m']):
             vals=d['values'][:,j]
             if field==2:vals=vals/1e6
             if field==1:vals=np.maximum(np.abs(vals),1e-35)

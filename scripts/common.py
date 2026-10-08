@@ -1,6 +1,7 @@
 """Read only output written by the independent C++ executable."""
 from pathlib import Path
 import json
+import math
 import struct
 import numpy as np
 
@@ -16,6 +17,24 @@ def configuration(path):
             key, value = line.split('=',1)
             result[key.strip()] = float(value)
     return result
+
+def physical_depths(cfg):
+    """Reconstruct the configured physical mesh for output-coordinate metadata."""
+    cfg={'n':32768,'Lz':500000.,'surface_ratio':1.,'surface_scale':1000.,
+         'fine_depth':0.,'maximum_spacing':2000.,'stretch_scale':10000.,**cfg}
+    n=int(cfg['n']);h=cfg['Lz']/n;nodes=[]
+    j=int((cfg['surface_ratio']-1)/2)
+    while True:
+        nodes.append(j)
+        if j==n-1:break
+        z=(j+.5)*h
+        ratio=max(1.,cfg['surface_ratio']*math.exp(-z/cfg['surface_scale']))
+        if cfg['fine_depth']>0 and z>cfg['fine_depth']:
+            ratio=math.exp(min(math.log(cfg['maximum_spacing']/h),(z-cfg['fine_depth'])/cfg['stretch_scale']))
+        # The positive round-to-nearest convention matches std::round in C++.
+        stride=max(1,int(math.floor(ratio+.5)));remaining=n-1-j
+        j+=remaining if remaining<1.5*stride else stride
+    return (np.asarray(nodes)+.5)*h
 
 def fields(case, complete=True):
     folder = Path('data',case)

@@ -135,6 +135,16 @@ effective normal stress, permeability, k*, upward flux. The numerical integratio
 itself uses float64 throughout. These snapshots cover the upper 30 km with about
 30 m output spacing; spatial output subsampling does not change the solution grid.
 Every accepted step also writes a text history with maxima and four depth traces.
+The trace-column names denote nominal depths of 5, 10, 15, and 20 km. Each trace
+uses the nearest physical model node, choosing the deeper node in an exact tie.
+The S1 panel files retain both these nominal depths and the actual node centers;
+their sidecars record the same coordinates. `common.py` reconstructs the mesh
+from the run configuration for this metadata. Diagnostics computed from binary
+profiles instead use the nearest stored profile coordinate, which can differ
+because profiles are spatially subsampled.
+`data/depth_coordinate_verification.json` records exact agreement of every
+reconstructed physical node with the C++ mesh for the 12 scientific cases and
+the two software test configurations.
 It additionally records the minimum numbers of physical cell widths across
 Lb and h* in the velocity-weakening region, using the current effective stress.
 The text histories use 17 significant decimal digits, preserving float64 times.

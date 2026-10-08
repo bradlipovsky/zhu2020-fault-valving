@@ -5,7 +5,7 @@ import argparse
 import json
 import hashlib
 import numpy as np
-from common import fields, history, configuration, save_json, YEAR
+from common import fields, history, configuration, physical_depths, save_json, YEAR
 from inventory import PANELS
 from analyze import analyze
 
@@ -40,10 +40,16 @@ def run_panel(name,spec):
         # Use accepted-step histories to preserve brief seismic maxima.
         h=history(case);mask=(h['time_s']>=window[0])&(h['time_s']<=window[1]);hh=h[mask]
         lookup={1:'velocity',2:'effective',3:'permeability',5:'flux'}
-        vals=np.column_stack([hh[lookup[field]+'_'+str(d)] for d in [5000,10000,15000,20000]])
+        nominal=np.array([5000,10000,15000,20000]);grid=physical_depths(cfg);sampled=[]
+        for depth in nominal:
+            i=int(np.searchsorted(grid,depth))
+            if i==len(grid):i-=1
+            elif i>0 and depth-grid[i-1]<grid[i]-depth:i-=1
+            sampled.append(grid[i])
+        vals=np.column_stack([hh[lookup[field]+'_'+str(d)] for d in nominal])
         # Store all accepted samples; no interpolation or copied reference curves.
-        result.update(depth_m=np.array([5000,10000,15000,20000]),time_s=hh['time_s'],step=hh['step'],values=vals,
-            steady_values=np.array([h[lookup[field]+'_'+str(d)][0] for d in [5000,10000,15000,20000]]))
+        result.update(depth_m=np.asarray(sampled),nominal_depth_m=nominal,time_s=hh['time_s'],step=hh['step'],values=vals,
+            steady_values=np.array([h[lookup[field]+'_'+str(d)][0] for d in nominal]))
     if kind in ['profiles','slip_profiles']:
         interval=1.5 if cfg['T']<=1e8 else 4
         requested=np.arange(window[0],window[1],interval*YEAR)
@@ -66,9 +72,13 @@ def run_panel(name,spec):
         j=int(np.clip(np.searchsorted(t,window[0]),0,len(t)-1));zero=np.asarray(r['fields'][j,0,zi])
         result['values']=result['values']-zero
         if 'profile_values' in result:result['profile_values']=result['profile_values']-zero
-    return result,dict(case=case,config_file='configs/'+case+'.cfg',parameters=cfg,
+    details=dict(case=case,config_file='configs/'+case+'.cfg',parameters=cfg,
         window_s=window,selection=reason,complete_cycle=complete,
         source_provenance=json.loads(Path('data',case,'provenance.json').read_text()))
+    if kind=='depth_histories':
+        details.update(nominal_depths_m=result['nominal_depth_m'].tolist(),sample_depths_m=result['depth_m'].tolist(),
+            depth_sampling='Nearest physical model node to each nominal depth; exact centers retained in depth_m.')
+    return result,details
 
 def prepare(name):
     spec=PANELS[name];kind=spec['kind'];metadata=dict(spec)
