@@ -111,7 +111,7 @@ def render(fig,slot,name):
             ax.plot(v/unit,z,color=color,lw=.4,alpha=.75,label=str(label) if str(label) not in seen else None)
             seen.add(str(label))
         if kind!='slip_profiles':ax.plot(d['steady_values']/(1e6 if field==2 else 1),z,'k--',lw=1,label='Initial steady state')
-        labels={0:'Cumulative slip since cycle onset (m)',2:'Effective normal stress (MPa)',3:'Permeability (m$^2$)',5:'Upward flux (m s$^{-1}$)'}
+        labels={0:'Cumulative slip since window start (m)',2:'Effective normal stress (MPa)',3:'Permeability (m$^2$)',5:'Upward flux (m s$^{-1}$)'}
         ax.set(xlabel=labels[field],ylabel='Depth (km)',ylim=(z[-1],z[0]),title=title)
         if field in [3,5]:
             if d['profile_values'].min()>0:ax.set_xscale('log')

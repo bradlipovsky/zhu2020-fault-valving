@@ -150,5 +150,48 @@
     ],
     "exit_code": 0,
     "wall_s": 7.53184700012207
+  },
+  "execution_report_update": {
+    "commands": [
+      [
+        "python3",
+        "scripts/prepare_panels.py"
+      ],
+      [
+        "python3",
+        "scripts/plot.py",
+        "F2b",
+        "F2d",
+        "S3b",
+        "S3d",
+        "S5b",
+        "S5d",
+        "F2",
+        "S3",
+        "S5"
+      ],
+      [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ]
+    ],
+    "exit_code": 0,
+    "wall_s": 25.897942543029785
   }
 }

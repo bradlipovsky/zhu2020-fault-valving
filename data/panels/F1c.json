@@ -67,6 +67,6 @@
     "scripts/analyze.py": "14f491ed046a7e6e1ca01fcde8a4770c0bb62499bc1d6d1ffa1ad455c3a01caf",
     "scripts/prepare_panels.py": "b94bcbaf53245cc12849d1dd51485d80cb109602ae126945686bc8c47bf020a4",
     "scripts/inventory.py": "17a8d5f32e24d67d5f37fe5ba348cb9b373050e5658ab13f7f14e65f319ec4d3",
-    "scripts/plot.py": "cb32dd0ca722d5ce05740405ff50e7403de81c0a799f0fbbec4372da8f11c802"
+    "scripts/plot.py": "685975cec9eb0fa9ae8934414c2f4e6da70565771aa9cf837c28a386d2ad3707"
   }
 }

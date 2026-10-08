@@ -335,11 +335,11 @@ Original panel & Quantity and output data & Documentation used & Command generat
 
     captions={
       'F1':r'Independent counterpart to original Fig. 1. (a) Newly drawn geometry schematic and explicitly assumed friction profiles; the diagram is not a simulated result. (b) Stress-dependent permeability evaluated from the published exponential law. (c) Exact healing with zero slip and slip enhancement with negligible healing. (d) Discrete steady Darcy flow and stress profiles for $T=10^8$ s and $q_0=3\times10^{-9}$ m/s. The assumed normal-stress gradient is 22 MPa/km; the illustrative lithostatic line assumes 2700 kg/m$^3$.',
-      'F2':r'Independent counterpart to original Fig. 2. Reference fixed-pressure calculation (a,b) and coupled $T=10^8$ s calculation (c,d). Panels a and c retain both physical-time and accepted-step views of slip speed. Panels b and d show accumulated slip relative to cycle onset, with interseismic profiles in blue and seismic profiles in red. The step coordinate is specific to our adaptive integrator and is not a physical comparison metric.',
+      'F2':r'Independent counterpart to original Fig. 2. Reference fixed-pressure calculation (a,b) and coupled $T=10^8$ s calculation (c,d). Panels a and c retain both physical-time and accepted-step views of slip speed. Panels b and d show accumulated slip relative to the selected window start, with interseismic profiles in blue and seismic profiles in red. The step coordinate is specific to our adaptive integrator and is not a physical comparison metric.',
       'F3':r'Independent counterpart to original Fig. 3 for $T=10^8$ s. Effective stress (a,b), permeability (c,d), and upward fluid flux (e,f) are shown as time--depth maps and profiles. Early profiles are gray, interseismic profiles blue, and earthquake profiles red. Dashed black profiles denote the calculated initial steady state. Time selections and profile intervals are explicit in the panel files; published phase boundaries are not imposed.',
       'F4':r'Independent attempt at original Fig. 4. The fixed two-year window before the selected closing large event shows slip speed in time (a) and accepted-step coordinates (b), effective stress (c), and permeability (d) over 2--10 km. These are generated model fields even when swarm behavior is absent; the provenance table reports whether the target behavior was obtained.',
       'F5':r'Independent attempt at original Fig. 5, with $T=10^7$ s and $q_0=3.3\times10^{-10}$ m/s. Slip speed is shown in time (a) and accepted-step coordinates (b), with effective stress (c) and permeability (d). Any pulses arise from the coupled equations and the declared initial conditions; no pulse timing is prescribed.',
-      'F6':r'Independent counterpart to original Fig. 6. Colored contours mark $|V|=V_p$ in the four calculated healing-time cases. Each curve uses the selected cycle of its own run, with time measured from that cycle onset. This explicit contour definition is an analysis assumption. Quantitative migration fits and the printed published target rates are compared in the text.',
+      'F6':r'Independent counterpart to original Fig. 6. Colored contours mark $|V|=V_p$ in the four calculated healing-time cases. Each curve uses its own selected window: the final complete large-event cycle when available, or the entire run otherwise. Time is measured from that window start. This explicit contour definition is an analysis assumption. Quantitative migration fits and the printed published target rates are compared in the text.',
       'S1':r'Independent counterpart to Supplementary Fig. 1. Histories at the cells containing 5, 10, 15, and 20 km show slip speed (a), permeability (b), upward flux (c), and effective stress (d) for the baseline case. Every accepted time sample is retained in the numerical panel data. The window covers the last two complete large-event cycles when available.',
       'S2':r'Independent attempt at the two visible rows of Supplementary Fig. 2. Rows a and b show earlier complete baseline cycles selected in a fixed chronological order, each in physical-time and accepted-step coordinates. They are not selected to resemble the published alternatives. If insufficient cycles exist, the full run is shown and the panel is marked not reproduced.',
       'S3':r'Independent counterpart to Supplementary Fig. 3 for $T=10^9$ s. Fixed-pressure reference (a,b) and coupled flow (c,d) are shown as velocity maps and slip profiles. Interseismic profiles use four-year target intervals; seismic profiles use one-second target intervals sampled from stored output.',
@@ -352,19 +352,18 @@ Original panel & Quantity and output data & Documentation used & Command generat
         pages+=r'\caption{'+captions[group]+r' Comparison target: Zhu et al.~\cite{zhu}.}\label{fig:'+group+r'}\end{figure}'+'\n'
     write('figure_pages',pages)
 
-    execution=r'''The calculation was executed in two stages while the report and plotting
-code were developed. Both stages are the same stages invoked by the single
-command above:
+    execution=r'''The scientific calculation was launched with the complete regeneration
+command. It runs the equation checks, numerical cases, analysis, plotting,
+report compilation, source-bundle compilation, and artifact audit in sequence:
 \begin{verbatim}
-python3 scripts/reproduce.py --simulate-only --jobs 12
-python3 scripts/reproduce.py --postprocess-only
+python3 scripts/reproduce.py --jobs 12
 \end{verbatim}
-\begin{center}\begin{tabular}{lrrrr}
+\begin{center}\small\begin{tabular}{lrrrrr}
 \toprule
-Case & Years & Cells & Accepted steps & Solver wall time (min)\\\midrule
+Case & Years & Fault nodes & FFT points & Accepted steps & Solver time (min)\\\midrule
 '''
     for case,c in completed.items():
-        execution+=' & '.join([tex(case),number(c['years']),str(c['n']),str(c['accepted_steps']),number(c['elapsed_s']/60)])+r'\\'+'\n'
+        execution+=' & '.join([tex(case),number(c['years']),str(c['dynamic_nodes']),str(c['n']),str(c['accepted_steps']),number(c['elapsed_s']/60)])+r'\\'+'\n'
     execution+=r'''\bottomrule\end{tabular}\end{center}
 Runs execute concurrently, so the solver wall times must not be added to infer
 total project elapsed time. Each run records source, executable, and configuration
