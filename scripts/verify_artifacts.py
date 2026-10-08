@@ -33,6 +33,7 @@ def main():
     for name,spec in PANELS.items():
         path=Path(spec['data_file']);meta=json.loads(path.with_suffix('.json').read_text())
         assert meta['model_source_sha256']==source,name
+        for script,digest in meta['pipeline_source_sha256'].items():assert sha(script)==digest,name+' script changed: '+script
         assert meta['data_command']==spec['data_command'] and meta['plot_command']==spec['plot_command']
         assert meta['status'] in ['independently reproduced','partial','not reproduced']
         with np.load(str(path),allow_pickle=False) as d:
@@ -66,6 +67,9 @@ def main():
     checked.extend(Path('report').glob('*.tex'));checked.append(pdf)
     checked.extend([Path('data/verification.txt'),Path('data/coupled_verification.txt'),
         Path('data/quantitative_comparisons.json'),Path('data/validation_summary.json')])
+    checked.extend(Path('data/laws').glob('*.csv'))
+    checked.extend(Path('configs',case+'.cfg') for case in MAIN_CASES+VALIDATION_CASES)
+    checked.extend(Path('scripts').glob('*.py'));checked.extend(Path('src').glob('*.cpp'))
     bundle=json.loads(Path('data/report_bundle_verification.json').read_text())
     assert bundle['isolated_compile'] and bundle['sha256']==sha(bundle['archive'])
     checked.extend([Path(bundle['archive']),Path('data/report_bundle_verification.json'),Path('data/report_bundle_build.log')])

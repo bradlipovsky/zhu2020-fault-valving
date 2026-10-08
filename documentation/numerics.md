@@ -122,11 +122,18 @@ indices are retained. Coseismic profile contours use nearest snapshots to a
 one-second sequence, not a claimed exact one-second sampling of the integrator.
 
 `analyze.py` explicitly defines seismic events, large ruptures, selected cycles,
-and migration fits. The last complete large-event cycle is selected by a fixed
+and migration fits. Events use the maximum velocity recorded at every accepted
+step. Their rupture footprints use at least 1 cm of accumulated slip between
+snapshots bracketing each event; a local velocity maximum can be missed by
+0.5 s snapshots and is therefore not an additional footprint requirement.
+Large events have a connected footprint reaching above 2 km and spanning more
+than 10 km. The last complete large-event cycle is selected by a fixed
 rule. The published time origins and restarts are never imported or fitted.
 Figure 6 uses the independently computed |V|=Vp contour; its definition is an
 analysis assumption because the paper does not specify its exact extraction rule.
 Slow-slip diagnostics at 15, 18, and 20 km count complete local intervals above
-10 Vp, longer than 0.01 yr, during which the maximum slip speed anywhere remains
+1.1 Vp, longer than 0.01 yr, during which the maximum slip speed anywhere remains
 below 1e-3 m/s. Truncated intervals at a selected window edge are excluded.
+The threshold is near the plate rate because the article describes centimetres
+of slip over about a year; a 10 Vp threshold would exclude that amplitude scale.
 This is a declared measurement convention, not a prescribed condition in the model.

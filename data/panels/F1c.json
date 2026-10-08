@@ -56,5 +56,12 @@
   "selection": "Direct constitutive laws or independently calculated steady state",
   "status": "independently reproduced",
   "main_discrepancy": "Analytic laws agree with numerical limiting-case verification.",
-  "model_source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f"
+  "model_source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+  "pipeline_source_sha256": {
+    "scripts/common.py": "f1d71ce0be91ecc2543f370370257f3ae619f6732fad588cbf0c5a7b92041fcb",
+    "scripts/analyze.py": "f3cc95b851747ec5214f6cc7f1b8398181305743cd097da7196871b19d48c018",
+    "scripts/prepare_panels.py": "600d0435b21c5609c923f80c7367bfb6d009c1e7d7fe037e2b4f446a46c1dbea",
+    "scripts/inventory.py": "09dc09f3f31821ab23b0686ba06ba47c08e0c8fb91a48836e2c7217bf17c122c",
+    "scripts/plot.py": "9c14dd5aa4d1370da6f6ce72d17197e68c9f9524a68489cdaa2e01f99618059c"
+  }
 }

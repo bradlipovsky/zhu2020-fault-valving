@@ -16,6 +16,8 @@ def tex(s):
 def number(x,digits=3):
     return 'not measured' if x is None or not math.isfinite(x) else ('{:.'+str(digits)+'g}').format(x)
 
+def command(s):return r'\texttt{'+tex(s).replace('--','-{}-')+'}'
+
 def write(name,content):Path('report',name+'.tex').write_text(content+'\n')
 
 def front_speed(a):
@@ -53,8 +55,9 @@ hydrostatic equilibrium, and constant-speed state/permeability limits. The
 nonlinear storage test perturbs both pressure and permeability; its residual
 is the storage change minus integrated boundary flux. A separate coupled
 calculation refines all time-dependent fields together.
-\begin{verbatim}
+{\small\begin{verbatim}
 '''+Path('data/verification.txt').read_text()+Path('data/coupled_verification.txt').read_text()+r'''\end{verbatim}
+}
 The diffusion errors decrease by approximately four on each joint space/time
 refinement. The coupled test compares fixed steps of 20,000, 10,000, and 5,000 s
 with a 2,500 s reference for the second-order comparison integrator. The production
@@ -131,6 +134,53 @@ upper flux scale of order $10^{-7}$ m s$^{-1}$. The table measures those
 quantities in the selected independently generated cycle. It does not imply
 that the timing, rupture depths, or four phases of the published cycle match.
 '''
+    comparison+=r'''\subsection{Dependence on healing time}
+The article and Supplementary Figs. 3--6 predict reduced pressure cycling when
+healing is slow relative to earthquake recurrence. The following quantities
+are measured at 10 km in each run's selected cycle. They test that trend without
+equating cycles that begin from different independently generated states.
+\begin{center}\begin{tabular}{lrrrr}
+\toprule
+Case & $N_{\min}$ (MPa) & $N_{\max}$ (MPa) & $k_{\max}/k_{\min}$ & $q_{\max}/q_0$\\
+\midrule
+'''
+    for case in ['short','baseline','long','verylong']:
+        sample=analyses[case]['sample_depths']['10000']
+        comparison+=' & '.join([tex(case),number(sample['effective_min_mpa']),number(sample['effective_max_mpa']),
+            number(sample['permeability_max']/sample['permeability_min']),
+            number(sample['flux_max']/analyses[case]['configuration']['influx'])])+r'\\'+'\n'
+    comparison+=r'''\bottomrule\end{tabular}\end{center}
+Here subscripts min and max denote temporal extrema at the sampled depth;
+the permeability ratio does not refer to the constitutive bounds. These are
+amplitude comparisons. They do not establish agreement in individual event
+times or demonstrate grid convergence of the long-healing cases.
+'''
+    comparison+=r'''\subsection{Aseismic pulse diagnostics}
+For the short-healing case, a local episode has $|V|\geq1.1V_p$ for at least
+0.01 yr, with the maximum speed over the whole fault remaining below
+$10^{-3}$ m/s. Both ends must lie inside the selected comparison window.
+This independent measurement convention excludes earthquakes and truncated
+episodes; it is not an imposed condition on the equations.
+\begin{center}\begin{tabular}{lrrrrr}
+\toprule
+Depth (km) & Episodes & Duration (yr) & Interval (yr) & Slip (cm) & Interval CV\\
+\midrule
+'''
+    for depth,diagnostic in analyses['short']['slow_slip'].items():
+        comparison+=' & '.join([number(float(depth)/1000),str(len(diagnostic['episodes'])),
+            number(diagnostic['median_duration_years']),number(diagnostic['median_interval_years']),
+            number(100*diagnostic['median_net_slip_m'] if diagnostic['median_net_slip_m'] is not None else None),
+            number(diagnostic['interval_coefficient_of_variation'])])+r'\\'+'\n'
+    comparison+=r'''\bottomrule\end{tabular}\end{center}
+Duration, interval, and net slip are medians over complete episodes.
+CV is the standard deviation divided by the mean interpeak interval and requires
+at least three complete episodes. These measurements assess the paper's
+quasi-periodic-pulse behavior without prescribing its pulse times. The Discussion
+reports pulses lasting about one year, recurring every few years, and producing
+a few centimetres of slip. Those are comparison scales, not precise period or
+CV targets. Our threshold defines the measured pulse width; the authors do not
+specify an equivalent threshold, so duration comparisons carry that ambiguity.
+'''
 
     validation={};ref_events=[e for e in baseline['events'] if e['large']]
     comparison+=r'''\subsection{Resolution and initial-condition sensitivity}
@@ -147,7 +197,8 @@ Case & Cells & Tolerance & First large event (yr) & Difference from baseline (yr
         difference=None if first is None or reference is None else first-reference
         validation[case]=dict(first_large_event_year=first,first_event_difference_year=difference,
             final_time_years=a['final_time_years'],large_event_count=a['large_event_count'],
-            front_speed_m_per_year=front_speed(a))
+            front_speed_m_per_year=front_speed(a),
+            first_seismic_event=a['events'][0] if a['events'] else None)
         comparison+=' & '.join([tex(case),str(int(a['configuration']['n'])),number(a['configuration']['tolerance']),number(first),number(difference)])+r'\\'+'\n'
     comparison+=r'''\bottomrule
 \end{tabular}
@@ -161,6 +212,20 @@ sample the same cycle. First-event times compare a common initialization and
 are reported without relabeling one event as another to improve agreement.
 These tests quantify sensitivity; a small first-event difference alone does
 not establish convergence of later swarm sequences.
+\begin{center}\begin{tabular}{lrrrr}
+\toprule
+Case & First seismic onset (yr) & Peak speed (m/s) & Maximum slip (m) & Large?\\
+\midrule
+'''
+    for case,metrics_case in validation.items():
+        event=metrics_case['first_seismic_event']
+        comparison+=' & '.join([tex(case),number(event['start_s']/YEAR if event else None),
+            number(event['peak_velocity'] if event else None),number(event['max_slip_m'] if event else None),
+            ('yes' if event['large'] else 'no') if event else 'none'])+r'\\'+'\n'
+    comparison+=r'''\bottomrule\end{tabular}\end{center}
+The first seismic event can be a small rupture that precedes the first large
+event. The table retains this distinction when comparing resolution. Peak speed
+comes from every accepted step; slip and the rupture footprint use stored fields.
 
 Exact friction profiles, prestress, startup procedure, spatial grid, and the
 authors' saved cycle states cannot be recovered from the article and supplement.
@@ -170,18 +235,18 @@ operator, finite-volume flow operator, IMEX integrator, and cell-center surface
 treatment. None is concealed by importing an authors' restart or output field.
 '''
     save_json('data/quantitative_comparisons.json',metrics);save_json('data/validation_summary.json',validation)
-    write('comparisons',comparison)
+    write('comparisons',comparison.replace(r'\begin{center}',r'\begin{center}\small'))
 
     provenance=r'''\begin{landscape}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{longtable}{p{.8cm}p{3.5cm}p{3.4cm}p{4.1cm}p{3.4cm}p{2.1cm}p{5.1cm}}
+\begin{longtable}{P{1.15cm}P{3.5cm}P{3.4cm}P{4.1cm}P{3.4cm}P{2.1cm}P{5.1cm}}
 \caption{Figure-by-figure provenance. Input parameters and selections accompany each numerical file in a JSON sidecar.}\label{tab:provenance}\\
 \toprule
-Original figure/panel & Quantity and output data & Documentation used & Command generating underlying data & Command plotting it & Status & Main discrepancy\\
+Original panel & Quantity and output data & Documentation used & Command generating underlying data & Command plotting it & Status & Main discrepancy\\
 \midrule\endfirsthead
 \toprule
-Original figure/panel & Quantity and output data & Documentation used & Command generating underlying data & Command plotting it & Status & Main discrepancy\\
+Original panel & Quantity and output data & Documentation used & Command generating underlying data & Command plotting it & Status & Main discrepancy\\
 \midrule\endhead
 \bottomrule\endfoot
 '''
@@ -190,7 +255,7 @@ Original figure/panel & Quantity and output data & Documentation used & Command 
         for name,m in panels.items():
             if not name.startswith(prefix):continue
             fields=[name,tex(m['quantity'])+r'\par\panelpath{'+name+'}',tex(m['documentation']),
-                r'\texttt{'+tex(m['data_command'])+'}',r'\texttt{'+tex(m['plot_command'])+'}',
+                command(m['data_command']),command(m['plot_command']),
                 tex(m['status']),tex(m['main_discrepancy'])]
             provenance+=' & '.join(fields)+r'\\[5pt]'+'\n'
     provenance+=r'\end{longtable}\end{landscape}'

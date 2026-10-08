@@ -12,8 +12,8 @@ from matplotlib.patches import Rectangle
 from inventory import PANELS, GROUPS
 from common import YEAR
 
-plt.rcParams.update({'font.size':8.5,'axes.labelsize':8.5,'axes.titlesize':9,
-    'legend.fontsize':7,'figure.dpi':120,'savefig.dpi':180,
+plt.rcParams.update({'font.size':10.5,'axes.labelsize':10.5,'axes.titlesize':10.5,
+    'legend.fontsize':8.5,'figure.dpi':120,'savefig.dpi':180,
     'pdf.fonttype':42,'ps.fonttype':42,'axes.spines.top':False,'axes.spines.right':False})
 VELOCITY_CMAP=LinearSegmentedColormap.from_list('plate_rate',[(0,'#17345a'),(.4,'#f8f8f7'),(1,'#a31e2f')])
 COLORS={'short':'#2779b9','baseline':'#d66b16','long':'#23a8a5','verylong':'#a1498b'}
@@ -24,7 +24,7 @@ def map_field(fig,ax,x,z,values,field,influx=3e-9):
     if field==1:
         shown=np.log10(np.maximum(np.abs(values),1e-30));cmap=VELOCITY_CMAP
         im=ax.pcolormesh(x,z/1000,shown.T,cmap=cmap,vmin=-15,vmax=0,shading='auto',rasterized=True)
-        cb=fig.colorbar(im,ax=ax,pad=.02);cb.set_ticks([-15,-12,-9,-6,-3,0]);cb.set_label(r'$\log_{10}|V|$ (m s$^{-1}$)')
+        cb=fig.colorbar(im,ax=ax,pad=.02,extend='both');cb.set_ticks([-15,-12,-9,-6,-3,0]);cb.set_label(r'$\log_{10}|V|$ (m s$^{-1}$)')
     elif field==2:
         im=ax.pcolormesh(x,z/1000,values.T/1e6,cmap='viridis',shading='auto',rasterized=True)
         cb=fig.colorbar(im,ax=ax,pad=.02);cb.set_label('Effective stress (MPa)')
@@ -142,16 +142,16 @@ def individual(name):
 def combined(group):
     names=GROUPS[group]
     if group in ['F2','S3','S5']:
-        fig=plt.figure(figsize=(12,8),constrained_layout=True);grid=fig.add_gridspec(2,3)
+        fig=plt.figure(figsize=(9.4,7),constrained_layout=True);grid=fig.add_gridspec(2,3)
         for row in range(2):
             render(fig,grid[row,:2],names[2*row]);render(fig,grid[row,2],names[2*row+1])
     elif group in ['S1','S2']:
-        fig=plt.figure(figsize=(9,3.2*len(names)),constrained_layout=True);grid=fig.add_gridspec(len(names),1)
+        fig=plt.figure(figsize=(9,(2.35 if group=='S1' else 3.2)*len(names)),constrained_layout=True);grid=fig.add_gridspec(len(names),1)
         for i,name in enumerate(names):render(fig,grid[i],name)
     elif group=='F6':
         fig=plt.figure(figsize=(7,5),constrained_layout=True);render(fig,fig.add_gridspec(1,1)[0],names[0])
     else:
-        rows=(len(names)+1)//2;fig=plt.figure(figsize=(11,4.4*rows),constrained_layout=True);grid=fig.add_gridspec(rows,2)
+        rows=(len(names)+1)//2;fig=plt.figure(figsize=(11,4.4*rows) if group=='F1' else (9.2,3.2*rows),constrained_layout=True);grid=fig.add_gridspec(rows,2)
         for i,name in enumerate(names):render(fig,grid[i//2,i%2],name)
     fig.suptitle(group+': independent calculation'+(' and a new schematic' if group=='F1' else ''),fontsize=12)
     save(fig,Path('figures',group))
@@ -160,7 +160,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('panels',nargs='+');args=parser.parse_args()
     names=list(PANELS) if 'all' in args.panels else args.panels
     for name in names:
-        if name in GROUPS:combined(name)
-        else:individual(name)
+        if name in PANELS:individual(name)
+        else:combined(name)
     if 'all' in args.panels:
         for group in GROUPS:combined(group)

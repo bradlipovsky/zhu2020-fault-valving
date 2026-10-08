@@ -1,0 +1,20 @@
+{
+  "purpose": "software integration only; no smoke figure used in scientific report",
+  "isolated_directory": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791436487577023488",
+  "configuration_overrides": {
+    "n": 512,
+    "threads": 1,
+    "years": 0.002,
+    "output_years": 0.0001,
+    "output_spacing": 1000
+  },
+  "command": [
+    "python3",
+    "scripts/reproduce.py",
+    "--jobs",
+    "3"
+  ],
+  "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+  "exit_code": 0,
+  "wall_s": 173.5309498310089
+}

@@ -113,10 +113,16 @@ def prepare(name):
         status='not reproduced';discrepancy='Too few complete cycles to produce this alternate-cycle comparison.'
     elif name.startswith('F5'):
         a=analysis('short');pulse=a['slow_slip']['18000'];interval=pulse['median_interval_years']
-        discrepancy='{} complete aseismic episodes above 10 Vp at 18 km'.format(len(pulse['episodes']))
+        discrepancy='{} complete aseismic episodes above 1.1 Vp at 18 km'.format(len(pulse['episodes']))
         if interval is not None:discrepancy+='; median interval {:.3g} yr'.format(interval)
         discrepancy+='; exact pulse sequence is not recovered.'
         metadata['slow_slip_diagnostic']=pulse
+    elif name=='F6':
+        measured=[]
+        for case in spec['cases']:
+            rates=[s['speed_m_per_year'] for s in analysis(case)['migration_segments'] if s['r2']>=.8]
+            measured.append('{:.3g}'.format(float(np.median(rates))) if rates else 'unmeasured')
+        discrepancy='Deep rates, short through verylong: '+', '.join(measured)+' m/year; published targets 2500, 380, 120, 30. Contour extraction is assumed.'
     elif name.startswith('F2'):
         case=spec['cases'][0];a=analysis(case);target=50 if case=='reference' else 32
         recurrence=a['median_recurrence_years']
@@ -132,8 +138,14 @@ def prepare(name):
             discrepancy='At 10 km, k spans {:.3g}--{:.3g} square metres; exact cycle phases are not recovered.'.format(sample['permeability_min'],sample['permeability_max'])
         else:
             discrepancy='At 10 km, maximum flux is {:.3g} m/s; the article gives an order 1e-7 m/s upper scale. Phase timing differs.'.format(sample['flux_max'])
+    elif name.startswith(('S4','S6')):
+        sample=analysis(spec['cases'][0])['sample_depths']['10000']
+        discrepancy='At 10 km, stress range {:.3g} MPa and permeability ratio {:.3g}. The target is reduced valving with long healing; event sequence and mesh convergence remain uncertain.'.format(
+            sample['effective_range_mpa'],sample['permeability_max']/sample['permeability_min'])
     metadata.update(status=status,main_discrepancy=discrepancy,
-        model_source_sha256=hashlib.sha256(Path('src/model.cpp').read_bytes()).hexdigest())
+        model_source_sha256=hashlib.sha256(Path('src/model.cpp').read_bytes()).hexdigest(),
+        pipeline_source_sha256={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in
+            [Path('scripts',name) for name in ['common.py','analyze.py','prepare_panels.py','inventory.py','plot.py']]})
     Path('data/panels').mkdir(exist_ok=True)
     np.savez_compressed(spec['data_file'],**result)
     save_json('data/panels/'+name+'.json',metadata)

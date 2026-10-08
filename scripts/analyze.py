@@ -16,9 +16,10 @@ def analyze(case):
     for i,j in zip(starts,stops):
         t0=float(h['time_s'][max(i-1,0)]); t1=float(h['time_s'][min(j,len(h)-1)])
         k0=max(0,np.searchsorted(t,t0)-1); k1=min(len(t)-1,np.searchsorted(t,t1))
-        velocity=np.abs(v[k0:k1+1]); peaks=velocity.max(axis=0)
         slip=np.asarray(r['fields'][k1,0,:]-r['fields'][k0,0,:])
-        rupture=(peaks>=cfg['seismic_threshold']) & (np.abs(slip)>=.01) & (z<=25000)
+        # A fast rupture tip may pass between the saved 0.5 s snapshots.
+        # Integrated event slip is retained even when a local velocity peak is missed.
+        rupture=(np.abs(slip)>=.01) & (z<=25000)
         depths=z[rupture]; imax=i+np.argmax(h['vmax_m_s'][i:j])
         shallow=float(depths.min()) if len(depths) else None
         deep=float(depths.max()) if len(depths) else None
@@ -82,7 +83,9 @@ def analyze(case):
     slow_slip={}
     maximum_speed=np.max(np.abs(v),axis=1)
     for depth in [15000,18000,20000]:
-        k=int(np.argmin(abs(z-depth)));speed=np.abs(v[ids,k]);above=speed>=10*cfg['Vp']
+        # The article describes centimetres of slip over about a year, hence
+        # speeds near Vp. A 10 Vp cutoff would miss such low-amplitude pulses.
+        k=int(np.argmin(abs(z-depth)));speed=np.abs(v[ids,k]);above=speed>=1.1*cfg['Vp']
         changes=np.diff(np.r_[False,above,False].astype(int));episodes=[]
         for begin,end in zip(np.flatnonzero(changes==1),np.flatnonzero(changes==-1)):
             # Require two threshold crossings inside the window. A truncated
@@ -92,13 +95,16 @@ def analyze(case):
             if duration<.01 or np.max(maximum_speed[subset])>=cfg['seismic_threshold']:continue
             peak=subset[np.argmax(speed[begin:end])]
             episodes.append(dict(start_s=float(t[subset[0]]),end_s=float(t[subset[-1]]),
-                peak_s=float(t[peak]),duration_years=float(duration),peak_velocity=float(abs(v[peak,k]))))
+                peak_s=float(t[peak]),duration_years=float(duration),peak_velocity=float(abs(v[peak,k])),
+                net_slip_m=float(r['fields'][subset[-1],0,k]-r['fields'][subset[0],0,k])))
         spacings=np.diff([e['peak_s'] for e in episodes])/YEAR
-        slow_slip[str(depth)]=dict(sample_depth_m=float(z[k]),threshold_m_s=10*cfg['Vp'],episodes=episodes,
+        slow_slip[str(depth)]=dict(sample_depth_m=float(z[k]),threshold_m_s=1.1*cfg['Vp'],episodes=episodes,
             median_interval_years=float(np.median(spacings)) if len(spacings) else None,
             interval_coefficient_of_variation=float(np.std(spacings)/np.mean(spacings)) if len(spacings)>1 else None,
-            median_duration_years=float(np.median([e['duration_years'] for e in episodes])) if episodes else None)
+            median_duration_years=float(np.median([e['duration_years'] for e in episodes])) if episodes else None,
+            median_net_slip_m=float(np.median([e['net_slip_m'] for e in episodes])) if episodes else None)
     result=dict(case=case,configuration=cfg,events=events,complete_cycles_s=cycles,
+        event_definition='maximum accepted-step speed >= 1e-3 m/s; connected event-slip footprint >= 0.01 m; large if top < 2 km and span > 10 km',
         selected_cycle_s=selected,selection_rule='last complete large-event cycle; entire run if none',
         selected_cycle_complete=bool(cycles),large_event_count=len(large),
         recurrence_years=intervals.tolist(),

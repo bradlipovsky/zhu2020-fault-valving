@@ -32,6 +32,7 @@ configuration hashes match. `--fresh` moves previous generated cases to `.tmp`
 before starting a new calculation. Do not use it while another run is active.
 The command also creates `report/latex-source.zip` and verifies that its extracted
 LaTeX sources and generated figures compile in an isolated directory.
+`report/reproduction-complete.tex` is the expanded single-file LaTeX source.
 
 ```
 # A short smoke calculation
@@ -50,3 +51,8 @@ python3 scripts/reproduce.py --postprocess-only
 data are generated entirely by this executable; the paper is a comparison target.
 Results and reproduction status will be tabulated panel by panel in the report.
 No published panel is substituted for a generated numerical result.
+
+The complete software pipeline can also be checked with
+`python3 scripts/smoke_pipeline.py`. It creates its own directory under `.tmp`,
+uses deliberately short and coarse simulations, and verifies all panel products
+and both report builds. Those test outputs are never used as scientific results.
