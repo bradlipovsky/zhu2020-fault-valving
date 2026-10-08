@@ -1,0 +1,200 @@
+{
+  "case": "verylong_reference",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "89ac24a290897abd9a6defb868201b189c59dbf755c717495778515968e83855",
+  "years": 500,
+  "accepted_steps": 334274,
+  "saved_profiles": 19194,
+  "maximum_accepted_error": 0.9999848624471542,
+  "minimum_effective_pa": 158469.97566396554,
+  "minimum_Lb_cells": 4.289415992947608,
+  "minimum_hstar_cells": 16.299342057379704,
+  "scope": "Completed 500-year fixed-pressure reference, panels S5a and S5b, and the S5 composite with previously audited coupled panels; verification is limited to this case and figure.",
+  "checks_passed": true,
+  "simulation_command": [
+    "build/valving",
+    "configs/verylong_reference.cfg",
+    "data/verylong_reference"
+  ],
+  "postprocess_commands": [
+    [
+      "python3",
+      "scripts/verify_outputs.py",
+      "verylong_reference"
+    ],
+    [
+      "python3",
+      "scripts/analyze.py",
+      "verylong_reference"
+    ],
+    [
+      "python3",
+      "scripts/prepare_panels.py",
+      "S5a",
+      "S5b"
+    ],
+    [
+      "python3",
+      "scripts/plot.py",
+      "S5a",
+      "S5b",
+      "S5"
+    ]
+  ],
+  "complete_output_verification": {
+    "path": "data/verylong_reference/output_verification.json",
+    "sha256": "f4195985d7a84b775b29f5eab12abaffe0b9fb940c52641ad5f0c0fa1f80aaff"
+  },
+  "checks": [
+    "Full accepted history and all saved fields pass the separately recorded raw-output audit, including constant effective stress in the fixed-pressure run.",
+    "Panel time, accepted step, depth, initial profile and field arrays exactly match the selected independent binary output.",
+    "Cumulative slip is zeroed at the first selected snapshot; every plotted profile and its class match the documented four-year and one-second selection rules.",
+    "Cycle bounds and recurrence comparisons agree with complete large-event end times; S5b contains the last two complete cycles.",
+    "All plotted numerical arrays are finite; data/figure files are below 100 MiB; source, configuration and plotting provenance agree with the current files."
+  ],
+  "panels": [
+    {
+      "panel": "S5a",
+      "status": "partial",
+      "data_sha256": "b8d71dd4dd2cb3124477b594d03b448bf9696e18f78812da38aa0b5deba4560e",
+      "bytes": 11645818,
+      "window_years": [
+        350.7657557726912,
+        445.8294540062167
+      ],
+      "values_shape": [
+        3945,
+        833
+      ],
+      "comparison": {
+        "approximate_reference_years": 160.0,
+        "source": "Supplementary Fig. 5a, PDF page 6; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
+        "calculated_last_interval_years": 95.06369823352549,
+        "approximate_relative_difference_percent": -40.58518860404657,
+        "calculated_all_interval_median_years": 95.24807011331164,
+        "approximate_median_difference_percent": -40.46995617918022,
+        "recurrence_intervals_years": [
+          95.62317337352873,
+          95.24807011331164,
+          95.06369823352549
+        ]
+      },
+      "figure_png_sha256": "486723c5486ad10b5a679b15a9882e0f882b4ff7ef8db504d6cda1ece91c0e3c",
+      "figure_pdf_sha256": "3bb98719a6ae67b6fc06b0a9d4c50e39d92c84269066e54a214c8a4a5254b1b5"
+    },
+    {
+      "panel": "S5b",
+      "status": "partial",
+      "data_sha256": "c697e27156998785e0eb133eddb9e8fcfd6d9869576e8f4d8311fa2b0837a275",
+      "bytes": 8893272,
+      "window_years": [
+        255.51768565937957,
+        445.8294540062167
+      ],
+      "values_shape": [
+        7895,
+        833
+      ],
+      "comparison": {
+        "approximate_reference_years": 160.0,
+        "source": "Supplementary Fig. 5a, PDF page 6; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
+        "calculated_last_interval_years": 95.06369823352549,
+        "approximate_relative_difference_percent": -40.58518860404657,
+        "calculated_all_interval_median_years": 95.24807011331164,
+        "approximate_median_difference_percent": -40.46995617918022,
+        "recurrence_intervals_years": [
+          95.62317337352873,
+          95.24807011331164,
+          95.06369823352549
+        ]
+      },
+      "cycle_bounds_years": [
+        [
+          255.51768565937957,
+          350.7657557726912
+        ],
+        [
+          350.7657557726912,
+          445.8294540062167
+        ]
+      ],
+      "final_shallowest_slip_m": 5.571863174438477,
+      "final_maximum_slip_m": 5.571863174438477,
+      "figure_png_sha256": "c701eba88ca498ac3159115b742cfd5ba6f302a93454e2a8948d9243c18eeaa5",
+      "figure_pdf_sha256": "7fb7791b2f05b63a3c8761926869adab8198a32355b2d40e6a77151596ab7482"
+    }
+  ],
+  "composite": {
+    "png_sha256": "b867b9e99e77b594bed7a9659e8b962d083ef22b21451cd0ecd0951610cd68db",
+    "pdf_sha256": "d6b123fa07f65264a9aba271e6c4018c55146ab3ddb0c5007353980de8ceefa6"
+  },
+  "last_large_event": {
+    "start_s": 14069307194.631905,
+    "end_s": 14069307577.746584,
+    "slip_start_s": 14069307194.728243,
+    "slip_end_s": 14069307577.746584,
+    "onset_bracket_s": [
+      14069307194.631905,
+      14069307194.728243
+    ],
+    "peak_s": 14069307220.528435,
+    "peak_velocity": 16.07738249086184,
+    "nucleation_depth_m": 524.5208740234375,
+    "shallow_m": 13.3514404296875,
+    "deep_m": 19002.914428710938,
+    "rupture_intervals_m": [
+      [
+        13.3514404296875,
+        19002.914428710938
+      ]
+    ],
+    "max_slip_m": 2.788905143737793,
+    "large": true,
+    "complete": true
+  },
+  "last_partial_event": {
+    "start_s": 14069298653.647697,
+    "end_s": 14069298955.879887,
+    "slip_start_s": 14069298655.058846,
+    "slip_end_s": 14069298955.879887,
+    "onset_bracket_s": [
+      14069298653.647697,
+      14069298655.058846
+    ],
+    "peak_s": 14069298705.139853,
+    "peak_velocity": 3.125868990694964,
+    "nucleation_depth_m": 14917.373657226562,
+    "shallow_m": 10122.299194335938,
+    "deep_m": 17892.837524414062,
+    "rupture_intervals_m": [
+      [
+        10122.299194335938,
+        17892.837524414062
+      ]
+    ],
+    "max_slip_m": 1.5075035095214844,
+    "large": false,
+    "complete": true
+  },
+  "partial_to_large_peak_hours": 2.3653857172860038,
+  "selected_small_ruptures": 1,
+  "selected_unresolved_intervals": 1,
+  "visual_review": {
+    "reference": "Published Supplementary Figure 5, PDF page 6, inspected only as a visual comparison target.",
+    "generated_views": [
+      "figures/panels/S5a.png",
+      "figures/panels/S5b.png",
+      "figures/S5.png"
+    ],
+    "findings": [
+      "Both time and accepted-step velocity maps, two cumulative-slip cycles, units and the combined four-panel figure are legible.",
+      "The final calculated reference interval is 95.06 years, compared with approximately 160 years in the published example. All three calculated intervals are retained and no stationary-period claim is made.",
+      "The calculated deep partial rupture spans 10.12--17.89 km by the connected 1 cm criterion and peaks only 2.37 hours before the closing large event. The published map places its partial rupture much earlier in the cycle.",
+      "The closing large event first exceeds the speed threshold near 0.525 km depth and propagates downward in the generated step map. This differs from the deep-to-shallow closing rupture visible in the published reference.",
+      "Two calculated cycles accumulate 5.57 m of shallow slip; the published two-cycle profile extends to about 12 m. This is a visual comparison scale, not a digitized curve or model input.",
+      "The time map ends at the closing earthquake; its short seismic intervals are compressed at the right edge, whereas the published map includes a post-earthquake tail. The accepted-step view resolves the rupture ordering but its step count is not a physical accuracy metric.",
+      "Saved-profile cadence produces steps in the accepted-step map. The minimum nucleation length spans 4.29 cells, and this high-healing-time reference has no separate spatial refinement study. Both new panels remain partial."
+    ]
+  }
+}
