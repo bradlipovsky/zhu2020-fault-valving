@@ -114,11 +114,13 @@ def prepare(name):
     elif name.startswith('S2') and not metadata.get('complete_cycle'):
         status='not reproduced';discrepancy='Too few complete cycles to produce this alternate-cycle comparison.'
     elif name.startswith('F5'):
-        a=analysis('short');pulse=a['slow_slip']['18000'];interval=pulse['median_interval_years']
-        discrepancy='{} complete aseismic episodes above 1.1 Vp at 18 km'.format(len(pulse['episodes']))
-        if interval is not None:discrepancy+='; median interval {:.3g} yr'.format(interval)
-        discrepancy+='; exact pulse sequence is not recovered.'
-        metadata['slow_slip_diagnostic']=pulse
+        pulses=analysis('short')['slow_slip'];depths=['15000','18000','20000']
+        counts=[str(len(pulses[d]['episodes'])) for d in depths]
+        intervals=[pulses[d]['median_interval_years'] for d in depths]
+        discrepancy='Complete aseismic episodes above 1.1 Vp at 15/18/20 km: '+ '/'.join(counts)+'. '
+        discrepancy+='Median intervals: '+', '.join('{:.3g}'.format(x) if x is not None else 'unmeasured' for x in intervals)+' yr. '
+        discrepancy+='Durations and slip are tabulated in the report; exact pulse sequence is not recovered.'
+        metadata['slow_slip_diagnostics']=pulses
     elif name=='F6':
         measured=[]
         for case in spec['cases']:
