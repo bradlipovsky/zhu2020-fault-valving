@@ -3,6 +3,7 @@
 from pathlib import Path
 import argparse
 import json
+import hashlib
 import numpy as np
 from common import fields, history, configuration, save_json, YEAR
 from inventory import PANELS
@@ -104,7 +105,8 @@ def prepare(name):
         if len(small)<3:status='not reproduced';discrepancy='Fewer than three distinct small earthquakes in the fixed pre-rupture window; generated attempt shown.'
     elif name.startswith('S2') and not metadata.get('complete_cycle'):
         status='not reproduced';discrepancy='Too few complete cycles to produce this alternate-cycle comparison.'
-    metadata.update(status=status,main_discrepancy=discrepancy)
+    metadata.update(status=status,main_discrepancy=discrepancy,
+        model_source_sha256=hashlib.sha256(Path('src/model.cpp').read_bytes()).hexdigest())
     Path('data/panels').mkdir(exist_ok=True)
     np.savez_compressed(spec['data_file'],**result)
     save_json('data/panels/'+name+'.json',metadata)

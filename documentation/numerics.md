@@ -1,0 +1,113 @@
+# Equations and numerical choices
+
+The implemented physical equations are Zhu et al. (2020), Eqs. (1)–(9), with
+parameters in their Table 1 and the explicit assumptions in `independence.md`.
+There is no thermal pressurization, porosity evolution, poroelastic traction, or
+inelastic country-rock deformation in the published model or this implementation.
+
+## Elasticity
+
+Let d(z,t) be slip accumulated since initialization minus Vp t. Expand d in
+cos(j pi z/Lz). The harmonic continuation into 0<y<Ly for each nonconstant mode
+is proportional to sinh[kappa(Ly-y)]/sinh(kappa Ly), with kappa=j pi/Lz.
+It satisfies the prescribed side displacements and traction-free top and base.
+The fault stiffness eigenvalues are
+
+    K_0 = mu/(2 Ly)
+    K_j = mu kappa coth(kappa Ly)/2, j>0.
+
+Thus tau_qs=tau_initial-Kd. DCT-II and DCT-III implement this operator on cell
+centers z_i=(i+1/2)Lz/N. Their composition is normalized by 2N. The factor 1/2
+is the conversion from fault slip to one-sided displacement. This is the
+finite-domain operator, not an infinite-half-space approximation. The initial
+prestress is equivalent to an initial slip field -K^{-1} tau_initial with zero
+remote displacement; only subsequent accumulated slip is plotted.
+
+## Friction and state
+
+At each explicit stage solve the scalar, monotone equation
+
+    tau_qs = N a asinh[V exp(psi/a)/(2 V0)] + eta_rad V.
+
+The velocity root is bracketed and solved in log|V|. Stable asinh(exp(x)) and
+log(sinh(x)) expressions avoid exponential overflow. State evolves according to
+the aging law, expressed in the paper's psi variable, with slip speed used in
+the reverse-slip extension documented separately. The k* state is represented
+by u=(k*-kmin)/(kmax-kmin), for which
+
+    du/dt = |V|(1-u)/L - u/T.
+
+The velocity and effective stress are not clipped. Invalid trial states reject
+the step; an invalid accepted state or a time step below 1e-10 s terminates
+the calculation and cannot produce a `completed.json` record.
+
+## Fluid flow
+
+We evolve excess pressure e=p-rho g z, giving q=(k/eta) de/dz. Integrating
+fluid conservation over a cell gives n beta h de_i/dt=q_{i+1/2}-q_{i-1/2}.
+Interior face permeability is the harmonic mean of adjacent cell values.
+At the surface the pressure is zero at the boundary face, half a cell from
+the first unknown; the face permeability is the harmonic mean of the first
+cell and its extrapolated zero-effective-stress boundary value k*_0. This is
+a second-order boundary approximation for smooth profiles. At the bottom the
+flux is the prescribed q0. There are no internal fluid sources.
+
+Each implicit pressure stage uses fixed-point iteration: form k(e), assemble
+and solve the tridiagonal backward-Euler operator, and repeat until the largest
+pressure update is below 0.001 Pa. Iterations are damped after eight updates.
+A failed nonlinear solve rejects the time step. Because fluxes telescope, the
+discrete scheme conserves storage to the accuracy of the implicit solve.
+
+The initial Darcy profile is solved sequentially from the surface by bisection
+of each nonlinear face-flux relation, imposing q=q0 at every face. It is a
+discrete steady solution of the same operator used in time integration.
+
+## Time integration
+
+The method is ARS(2,2,2), a second-order additive Runge–Kutta scheme. Define
+gamma=1-1/sqrt(2), delta=1-1/(2 gamma); F contains slip, state and k* rates and
+G contains the fluid-pressure rate. Its stages are
+
+    Y1 = Y0 + gamma dt F(Y0) + gamma dt G(Y1)
+    Y2 = Y0 + dt[delta F(Y0)+(1-delta) F(Y1)]
+                 + dt[(1-gamma) G(Y1)+gamma G(Y2)].
+
+F has zero pressure component, while G has zero mechanical/permeability-state
+components, so both implicit solves are scalar tridiagonal pressure systems.
+The final value is Y2. One full step and two half steps provide an error
+estimate (Y_fine-Y_coarse)/3; the two-half-step value is accepted. Error is
+bounded in the maximum norm after scaling slip by dc, psi by a, normalized k*
+by 0.01+|u|, and pressure by sigma*. The controller uses 0.9 error^(-1/3),
+bounded between 0.15 and 2. Configurations state the tolerance and maximum step.
+
+This integrator is an explicit deviation from the paper's stage-split adaptive
+Runge–Kutta/backward-Euler method. Convergence is checked for constant-coefficient
+diffusion, the constitutive ODEs, and a fully coupled nonlinear calculation.
+Earthquake sequences additionally require the separate mesh and time-tolerance
+experiments; equation verification alone is not trajectory convergence.
+
+## Stored data and analysis
+
+`fields.bin` starts with ZHUIND01, an unsigned 64-bit depth count, and little-endian
+64-bit depth coordinates. Each record holds time (float64), accepted macro-step
+(int64), and six float32 depth profiles in order: cumulative slip, signed velocity,
+effective normal stress, permeability, k*, upward flux. The numerical integration
+itself uses float64 throughout. These snapshots cover the upper 30 km with about
+30 m output spacing; spatial output subsampling does not change the solution grid.
+Every accepted step also writes a text history with maxima and four depth traces.
+The text histories use 12 significant decimal digits; at late simulation times
+their time stamps can coincide after rounding. Binary snapshot times retain
+full float64 precision. This distinction is immaterial to year-scale recurrence
+comparisons but must be retained when interpreting subsecond event timing.
+
+Snapshot intervals are at most 0.025 yr during slow slip and 0.5 s during an
+earthquake. Additional snapshots capture crossings of 1e-3 m/s and changes
+exceeding 0.2 in log10 maximum speed. The exact snapshot times and macro-step
+indices are retained. Coseismic profile contours use nearest snapshots to a
+one-second sequence, not a claimed exact one-second sampling of the integrator.
+
+`analyze.py` explicitly defines seismic events, large ruptures, selected cycles,
+and migration fits. The last complete large-event cycle is selected by a fixed
+rule. The published time origins and restarts are never imported or fitted.
+Figure 6 uses the independently computed |V|=Vp contour; its definition is an
+analysis assumption because the paper does not specify its exact extraction rule.

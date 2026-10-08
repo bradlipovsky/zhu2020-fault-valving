@@ -12,7 +12,9 @@ if [[ ! -f .deps/lib/libfftw3.so ]]; then
   tar xzf "$archive" -C .build-deps/fftw --strip-components=1
   (
     cd .build-deps/fftw
-    ./configure --prefix="$root/.deps" --enable-shared --enable-sse2 --enable-avx
+    simd=()
+    if [[ "$(uname -m)" == x86_64 ]]; then simd=(--enable-sse2 --enable-avx); fi
+    ./configure --prefix="$root/.deps" --enable-shared "${simd[@]}"
     make -j8
     make install
   ) > .build-deps/fftw-build.log 2>&1

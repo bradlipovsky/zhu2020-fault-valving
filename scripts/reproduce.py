@@ -28,6 +28,7 @@ def main():
     if not args.postprocess_only:
         subprocess.run(['bash','scripts/bootstrap.sh'],check=True)
         with open('data/verification.txt','w') as f:subprocess.run(['build/valving','--test'],stdout=f,check=True)
+        with open('data/coupled_verification.txt','w') as f:subprocess.run(['build/coupled_test'],stdout=f,check=True)
         subprocess.run(['build/valving','--laws','configs/baseline.cfg','data/laws'],check=True)
         source_hash=digest('src/model.cpp'); executable_hash=digest('build/valving')
         pending=[]
@@ -38,9 +39,12 @@ def main():
                 folder.rename(backup)
             if (folder/'completed.json').exists():
                 prior=json.loads((folder/'provenance.json').read_text())
-                if prior['source_sha256']==source_hash and prior['config_sha256']==config_hash:
+                matching=prior['source_sha256']==source_hash and prior['config_sha256']==config_hash
+                if matching and (folder/'fields.bin').exists():
                     print('Verified cached independent run:',case,flush=True);continue
-                raise RuntimeError('Source/config changed for '+case+'; use --fresh')
+                if matching:
+                    folder.rename(Path('.tmp','metadata-{}-{}'.format(case,int(time.time()*1e9))))
+                else:raise RuntimeError('Source/config changed for '+case+'; use --fresh')
             if (folder/'fields.bin').exists():
                 raise RuntimeError('Incomplete existing data for '+case+'; inspect its process before restarting')
             pending.append(case)

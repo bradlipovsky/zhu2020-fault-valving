@@ -1,0 +1,205 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=22mm]{geometry}
+\usepackage{amsmath,amssymb,graphicx,booktabs,longtable,array,pdflscape}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,citecolor=blue!45!black}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\panelpath}[1]{\nolinkurl{data/panels/#1.npz}}
+\title{Independent calculations of fault valving in earthquake sequences}
+\author{Reproducibility study of Zhu, Allison, Dunham, and Yang (2020)}
+\date{\today}
+\begin{document}
+\maketitle
+\input{summary.tex}
+
+\section{Scope and sources}
+Fault slip can increase permeability and release pore pressure, while healing
+between earthquakes can restrict drainage and promote renewed pressurization.
+Zhu et al.\ \cite{zhu} coupled these processes to an earthquake-cycle model.
+Here we implement that coupling independently and compare the resulting
+calculations with every main-manuscript figure and the six supplementary figures.
+
+The previous project attempt used archived authors' outputs for figure
+reconstruction. Those outputs, its source code, its restart states, and its
+plotting scripts are excluded from this revision. We began with an empty
+worktree, retaining only the requested repository instructions and writing guide.
+The scientific inputs are the published article, its Supplementary Information,
+and the written friction-model discussion in Allison and Dunham\ \cite{allison}.
+Document URLs and hashes are recorded in \code{documentation/sources.json}.
+No authors' simulation output, source-data file, digitized output curve, plotting
+script, or codebase is an input to the new calculation.
+
+All numerical panels in this report are generated from the new C++ implementation.
+The geometry diagram is newly drawn and labeled as a schematic. We do not
+include published images. Printed numerical statements in the article serve as
+comparison targets; they are distinguished from calculated quantities below.
+The report uses three statuses: \emph{independently reproduced} for a documented
+quantity whose defining relation has been recovered and verified;
+\emph{partial} for an independently generated comparison with remaining
+discrepancies or unresolved inputs; and \emph{not reproduced} when the target
+behavior or required cycle is absent. A generated plot alone does not establish
+reproduction.
+
+\section{Physical model and declared assumptions}
+The elastic domain occupies $0\leq y\leq L_y$ and $0\leq z\leq L_z$, with depth
+$z$ positive downward. Both dimensions are 500 km. Antiplane displacement $u$
+is half the fault slip on $y=0$; the remote side is displaced at half the plate
+rate. The top and bottom are traction free. The shear modulus is 32.4 GPa,
+$V_p=10^{-9}$ m s$^{-1}$, and the radiation-damping coefficient is
+$\eta_{\rm rad}=4.68\times10^6$ Pa s m$^{-1}$.
+
+The regularized friction law and aging law are
+\begin{align}
+ f(V,\psi)&=a\,\operatorname{asinh}\!\left[\frac{V}{2V_0}
+                     \exp\!\left(\frac{\psi}{a}\right)\right],\\
+ \dot\psi&=\frac{b}{d_c}\left[V_0\exp\!\left(\frac{f_0-\psi}{b}\right)-|V|\right],\\
+ \tau_{\rm qs}-\eta_{\rm rad}V&=(\sigma-p)f(V,\psi).
+\end{align}
+Here $V_0=10^{-6}$ m s$^{-1}$, $f_0=0.6$, and $d_c=2$ mm. Friction is signed;
+slip speed is used in state and permeability evolution if reverse slip occurs.
+This extends the paper's positive-sliding convention and is documented explicitly.
+Radiation damping limits rapid slip within the quasi-dynamic approximation;
+it does not reproduce propagating elastic waves.
+
+Fault-zone fluid storage, Darcy flux, and permeability obey
+\begin{align}
+ n\beta\,\partial_t p&=\partial_z q,
+ &q&=\frac{k}{\eta}\left(\partial_zp-\rho g\right),\\
+ k&=k_{\min}+(k_*-k_{\min})\exp[-(\sigma-p)/\sigma_*],\\
+ \dot k_*&=\frac{|V|}{L}(k_{\max}-k_*)-\frac{k_*-k_{\min}}{T}.
+\end{align}
+Positive $q$ denotes upward flow. The surface pressure is zero and the bottom
+influx is fixed. We use $n\beta=10^{-11}$ Pa$^{-1}$, $\eta=10^{-4}$ Pa s,
+$\rho=1000$ kg m$^{-3}$, $g=9.8$ m s$^{-2}$, $\sigma_*=30$ MPa, $L=1$ m,
+$k_{\min}=10^{-19}$ m$^2$, and $k_{\max}=10^{-15}$ m$^2$.
+The healing times are $10^7$, $10^8$, $10^9$, and $10^{10}$ s. Bottom influx is
+$3\times10^{-9}$ m s$^{-1}$ except for $T=10^7$ s, where it is
+$3.3\times10^{-10}$ m s$^{-1}$. Porosity changes, thermal pressurization, and
+bulk poroelastic stress changes are omitted as in the published model.
+
+Several inputs needed for an executable model are not fully specified in the
+article or supplement. We assume $\sigma(z)=(22\ {m MPa\ km^{-1}})z$,
+consistent with the displayed normal-stress line in the original Fig. 1d.
+We prescribe $a=0.01$ at the surface, increasing linearly to 0.03 at 15 km,
+then increasing at $0.003$ km$^{-1}$. We set $a-b=-0.01$ above 13.5 km and
+increase it linearly below that depth, crossing zero at 17 km. These profiles
+continue to the bottom boundary. They approximate a parameter diagram, not a
+digitized simulation result, and their exact agreement with the authors' inputs
+cannot be established from the written record.
+
+Initially $k_*$ has its steady-sliding value at $V_p$, and pressure is the
+discrete steady solution with flux $q_0$ at every face. State is initialized at
+its steady-sliding value at $V_p$. Initial velocity varies from $10^{-4}V_p$
+above 17 km to $V_p$ below, through a hyperbolic tangent of width 1.5 km.
+Elastic prestress balances that initial velocity. A Gaussian reduction of
+$10^{-4}$ in $\psi$, centered at 12 km with width 1 km, perturbs the fault.
+Earthquake times, rupture footprints, and subsequent slip are not prescribed.
+These initial conditions are independent choices; no published restart is used.
+
+An exploratory all-depth steady-sliding initialization was also tested.
+Shallow elastic stiffness imposed a severe explicit time-step restriction.
+The nearly locked shallow start is therefore used for the production runs;
+its influence is assessed separately from numerical resolution. Full parameter
+files and all choices are included in the repository.
+
+\section{Independent numerical method}
+The elastic boundary-value problem can be reduced analytically to a fault
+stiffness operator. A cosine mode with $\kappa_j=j\pi/L_z$ has stiffness
+\begin{equation}
+ K_0=\frac{\mu}{2L_y},\qquad
+ K_j=\frac{\mu\kappa_j}{2}\coth(\kappa_jL_y),\quad j>0.
+\end{equation}
+The factor one-half converts fault slip to one-sided displacement. These
+eigenvalues retain the finite side and bottom boundaries. FFTW cosine transforms
+apply this operator on cell centers, with $\tau_{\rm qs}=\tau_{\rm initial}-Kd$
+and $d$ equal to accumulated slip minus $V_pt$.
+
+Pressure is discretized by conservative finite volumes, using excess pressure
+$p-\rho gz$ and harmonic face permeability. Surface pressure is imposed a half
+cell from the first unknown; bottom flux enters the storage balance directly.
+This scheme differs from the paper's fourth-order summation-by-parts method.
+The production mesh has 32,768 cells, giving $\Delta z=15.259$ m over the
+500 km domain. The refinement cases use 16,384 and 65,536 cells.
+
+We use a second-order additive Runge--Kutta method, ARS(2,2,2), treating fluid
+flow implicitly and slip, state, and $k_*$ explicitly. The nonlinear pressure
+solve iterates permeability and a tridiagonal solve to an absolute pressure-update
+tolerance of 0.001 Pa. Step doubling controls errors in slip, state, permeability,
+and pressure. The two-half-step solution is accepted. Production tolerance is
+$10^{-3}$ in the scaled maximum norm; the time-accuracy case uses
+$2.5\times10^{-4}$. The maximum step is $10^6$ s. Detailed coefficients, scales,
+boundary formulas, and data formats are given in \code{documentation/numerics.md}.
+
+\input{verification.tex}
+
+\section{Quantitative comparisons and remaining discrepancies}
+We distinguish verification of equations from recovery of an earthquake sequence.
+The former tests operators and limiting solutions; the latter depends on
+friction profiles, initialization, spatial resolution, and nonlinear cycle
+variability. The numerical comparisons below use our generated fields and
+reported quantities from the paper. We do not align trajectories by fitting
+published curves or importing a published state.
+
+An event begins when the maximum slip speed exceeds $10^{-3}$ m s$^{-1}$.
+Its rupture footprint requires both that speed threshold and at least 1 cm
+of slip. A large event reaches above 2 km and spans more than 10 km in depth.
+The principal figure window is the final complete cycle between such events.
+Alternate cycles are selected by their chronological position, not visual
+similarity. For the swarm panels we use the final two years before the selected
+closing event. These extraction choices are recorded per panel.
+
+\input{comparisons.tex}
+
+\section{Panel provenance}
+Table~\ref{tab:provenance} specifies all 49 visible panel labels, including the
+new schematic. Each \code{F} identifies a main-manuscript figure and each
+\code{S} a supplementary figure. Original panels with both time and simulation-step
+views retain both views. Supplementary Fig. 2 visibly labels two rows, a and b;
+its caption additionally mentions c and d, which are not separately visible.
+We document that inconsistency and reproduce the two displayed rows.
+
+Every table row links to a compressed numerical file and a JSON sidecar containing
+its parameters, source-run provenance, and exact selection window. The data
+command builds and runs the required case from the configuration when necessary,
+then extracts the panel. The plotting command reads only that numerical panel
+file. It does not read the published paper, previous results, or reference images.
+\input{provenance.tex}
+
+\section{Generated figures}
+\input{figure_pages.tex}
+
+\clearpage
+\section{Build, execution, and availability}
+The repository contains the C++ implementation, tests, complete configurations,
+analysis and plotting scripts, generated figure data, this LaTeX source, and the
+compiled PDF. The report can be regenerated from the documented equations and
+configurations without downloading any authors' scientific data:
+\begin{verbatim}
+python3 -m pip install -r requirements.txt
+python3 scripts/reproduce.py
+\end{verbatim}
+The build installs a checksum-pinned FFTW 3.3.10 under the project directory if
+needed, runs the verification tests, performs the configured simulations, prepares
+and plots every panel, writes the comparison tables, and compiles this report.
+The optional \code{--fresh} switch moves existing generated runs aside. The
+numerical runs are computationally substantial; plotting the provided panel
+files does not require rerunning the earthquake cycles.
+
+\input{execution.tex}
+
+\begin{thebibliography}{9}
+\bibitem{zhu} Zhu, W., K. L. Allison, E. M. Dunham, and Y. Yang (2020).
+Fault valving and pore pressure evolution in simulations of earthquake sequences
+and aseismic slip. \emph{Nature Communications}, 11, 4833.
+\href{https://doi.org/10.1038/s41467-020-18598-z}{doi:10.1038/s41467-020-18598-z}.
+Includes the published Supplementary Information.
+\bibitem{allison} Allison, K. L., and E. M. Dunham (2018).
+Earthquake cycle simulations with rate-and-state friction and power-law viscoelasticity.
+\emph{Tectonophysics}, 733, 232--256.
+\href{https://doi.org/10.1016/j.tecto.2017.10.021}{doi:10.1016/j.tecto.2017.10.021}.
+\end{thebibliography}
+\end{document}

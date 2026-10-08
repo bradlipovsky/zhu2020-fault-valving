@@ -8,6 +8,14 @@ int main() {
         Parameters p;p.n=512;p.Lz=30000;p.Ly=500000;p.threads=1;
         p.initial_locking_depth=17000;p.perturbation=.001;
         Model m(p);State initial=m.initial();
+        Vec uniform(p.n,1);m.elastic(uniform);double mean_error=0;
+        for(int i=0;i<p.n;i++)mean_error=std::max(mean_error,std::abs((m.prestress[i]-m.tau[i])/(p.mu/(2*p.Ly))-1));
+        require(mean_error<1e-10,"finite-domain uniform elastic loading mode");
+        std::cout<<"uniform_elastic_relative_error="<<mean_error<<"\n";
+        Parameters hydro=p;hydro.influx=0;Model mh(hydro);Vec zero(p.n,0),u(p.n,.3),hydro_result(p.n);
+        require(mh.pressure(zero,u,1e7,hydro_result),"hydrostatic state");
+        for(double value:hydro_result)require(std::abs(value)<1e-12,"zero flow under hydrostatic pressure");
+        std::cout<<"hydrostatic_excess_pressure_error_pa=0\n";
         for(int i=0;i<p.n;i++) {
             initial[3][i]+=5e5*std::sin(PI*m.z[i]/p.Lz);
             initial[2][i]*=1+.1*std::sin(PI*m.z[i]/p.Lz);
