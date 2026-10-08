@@ -1,0 +1,49 @@
+-- The CXX compiler identification is GNU 8.5.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found OpenMP_CXX: -fopenmp (found version "4.5") 
+-- Found OpenMP: TRUE (found version "4.5")  
+-- Configuring done (1.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/bradlipovsky/notebooks/zhu2020-independent/.tmp/metadata-regeneration-1791480577018489344/build
+[ 25%] Building CXX object CMakeFiles/coupled_test.dir/tests/coupled.cpp.o
+[ 25%] Building CXX object CMakeFiles/graded_test.dir/tests/graded.cpp.o
+[ 50%] Building CXX object CMakeFiles/steady_test.dir/tests/steady.cpp.o
+[ 50%] Building CXX object CMakeFiles/valving.dir/src/model.cpp.o
+[ 62%] Linking CXX executable graded_test
+[ 62%] Built target graded_test
+[ 75%] Linking CXX executable steady_test
+[ 87%] Linking CXX executable valving
+[ 87%] Built target steady_test
+[ 87%] Built target valving
+[100%] Linking CXX executable coupled_test
+[100%] Built target coupled_test
+Internal ctest changing into directory: /home/bradlipovsky/notebooks/zhu2020-independent/.tmp/metadata-regeneration-1791480577018489344/build
+Test project /home/bradlipovsky/notebooks/zhu2020-independent/.tmp/metadata-regeneration-1791480577018489344/build
+    Start 1: equations_and_limits
+1/4 Test #1: equations_and_limits .............   Passed    0.01 sec
+    Start 2: nonlinear_coupling
+2/4 Test #2: nonlinear_coupling ...............   Passed    1.05 sec
+    Start 3: analytical_steady_flow
+3/4 Test #3: analytical_steady_flow ...........   Passed    0.02 sec
+    Start 4: graded_mesh
+4/4 Test #4: graded_mesh ......................   Passed    0.15 sec
+
+100% tests passed, 0 tests failed out of 4
+
+Total Test time (real) =   1.24 sec
+Plotting dependencies: 1.19.5 3.3.4
+CATALOG BOUNDARY CHECKS PASSED: truncated events cannot close complete cycles.
+PHASE DIAGNOSTIC CHECKS PASSED: connected rupture depths and pressure-minimum timing.
+CATALOG ORDER CHECKS PASSED: first partials retained despite a larger later event.
+THRESHOLD CATALOG CHECKS PASSED: retain intervals without resolved slip footprints.
+CROSSING SNAPSHOT CHECKS PASSED: preceding creep excluded from event slip.
+ASEISMIC CLASSIFICATION CHECKS PASSED: use the whole-fault accepted-step maximum.
+MIGRATION FIT CHECKS PASSED: speed, depth selection, and seismic interruption.
+FRONT BRANCH CHECKS PASSED: preserve leading and deeper crossings separately.
+SLIP PROFILE WINDOW CHECKS PASSED: two cycles retained; missing cycles counted.
+START baseline pid 2933264
+EXIT baseline 0

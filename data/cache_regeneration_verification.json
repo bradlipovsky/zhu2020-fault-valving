@@ -1,0 +1,70 @@
+{
+  "purpose": "Verify fresh-clone regeneration when completed-run metadata are present but ignored raw output is absent. Software verification only; no generated data are used in the scientific report.",
+  "isolated_directory": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/metadata-regeneration-1791480577018489344",
+  "command": [
+    "python3",
+    "scripts/reproduce.py",
+    "--simulate-only",
+    "--cases",
+    "baseline",
+    "--jobs",
+    "1"
+  ],
+  "configuration_scope": "Existing isolated fixture: 512 nodes, 0.002 years, one thread; production source unchanged.",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "config_sha256": "8c2261925b3cf662b35ebceb2be5d499a30fd31c3360ad9cba975ece62e3a8e7",
+  "exit_code": 0,
+  "wall_s": 20.841623067855835,
+  "log": "data/cache_regeneration_verification.log",
+  "completed": {
+    "completed": true,
+    "time_s": 63115.2,
+    "years": 0.002,
+    "accepted_steps": 13,
+    "rejected_steps": 0,
+    "elapsed_s": 0.021730424,
+    "n": 512,
+    "dynamic_nodes": 512,
+    "dz_m": 976.5625,
+    "tolerance": 1e-05,
+    "minimum_Lb_cells": 0.0453092137954105,
+    "minimum_hstar_cells": 0.170263529965566
+  },
+  "metadata_archives": [
+    ".tmp/metadata-baseline-1791480587801803264"
+  ],
+  "output_sha256": {
+    "fields.bin": "d8be435c9dfe38fd36a9288ca2bf4726e04bfa5d0a9b8123a648c507ab048c45",
+    "history.csv": "bcde8bf42f7fbaa145511b3349ece8ef46e7e43de618746bf05edc093f72d19a"
+  },
+  "original_fixture_output_sha256": {
+    "fields.bin": "d8be435c9dfe38fd36a9288ca2bf4726e04bfa5d0a9b8123a648c507ab048c45",
+    "history.csv": "bcde8bf42f7fbaa145511b3349ece8ef46e7e43de618746bf05edc093f72d19a"
+  },
+  "raw_outputs_bit_identical": true,
+  "checks_passed": true,
+  "original_metadata_preserved": true,
+  "configuration_overrides": {
+    "n": 512.0,
+    "threads": 1.0,
+    "years": 0.002,
+    "fine_depth": 0.0,
+    "surface_ratio": 1.0,
+    "output_years": 0.0001,
+    "output_spacing": 1000.0
+  },
+  "setup": [
+    "Use the existing short, coarse fixture produced by python3 scripts/smoke_pipeline.py; its outputs are excluded from scientific results.",
+    "Copy current src, tests, scripts, CMakeLists.txt and requirements.txt into a new isolated directory; copy the fixture configurations.",
+    "Reuse the installed generic FFTW dependency. Copy completed baseline metadata but omit fields.bin, history.csv, and checkpoint.bin.",
+    "Run the recorded simulate-only command in the isolated directory, allowing bootstrap to build and run the verification checks.",
+    "Check that old metadata are archived, the rerun exits successfully, and regenerated fields.bin and history.csv have the original fixture SHA-256 hashes."
+  ],
+  "pipeline_sha256": {
+    "scripts/reproduce.py": "575516835c6766d40bb603fe96cddf07214994520597e35b1c62ef2da4f80097",
+    "scripts/bootstrap.sh": "da188b0dea4c408ea26cede9ca008c9bfcfb82405aa1d99026e984db460c019b",
+    "scripts/common.py": "60bc209b1f71391a4172016d5b1bcbc0e1040cfa95c8bf972852039c83243142",
+    "CMakeLists.txt": "65c5b216ea0bb5a3b1f03d5d6d0d96ebb71e18c1a8b7945ace267c84e1c27e1a",
+    "tests/analysis_boundaries.py": "edbf5fdab47f4d394bd8bd5ba9675aa59a8a12ec5138d3db56465b5f244edc42"
+  }
+}

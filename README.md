@@ -42,6 +42,12 @@ Full field files, accepted-step histories, and checkpoints are generated locally
 by the numerical runs. The supplied panel files support plotting directly with
 `python3 scripts/plot.py all`.
 
+When a fresh clone contains completed-run metadata but no raw field file, the
+runner archives that metadata and starts a new simulation. An isolated
+[regeneration check](data/cache_regeneration_verification.json) verified this
+path and obtained bit-identical field and history files for the short software
+fixture; those test outputs are excluded from scientific results.
+
 ```
 # A short smoke calculation
 bash scripts/bootstrap.sh
