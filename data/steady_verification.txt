@@ -1,0 +1,9 @@
+steady_kmin=0 n=64 relative_pressure_error=0.000224278472625
+steady_kmin=0 n=128 relative_pressure_error=5.57377032648e-05
+steady_kmin=0 n=256 relative_pressure_error=1.38963104318e-05
+steady_kmin=0 n=512 relative_pressure_error=3.46913520421e-06
+steady_kmin=1e-19 n=64 relative_pressure_error=0.000223899673726
+steady_kmin=1e-19 n=128 relative_pressure_error=5.56287481998e-05
+steady_kmin=1e-19 n=256 relative_pressure_error=1.38705953191e-05
+steady_kmin=1e-19 n=512 relative_pressure_error=3.46289452165e-06
+ANALYTICAL NONLINEAR STEADY-FLOW TESTS PASSED

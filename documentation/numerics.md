@@ -62,6 +62,24 @@ The initial Darcy profile is solved sequentially from the surface by bisection
 of each nonlinear face-flux relation, imposing q=q0 at every face. It is a
 discrete steady solution of the same operator used in time integration.
 
+An independent analytical check avoids testing that discrete solution only
+against its own flux formula. Let G=normal_gradient-rho*g, C=kstar-kmin,
+keq=viscosity*influx/G, and D=keq-kmin. With constant kstar, the continuous
+steady-flow equations give dN/dz=G-viscosity*influx/[kmin+C exp(-N/stress_scale)].
+Separating variables and imposing N(0)=0 yields
+
+    z = N/G - stress_scale*keq/(G*D)
+                  * log[(C-D exp(N/stress_scale))/(C-D)].
+
+The tested parameters satisfy C>D>0. In the zero-floor limit this inverts to
+
+    N(z) = -stress_scale * log[keq/C + (1-keq/C) exp(-G*z/stress_scale)].
+
+`tests/steady.cpp` compares the production initial-pressure solver with both
+solutions on four meshes. Maximum pressure errors, normalized by stress_scale,
+converge at second order. This checks the nonlinear hydraulic resistance and
+surface treatment against a continuum solution, independently of time stepping.
+
 ## Time integration
 
 The production method is ARK4(3)6L[2]SA, a six-stage fourth-order additive

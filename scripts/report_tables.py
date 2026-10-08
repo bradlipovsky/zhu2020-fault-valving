@@ -55,8 +55,26 @@ hydrostatic equilibrium, and constant-speed state/permeability limits. The
 nonlinear storage test perturbs both pressure and permeability; its residual
 is the storage change minus integrated boundary flux. A separate coupled
 calculation refines all time-dependent fields together.
+
+For an independent steady-flow check, define $G=\partial_z\sigma-\rho g$,
+$C=k_*-k_{\min}$, $k_{\rm eq}=\eta q_0/G$, and $D=k_{\rm eq}-k_{\min}$.
+With constant $k_*$, the documented equations reduce to
+$dN/dz=G-\eta q_0/[k_{\min}+C\exp(-N/\sigma_*)]$, where $N=\sigma-p$.
+Separating this equation and imposing $N(0)=0$ gives
+\begin{equation}
+ z=\frac{N}{G}-\frac{\sigma_*k_{\rm eq}}{GD}
+ \ln\!\left[\frac{C-D\exp(N/\sigma_*)}{C-D}\right].
+\end{equation}
+In the additional limit $k_{\min}=0$, the explicit solution is
+\begin{equation}
+ N(z)=-\sigma_*\ln\!\left[\frac{k_{\rm eq}}{C}
+       +\left(1-\frac{k_{\rm eq}}{C}\right)\exp(-Gz/\sigma_*)\right].
+\end{equation}
+We compare the production initial-pressure solver with these separately
+integrated solutions for both the published permeability floor and its zero limit.
+Errors decrease by approximately four when grid spacing is halved.
 {\small\begin{verbatim}
-'''+Path('data/verification.txt').read_text()+Path('data/coupled_verification.txt').read_text()+r'''\end{verbatim}
+'''+Path('data/verification.txt').read_text()+Path('data/coupled_verification.txt').read_text()+Path('data/steady_verification.txt').read_text()+r'''\end{verbatim}
 }
 The diffusion errors decrease by approximately four on each joint space/time
 refinement. The coupled test compares fixed steps of 20,000, 10,000, and 5,000 s

@@ -65,7 +65,7 @@ def main():
     for error in ['LaTeX Error','There were undefined references','Citation `']:
         assert error not in log,error
     checked.extend(Path('report').glob('*.tex'));checked.append(pdf)
-    checked.extend([Path('data/verification.txt'),Path('data/coupled_verification.txt'),
+    checked.extend([Path('data/verification.txt'),Path('data/coupled_verification.txt'),Path('data/steady_verification.txt'),
         Path('data/quantitative_comparisons.json'),Path('data/validation_summary.json')])
     checked.extend(Path('data/laws').glob('*.csv'))
     checked.extend(Path('configs',case+'.cfg') for case in MAIN_CASES+VALIDATION_CASES)
