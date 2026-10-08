@@ -181,7 +181,7 @@
   "selected_small_ruptures": 1,
   "selected_unresolved_intervals": 1,
   "visual_review": {
-    "reference": "Published Supplementary Figure 5, PDF page 6, inspected only as a visual comparison target.",
+    "reference": "Published Supplementary Figure 5, PDF page 6, inspected at overview and enlarged step-map scales only as a comparison target.",
     "generated_views": [
       "figures/panels/S5a.png",
       "figures/panels/S5b.png",
@@ -191,7 +191,7 @@
       "Both time and accepted-step velocity maps, two cumulative-slip cycles, units and the combined four-panel figure are legible.",
       "The final calculated reference interval is 95.06 years, compared with approximately 160 years in the published example. All three calculated intervals are retained and no stationary-period claim is made.",
       "The calculated deep partial rupture spans 10.12--17.89 km by the connected 1 cm criterion and peaks only 2.37 hours before the closing large event. The published map places its partial rupture much earlier in the cycle.",
-      "The closing large event first exceeds the speed threshold near 0.525 km depth and propagates downward in the generated step map. This differs from the deep-to-shallow closing rupture visible in the published reference.",
+      "The closing large event first exceeds our global speed threshold near 0.525 km depth, and its generated step map shows downward propagation through the upper fault. The published image alone does not identify equivalent threshold-defined event boundaries, so this diagnostic is not a quantitative comparison of nucleation depths or a claim that the authors catalog has the opposite propagation direction.",
       "Two calculated cycles accumulate 5.57 m of shallow slip; the published two-cycle profile extends to about 12 m. This is a visual comparison scale, not a digitized curve or model input.",
       "The time map ends at the closing earthquake; its short seismic intervals are compressed at the right edge, whereas the published map includes a post-earthquake tail. The accepted-step view resolves the rupture ordering but its step count is not a physical accuracy metric.",
       "Saved-profile cadence produces steps in the accepted-step map. The minimum nucleation length spans 4.29 cells, and this high-healing-time reference has no separate spatial refinement study. Both new panels remain partial."
