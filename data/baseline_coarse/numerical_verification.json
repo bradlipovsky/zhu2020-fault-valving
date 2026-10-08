@@ -1,0 +1,32 @@
+{
+  "case": "baseline_coarse",
+  "scope": "Completed numerical output and provenance only; this does not establish sequence convergence or completion of the full project.",
+  "checks_passed": true,
+  "simulation_command": [
+    "build/valving",
+    "configs/baseline_coarse.cfg",
+    "data/baseline_coarse"
+  ],
+  "analysis_command": [
+    "python3",
+    "scripts/analyze.py",
+    "baseline_coarse"
+  ],
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "6f3c39e2d94dfe14a1d1cdc26d9b7e159497a18a71c3dadd8807d1888f2bf4fe",
+  "years": 200,
+  "accepted_steps": 438564,
+  "saved_profiles": 14838,
+  "maximum_accepted_error": 0.9999966170172292,
+  "minimum_effective_pa": 176496.41927167904,
+  "minimum_Lb_cells": 3.83404187195151,
+  "minimum_hstar_cells": 14.1957673872078,
+  "checks": [
+    "Successful exit at the configured end time; source, executable, and configuration hashes agree.",
+    "Accepted-step history and saved fields end at the same time and step; no missing history steps.",
+    "All saved fields and history values are finite, and effective normal stress stays positive.",
+    "Permeability and reference permeability remain within the constitutive bounds, allowing float32 output rounding.",
+    "Accepted error estimates do not exceed one; recorded resolution minima agree with the complete accepted-step history."
+  ]
+}

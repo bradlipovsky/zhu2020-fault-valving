@@ -1,0 +1,22 @@
+{
+  "case": "baseline_coarse",
+  "command": [
+    "build/valving",
+    "configs/baseline_coarse.cfg",
+    "data/baseline_coarse"
+  ],
+  "pid": 2604924,
+  "start_utc": "2026-10-08T06:01:26Z",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "6f3c39e2d94dfe14a1d1cdc26d9b7e159497a18a71c3dadd8807d1888f2bf4fe",
+  "cpu_affinity": [
+    28,
+    29,
+    30,
+    31
+  ],
+  "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+  "exit_code": 0,
+  "end_utc": "2026-10-08T16:19:05Z"
+}

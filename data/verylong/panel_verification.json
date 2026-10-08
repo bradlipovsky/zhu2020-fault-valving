@@ -1,0 +1,289 @@
+{
+  "case": "verylong",
+  "scope": "Completed 500-year case, eight individual scientific panels, and Supplementary Figure 6 composite only; remaining production and validation runs and the full report remain pending.",
+  "checks_passed": true,
+  "simulation_command": [
+    "build/valving",
+    "configs/verylong.cfg",
+    "data/verylong"
+  ],
+  "analysis_command": [
+    "python3",
+    "scripts/analyze.py",
+    "verylong"
+  ],
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "f9ec9c0d41ec717370211eef19319b598a8fbcb38b859b3321f0befd4cf86344",
+  "years": 500,
+  "accepted_steps": 216379,
+  "saved_profiles": 18414,
+  "maximum_accepted_error": 0.9999995739551467,
+  "minimum_effective_pa": 156457.14599627684,
+  "minimum_Lb_cells": 4.28941599294761,
+  "minimum_hstar_cells": 16.2993420573797,
+  "checks": [
+    "Successful exit at the configured end time; source, executable, and configuration hashes agree.",
+    "Accepted-step history and saved fields end at the same time and step; no missing history steps.",
+    "All saved fields and history values are finite, and effective normal stress stays positive.",
+    "Permeability and reference permeability remain within the constitutive bounds, allowing float32 output rounding.",
+    "Accepted error estimates do not exceed one; recorded resolution minima agree with the complete accepted-step history.",
+    "All eight panel arrays exactly match their selected time, depth, step, and field values in the independently generated binary output.",
+    "Saved profiles retain exact source times and values; cumulative slip is measured from the first selected snapshot.",
+    "S5d retains the last two complete cycles, and recurrence comparisons agree with complete-event end times.",
+    "All plotted numerical arrays are finite; stress is positive, permeability stays within constitutive bounds, and individual figure and data files are under 100 MiB.",
+    "Panel source, executable, configuration, and postprocessing provenance agree with the current files."
+  ],
+  "postprocess_commands": [
+    [
+      "python3",
+      "scripts/analyze.py",
+      "verylong"
+    ],
+    [
+      "python3",
+      "scripts/prepare_panels.py",
+      "S5c",
+      "S5d",
+      "S6a",
+      "S6b",
+      "S6c",
+      "S6d",
+      "S6e",
+      "S6f"
+    ],
+    [
+      "python3",
+      "scripts/plot.py",
+      "S5c",
+      "S5d",
+      "S6a",
+      "S6b",
+      "S6c",
+      "S6d",
+      "S6e",
+      "S6f",
+      "S6"
+    ]
+  ],
+  "panels": [
+    {
+      "panel": "S5c",
+      "status": "partial",
+      "data_sha256": "ada4ce3adceac9be6ca966a9f4b7f749ff20d8dd395d9f32ad507bcb26d2503e",
+      "bytes": 19622212,
+      "window_years": [
+        273.4881659027112,
+        447.8776223357422
+      ],
+      "values_shape": [
+        6722,
+        833
+      ],
+      "comparison": {
+        "approximate_reference_years": 150.0,
+        "source": "Supplementary Fig. 5c, PDF page 6; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
+        "calculated_last_interval_years": 174.38945643303103,
+        "approximate_relative_difference_percent": 16.259637622020694,
+        "calculated_all_interval_median_years": 178.98045565330642,
+        "approximate_median_difference_percent": 19.32030376887095,
+        "recurrence_intervals_years": [
+          183.5714548735818,
+          174.38945643303103
+        ]
+      },
+      "figure_png_sha256": "6152aae78e695a7b0922969936355680331d0cf865bdb8b642e6629419b62772",
+      "figure_pdf_sha256": "3fa31881973cbcffca00e1f00a42fcdc1b16a0ab6362deb8b351a48189641a64"
+    },
+    {
+      "panel": "S5d",
+      "status": "partial",
+      "data_sha256": "f15057a41f309bb9c967af83e605bfdf32499dd2485611aac272bdbba799ab48",
+      "bytes": 15079110,
+      "window_years": [
+        89.91671102912939,
+        447.8776223357422
+      ],
+      "values_shape": [
+        13532,
+        833
+      ],
+      "comparison": {
+        "approximate_reference_years": 150.0,
+        "source": "Supplementary Fig. 5c, PDF page 6; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
+        "calculated_last_interval_years": 174.38945643303103,
+        "approximate_relative_difference_percent": 16.259637622020694,
+        "calculated_all_interval_median_years": 178.98045565330642,
+        "approximate_median_difference_percent": 19.32030376887095,
+        "recurrence_intervals_years": [
+          183.5714548735818,
+          174.38945643303103
+        ]
+      },
+      "cycle_bounds_years": [
+        [
+          89.91671102912939,
+          273.4881659027112
+        ],
+        [
+          273.4881659027112,
+          447.8776223357422
+        ]
+      ],
+      "final_shallowest_slip_m": 11.769134521484375,
+      "final_maximum_slip_m": 12.062480926513672,
+      "figure_png_sha256": "d03b1cc29b0d070ee4d0b04a8a59548cf347d13825495811494b04a5ae5eba4a",
+      "figure_pdf_sha256": "abc7450a1cf37ff0f028366bd3c1e2550349f15550bebe7ad0c7ac13dab9594b"
+    },
+    {
+      "panel": "S6a",
+      "status": "partial",
+      "data_sha256": "09516d0d87f1e7b80fb9fa57f08dfd1ba0b1f587004ddaedb48649c6f9e518c4",
+      "bytes": 10901670,
+      "window_years": [
+        273.4881659027112,
+        447.8776223357422
+      ],
+      "values_shape": [
+        6722,
+        833
+      ],
+      "figure_png_sha256": "75179e5d349c2493c04a4a201fd113215c401fe9bd601d03299f70b4e31b60cb",
+      "figure_pdf_sha256": "9cc49c5b14afe806d8221864c3ef21cfa81da3a3a15297d69235f046de92f86a"
+    },
+    {
+      "panel": "S6b",
+      "status": "partial",
+      "data_sha256": "2b900921ec5a0dc317d644404550d4747e6a7779b81efa6d9b07c4e9bc9ce84f",
+      "bytes": 11070253,
+      "window_years": [
+        273.4881659027112,
+        447.8776223357422
+      ],
+      "values_shape": [
+        6722,
+        833
+      ],
+      "figure_png_sha256": "f237107f458d2a21a489237fe83d76e98dc37ad48a41e72ac8bcd0dea22e280f",
+      "figure_pdf_sha256": "b3f29ed5accb1dc9df414dc7f72ddd784cadb9c4a45edc75056de3af9b34ba77"
+    },
+    {
+      "panel": "S6c",
+      "status": "partial",
+      "data_sha256": "059fd05493f5b4a22c7280af33e640ef4b895eed52cdbbafa4b21e23504fbae8",
+      "bytes": 14504205,
+      "window_years": [
+        273.4881659027112,
+        447.8776223357422
+      ],
+      "values_shape": [
+        6722,
+        833
+      ],
+      "figure_png_sha256": "eaaba7081ce5e2452865e16656b354999eaa97cc27ead3cee416ff9f5ebcf6c8",
+      "figure_pdf_sha256": "9fd3d5991299b4f12284fb0ee7875312dcc28c0326a28f246a74516d19dee046"
+    },
+    {
+      "panel": "S6d",
+      "status": "partial",
+      "data_sha256": "52085bf17a65644c8510fa64a5181f0d1d7f477d2152d3409dcc9d3c54dbf2f5",
+      "bytes": 14902534,
+      "window_years": [
+        273.4881659027112,
+        447.8776223357422
+      ],
+      "values_shape": [
+        6722,
+        833
+      ],
+      "figure_png_sha256": "db26bcd50faabeadf3646c43d15d7268d577bca799a6870608f51bb4f1ebe328",
+      "figure_pdf_sha256": "b397d6ed478a3ee3db5e497b69ed01f45f01f302645f86d011c19feb45a14b1c"
+    },
+    {
+      "panel": "S6e",
+      "status": "partial",
+      "data_sha256": "88c5e0f7a79dfc78a9861d47c5eb790036a9ca0ac85e3f9e054905252a812499",
+      "bytes": 13430279,
+      "window_years": [
+        273.4881659027112,
+        447.8776223357422
+      ],
+      "values_shape": [
+        6722,
+        833
+      ],
+      "figure_png_sha256": "c29af6270c72ec101cbcfd54ef2f4fdb47fa35473786fc3b5cb9cfc86ed811d9",
+      "figure_pdf_sha256": "9f0ca2329872fe7f78d7a41206c1be37231f43d12ecbc9c890c2438b385f3930"
+    },
+    {
+      "panel": "S6f",
+      "status": "partial",
+      "data_sha256": "566532b8df5439ec0c1a71d188335bb47e01ec0a914eef8af1c8acf2cf1ea66b",
+      "bytes": 13867363,
+      "window_years": [
+        273.4881659027112,
+        447.8776223357422
+      ],
+      "values_shape": [
+        6722,
+        833
+      ],
+      "figure_png_sha256": "23fba414ab4be50caebf91bb91c514a71696953610724fb2c9fad9885262ae4d",
+      "figure_pdf_sha256": "97b4cb9f30d7bacafcd9a0a52bc9f3c3119baeb466fa4a775147ae1c1c1c90c3"
+    }
+  ],
+  "composite": {
+    "png_sha256": "e711144227e6011837604c02ac6537aa3801c1ae6e8d087454d35641e9250ec7",
+    "pdf_sha256": "054cd960e207f4883b55ed1fbae8e5d1183af10d884073f900825f6731c1d87f"
+  },
+  "sample_10km": {
+    "sample_depth_m": 10004.043579101562,
+    "effective_min_mpa": 86.38988,
+    "effective_max_mpa": 93.214128,
+    "effective_range_mpa": 6.824248,
+    "permeability_min": 3.1803420339104107e-17,
+    "permeability_max": 5.615420143945655e-17,
+    "flux_min": 2.748236083149891e-09,
+    "flux_max": 4.911553386222067e-09
+  },
+  "phase_diagnostics": {
+    "sample_depth_m": 10004.043579101562,
+    "maximum_effective_stress_since_window_start_years": 52.967636260795395,
+    "pressure_drop_from_window_start_mpa": 6.793752,
+    "first_partial_ruptures": [
+      {
+        "peak_since_window_start_years": 85.79582401287747,
+        "footprint_top_m": 13841.629028320312,
+        "footprint_bottom_m": 17202.377319335938,
+        "max_slip_m": 0.7828817367553711,
+        "peak_velocity": 1.1747217780421322
+      },
+      {
+        "peak_since_window_start_years": 86.01680594494361,
+        "footprint_top_m": 13.3514404296875,
+        "footprint_bottom_m": 2473.8311767578125,
+        "max_slip_m": 0.2487039566040039,
+        "peak_velocity": 0.11311583397350618
+      }
+    ],
+    "rupture_selection": "First two complete partial events in chronological order; each depth interval is its longest connected >=1 cm footprint. The full event catalog is retained."
+  },
+  "visual_review": {
+    "references": [
+      "Published Supplementary Fig. 5, PDF page 6; visual comparison only",
+      "Published Supplementary Fig. 6, PDF page 7; visual comparison only"
+    ],
+    "generated_views": [
+      "figures/panels/S5c.png",
+      "figures/panels/S5d.png",
+      "figures/S6.png"
+    ],
+    "findings": [
+      "Velocity map shows an upper locked region, deeper creep, a deep partial rupture near 86 years, and a closing large earthquake near 174 years. An additional shallow rupture near 86 years differs from the published example.",
+      "The two complete slip cycles and their interseismic and coseismic profiles are legible. The panel is cumulative relative to its own first selected snapshot.",
+      "All six fluid panels are legible. Stress cycling at 10 km is modest, and calculated flux is of the same order as the published panel; phase timing and rupture patterns differ.",
+      "The selected window ends at the closing earthquake, while published maps can include a subsequent tail. Saved-profile cadence produces visible steps during seismic events; accepted step count is not a physical comparison metric.",
+      "The minimum frictional nucleation length is resolved by 4.29 cells in this run. No separate spatial refinement sequence is available for this long-healing case."
+    ]
+  }
+}
