@@ -162,6 +162,12 @@ The report compares the two largest complete partial events by local slip,
 ordered chronologically, using each event's longest connected footprint.
 The time of maximum effective stress near 10 km provides a separately defined
 drainage diagnostic; it is not equated automatically to a published phase boundary.
+Refinement and input-sensitivity comparisons use the common elapsed duration
+available in every validation run, including startup. Complete seismic-event
+counts and large-event recurrence intervals exclude events ending beyond that
+duration. Large-event timing differences pair events in chronological order,
+without fitting a time shift or choosing the closest event. All paired differences
+are retained, and event counts expose unequal catalog lengths.
 Figure 6 uses the independently computed |V|=Vp contour; its definition is an
 analysis assumption because the paper does not specify its exact extraction rule.
 Slow-slip diagnostics at 15, 18, and 20 km count complete local intervals above

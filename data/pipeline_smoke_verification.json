@@ -219,5 +219,31 @@
     ],
     "exit_code": 0,
     "wall_s": 5.890612363815308
+  },
+  "common_duration_report_update": {
+    "commands": [
+      [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ]
+    ],
+    "exit_code": 0,
+    "wall_s": 6.62555193901062
   }
 }

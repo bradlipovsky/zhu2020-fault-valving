@@ -322,6 +322,37 @@ Differences are signed relative to the baseline's first complete seismic event.
 Duration is the whole-fault threshold excursion defined above. These comparisons
 use a common initialization and include the finite saved-profile spacing in the
 slip measurement; they do not establish convergence of subsequent event sequences.
+'''
+    horizon=min(analyses[case]['final_time_years'] for case in validation)
+    large_times={case:[e['end_s']/YEAR for e in analyses[case]['events']
+        if e['complete'] and e['large'] and e['end_s']/YEAR<=horizon] for case in validation}
+    comparison+=('We also compare every validation case over the first {} years, '
+        'the common duration available in all runs. This window includes startup.\n').format(number(horizon))
+    comparison+=r'''\begin{center}\begin{tabular}{lrrrr}
+\toprule
+Case & \shortstack{Complete\\seismic events} & \shortstack{Large\\events} & \shortstack{Median recurrence\\(yr)} & \shortstack{Maximum timing\\difference (yr)}\\
+\midrule
+'''
+    for case in validation:
+        event_count=sum(e['complete'] and e['end_s']/YEAR<=horizon for e in analyses[case]['events'])
+        times=large_times[case];intervals=np.diff(times);matched=min(len(times),len(large_times['baseline']))
+        differences=(np.asarray(times[:matched])-np.asarray(large_times['baseline'][:matched])).tolist()
+        common=dict(horizon_years=horizon,complete_seismic_events=event_count,large_events=len(times),
+            large_event_end_years=times,recurrence_years=intervals.tolist(),
+            median_recurrence_years=float(np.median(intervals)) if len(intervals) else None,
+            matched_ordinal_large_events=matched,large_event_time_differences_years=differences,
+            maximum_absolute_large_event_time_difference_years=max(map(abs,differences)) if differences else None)
+        validation[case]['common_horizon_comparison']=common
+        comparison+=' & '.join([tex(case),str(event_count),str(len(times)),number(common['median_recurrence_years']),
+            number(common['maximum_absolute_large_event_time_difference_years'])])+r'\\'+'\n'
+    comparison+=r'''\bottomrule\end{tabular}\end{center}
+The timing difference pairs the first classified large event with the first,
+the second with the second, and so on, without fitting a time shift or choosing
+the closest event. Only pairs present in both catalogs enter that
+difference; the event counts expose missing or additional events. The numerical
+summary retains every paired difference and recurrence interval. Event counts
+and recurrence over this common window test sequence sensitivity, although they
+do not alone establish convergence of individual swarm ruptures.
 
 Exact friction profiles, prestress, startup procedure, spatial grid, and the
 authors' saved cycle states cannot be recovered from the article and supplement.
