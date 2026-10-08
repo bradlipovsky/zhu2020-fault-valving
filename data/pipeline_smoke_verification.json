@@ -713,5 +713,38 @@
       "wall_s": 6.661895275115967,
       "overfull_boxes": 0
     }
+  },
+  "cycle_duration_comparison_update": {
+    "purpose": "Software/layout fixture only; no scientific figure or report is replaced by fixture output.",
+    "commands": [
+      [
+        "python3",
+        "scripts/prepare_panels.py"
+      ],
+      [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ]
+    ],
+    "exit_code": 0,
+    "wall_s": 7.257101774215698,
+    "overfull_boxes": 0,
+    "unchanged_panel_arrays": true
   }
 }

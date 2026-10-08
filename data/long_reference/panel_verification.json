@@ -47,10 +47,17 @@
         833
       ],
       "comparison": {
-        "approximate_reference_years": 160,
-        "source": "Supplementary Fig. 3a, published PDF page 4; approximate visual reading of the time axis, not simulation input or authors data",
+        "approximate_reference_years": 160.0,
+        "source": "Supplementary Fig. 3a, PDF page 4; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
         "calculated_last_interval_years": 88.38403987093325,
-        "approximate_relative_difference_percent": -44.75997508066671
+        "approximate_relative_difference_percent": -44.75997508066671,
+        "calculated_all_interval_median_years": 88.38403987093325,
+        "approximate_median_difference_percent": -44.75997508066671,
+        "recurrence_intervals_years": [
+          0.8533094365881082,
+          90.75345196237917,
+          88.38403987093325
+        ]
       },
       "figure_png_sha256": "6db8c7ba6204d3d4a3cee9ebae0dc063f616aa299dd40971390ce3445a6f9571",
       "figure_pdf_sha256": "b959c7f3b07912f7557264f5097429db0888f202bd506f5cc3597b917230e0f0"
@@ -69,10 +76,17 @@
         833
       ],
       "comparison": {
-        "approximate_reference_years": 160,
-        "source": "Supplementary Fig. 3a, published PDF page 4; approximate visual reading of the time axis, not simulation input or authors data",
+        "approximate_reference_years": 160.0,
+        "source": "Supplementary Fig. 3a, PDF page 4; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
         "calculated_last_interval_years": 88.38403987093325,
-        "approximate_relative_difference_percent": -44.75997508066671
+        "approximate_relative_difference_percent": -44.75997508066671,
+        "calculated_all_interval_median_years": 88.38403987093325,
+        "approximate_median_difference_percent": -44.75997508066671,
+        "recurrence_intervals_years": [
+          0.8533094365881082,
+          90.75345196237917,
+          88.38403987093325
+        ]
       },
       "cycle_bounds_years": [
         [
@@ -97,6 +111,20 @@
       "Slip profiles retain two full interseismic intervals and their closing earthquakes; both groups are legible.",
       "Published time-axis comparison is approximate and is not a simulation input.",
       "No separate spatial refinement sequence has been completed for this higher-stress reference case."
+    ]
+  },
+  "comparison_metadata_update": {
+    "checks_passed": true,
+    "command": [
+      "python3",
+      "scripts/prepare_panels.py",
+      "S3a",
+      "S3b"
+    ],
+    "checks": [
+      "Panel arrays and both figure files retain their previously verified hashes.",
+      "Last-cycle and median comparisons agree with intervals recomputed from complete large-event end times.",
+      "Sidecar model and pipeline hashes agree with the current files."
     ]
   }
 }

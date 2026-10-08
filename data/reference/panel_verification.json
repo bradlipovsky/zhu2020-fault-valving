@@ -54,10 +54,10 @@
         833
       ],
       "comparison": {
-        "approximate_reference_years": 50,
-        "source": "Main Fig. 2a and accompanying published discussion; approximate displayed cycle, not simulation input or authors data",
+        "approximate_reference_years": 50.0,
+        "source": "Main Fig. 2a; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
         "calculated_last_interval_years": 63.97442152472731,
-        "approximate_last_interval_difference_percent": 27.94884304945462,
+        "approximate_relative_difference_percent": 27.94884304945462,
         "calculated_all_interval_median_years": 66.01812354959412,
         "approximate_median_difference_percent": 32.036247099188245,
         "recurrence_intervals_years": [
@@ -84,10 +84,10 @@
         833
       ],
       "comparison": {
-        "approximate_reference_years": 50,
-        "source": "Main Fig. 2a and accompanying published discussion; approximate displayed cycle, not simulation input or authors data",
+        "approximate_reference_years": 50.0,
+        "source": "Main Fig. 2a; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
         "calculated_last_interval_years": 63.97442152472731,
-        "approximate_last_interval_difference_percent": 27.94884304945462,
+        "approximate_relative_difference_percent": 27.94884304945462,
         "calculated_all_interval_median_years": 66.01812354959412,
         "approximate_median_difference_percent": 32.036247099188245,
         "recurrence_intervals_years": [
@@ -122,6 +122,20 @@
       "Stepped boundaries in the accepted-step map reflect the saved spatial-profile cadence.",
       "Slip contours show two complete interseismic intervals and closing earthquakes; the original timing and detailed profiles are not recovered.",
       "No separate spatial refinement sequence has been completed for this fixed-pressure reference case."
+    ]
+  },
+  "comparison_metadata_update": {
+    "checks_passed": true,
+    "command": [
+      "python3",
+      "scripts/prepare_panels.py",
+      "F2a",
+      "F2b"
+    ],
+    "checks": [
+      "Panel arrays and both figure files retain their previously verified hashes.",
+      "Last-cycle and median comparisons agree with intervals recomputed from complete large-event end times.",
+      "Sidecar model and pipeline hashes agree with the current files."
     ]
   }
 }

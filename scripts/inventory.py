@@ -1,4 +1,13 @@
 """Published panel inventory; labels follow the visible panels, not inferred data."""
+# Approximate visual readings of displayed cycles, used only for comparison.
+# They are never read by the numerical model or used to select its cycles.
+PUBLISHED_CYCLES={
+    'reference':(50.,'Main Fig. 2a'),
+    'baseline':(32.,'Main Fig. 2c'),
+    'long_reference':(160.,'Supplementary Fig. 3a, PDF page 4'),
+    'long':(65.,'Supplementary Fig. 3c, PDF page 4'),
+    'verylong_reference':(160.,'Supplementary Fig. 5a, PDF page 6'),
+    'verylong':(150.,'Supplementary Fig. 5c, PDF page 6')}
 PANELS={}
 def add(name,quantity,kind,cases,documentation,field=None):
     PANELS[name]=dict(panel=name,quantity=quantity,kind=kind,cases=cases,

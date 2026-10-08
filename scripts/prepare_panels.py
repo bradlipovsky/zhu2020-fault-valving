@@ -6,7 +6,7 @@ import json
 import hashlib
 import numpy as np
 from common import fields, history, configuration, physical_depths, save_json, YEAR
-from inventory import PANELS
+from inventory import PANELS, PUBLISHED_CYCLES
 from analyze import analyze
 
 def analysis(case):
@@ -155,12 +155,21 @@ def prepare(name):
             rates=[s['speed_m_per_year'] for s in analysis('baseline')[field] if s['r2']>=.8]
             shallow.append('{:.3g}'.format(float(np.median(rates))) if rates else 'unmeasured')
         discrepancy+=' Baseline shallow medians: '+ '/'.join(shallow)+' m/year versus 4560.'
-    elif name.startswith('F2'):
-        case=spec['cases'][0];a=analysis(case);target=50 if case=='reference' else 32
-        recurrence=a['median_recurrence_years']
-        discrepancy=('No complete large-event recurrence obtained.' if recurrence is None else
-            'Median recurrence {:.3g} yr versus approximately {} yr in the displayed reference cycle ({:+.1f}%).'.format(
-                recurrence,target,100*(recurrence/target-1)))
+    elif name.startswith(('F2','S3','S5')):
+        case=spec['cases'][0];a=analysis(case);target,source=PUBLISHED_CYCLES[case]
+        duration=(a['selected_cycle_s'][1]-a['selected_cycle_s'][0])/YEAR if a['selected_cycle_complete'] else None
+        difference=100*(duration/target-1) if duration is not None else None
+        median=a['median_recurrence_years']
+        metadata['published_cycle_comparison']=dict(approximate_reference_years=target,
+            source=source+'; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data',
+            calculated_last_interval_years=duration,approximate_relative_difference_percent=difference,
+            calculated_all_interval_median_years=median,
+            approximate_median_difference_percent=100*(median/target-1) if median is not None else None,
+            recurrence_intervals_years=a['recurrence_years'])
+        discrepancy=('No complete large-event recurrence obtained.' if duration is None else
+            'Last complete interval {:.3g} yr versus approximately {:.0f} yr in {} ({:+.0f}%).'.format(
+                duration,target,source.split(',')[0],difference))
+        if median is not None:discrepancy+=' All-interval median {:.3g} yr.'.format(median)
         discrepancy+=' Initial state and friction profiles remain uncertain.'
         if case=='baseline' and a['selected_cycle_complete']:
             ruptures=a['phase_diagnostics']['first_partial_ruptures']
@@ -174,17 +183,6 @@ def prepare(name):
             discrepancy='At 10 km, k spans {:.3g}--{:.3g} square metres; exact cycle phases are not recovered.'.format(sample['permeability_min'],sample['permeability_max'])
         else:
             discrepancy='At 10 km, maximum flux is {:.3g} m/s; the article gives an order 1e-7 m/s upper scale. Phase timing differs.'.format(sample['flux_max'])
-    elif name in ['S3a','S3b']:
-        a=analysis('long_reference')
-        metadata['published_cycle_comparison']=dict(approximate_reference_years=160,
-            source='Supplementary Fig. 3a, published PDF page 4; approximate visual reading of the time axis, not simulation input or authors data')
-        if a['selected_cycle_complete']:
-            duration=(a['selected_cycle_s'][1]-a['selected_cycle_s'][0])/YEAR
-            difference=100*(duration/160-1)
-            metadata['published_cycle_comparison'].update(calculated_last_interval_years=duration,approximate_relative_difference_percent=difference)
-            discrepancy='Last complete interval {:.3g} yr versus roughly 160 yr by visual reading of Supplementary Fig. 3a ({:+.0f}%). Rupture sequence and assumed inputs differ.'.format(duration,difference)
-        else:
-            discrepancy='No complete large-event cycle; the displayed published reference cycle is roughly 160 yr by visual reading.'
     elif name.startswith(('S4','S6')):
         sample=analysis(spec['cases'][0])['sample_depths']['10000']
         discrepancy='At 10 km, stress range {:.3g} MPa and permeability ratio {:.3g}. The target is reduced valving with long healing; event sequence and mesh convergence remain uncertain.'.format(

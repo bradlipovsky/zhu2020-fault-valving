@@ -113,16 +113,26 @@ complete large-event intervals in that run; early intervals may retain startup
 effects. The selected figure cycle is specified separately in each panel sidecar.
 Small-rupture counts require a resolved 1 cm slip footprint. Every speed-threshold
 interval remains in the catalog, including those without such a footprint.
-The main reference figure shows an approximately 50-year interval, while the
-featured fault-valving cycle ends at approximately 32 years. These are approximate
-readings of the displayed time axes, not digitized curves or input data.
+The following comparison uses the final complete calculated interval, which is
+the window shown in each velocity panel. The published durations are approximate
+visual readings of the closing earthquake time on the displayed axes; portions
+of the published maps extend beyond that earthquake. These comparisons are not
+digitized curves or simulation inputs. Cumulative-slip panels include two cycles,
+whose separate boundaries are retained in their data files.
+\begin{center}\small\begin{tabular}{llrrr}
+\toprule
+Panel & Case & \shortstack{Published\\(yr)} & \shortstack{Last complete\\interval (yr)} & \shortstack{Difference\\(\%)}\\
+\midrule
 '''
-    for case,target in [('reference',50.),('baseline',32.)]:
-        measured=analyses[case]['median_recurrence_years']
-        if measured is not None:
-            comparison+='Our {} median is {} yr, a {}\\% difference from that approximate {} yr target.\n'.format(
-                tex(case),number(measured),number(100*(measured/target-1)),number(target))
-        else:comparison+='No complete large-event recurrence interval was obtained for {}.\n'.format(tex(case))
+    for name in ['F2a','F2c','S3a','S3c','S5a','S5c']:
+        m=panels[name];c=m['published_cycle_comparison']
+        comparison+=' & '.join([name,tex(m['case']),number(c['approximate_reference_years']),
+            number(c['calculated_last_interval_years']),number(c['approximate_relative_difference_percent'])])+r'\\'+'\n'
+    comparison+=r'''\bottomrule\end{tabular}\end{center}
+The all-interval medians above and the last intervals here describe different
+statistics. Neither alone establishes a stationary recurrence period. Each
+panel sidecar retains the chronological interval list and the comparison source.
+'''
     comparison+=r'''\begin{center}
 \begin{tabular}{llrrr}
 \toprule

@@ -89,14 +89,28 @@
     "exit_code": 0,
     "end_utc": "2026-10-08T14:31:00Z"
   },
+  "published_cycle_comparison": {
+    "approximate_reference_years": 50.0,
+    "source": "Main Fig. 2a; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
+    "calculated_last_interval_years": 63.97442152472731,
+    "approximate_relative_difference_percent": 27.94884304945462,
+    "calculated_all_interval_median_years": 66.01812354959412,
+    "approximate_median_difference_percent": 32.036247099188245,
+    "recurrence_intervals_years": [
+      70.71196776170964,
+      66.89603667975702,
+      65.14021041943123,
+      63.97442152472731
+    ]
+  },
   "status": "partial",
-  "main_discrepancy": "Median recurrence 66 yr versus approximately 50 yr in the displayed reference cycle (+32.0%). Initial state and friction profiles remain uncertain.",
+  "main_discrepancy": "Last complete interval 64 yr versus approximately 50 yr in Main Fig. 2a (+28%). All-interval median 66 yr. Initial state and friction profiles remain uncertain.",
   "model_source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
   "pipeline_source_sha256": {
     "scripts/common.py": "60bc209b1f71391a4172016d5b1bcbc0e1040cfa95c8bf972852039c83243142",
     "scripts/analyze.py": "3e4791cc732267a7dae80f8faab1de7e5d24f75ac69653433a4136d5dfc73f12",
-    "scripts/prepare_panels.py": "406555d1e64851b8c534090970945a4e2c42cb620765be8854daec242b6cc50e",
-    "scripts/inventory.py": "17a8d5f32e24d67d5f37fe5ba348cb9b373050e5658ab13f7f14e65f319ec4d3",
+    "scripts/prepare_panels.py": "ba7e2b2955cc66ba956a1efd1e66099327e93df87d6b085e03356b2cf290395f",
+    "scripts/inventory.py": "bcf57967af1f7c0dadd74894a79834c4007bd9a6ff9d1c92812396a6a4f4fb39",
     "scripts/plot.py": "2d2ecef344331fdcf5e4c16f44d80f8c828d40852af497d2c974b6662a73cd8f"
   }
 }
