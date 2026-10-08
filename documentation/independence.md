@@ -38,6 +38,12 @@ in `_years`. A year is 365.25 days.
    0.03 at 15 km, and slope 0.003/km below; a-b=-0.01 to 13.5 km and increases
    linearly with slope 0.01/3.5 km below, crossing zero at 17 km. Both profiles
    continue to the 500 km domain boundary. These are declared assumptions.
+   Allison and Dunham (2018), Section 3.1, describe linear extrapolation beyond
+   the available laboratory data and omit the shallow velocity-strengthening
+   transition. That written description supports the form of this approximation;
+   it does not specify Zhu et al.'s exact coefficients or deep friction values.
+   Agreement with the plotted shallow profiles therefore does not remove this
+   input uncertainty.
 3. Initial k* is its analytic steady-sliding value. Initial p is the discrete
    steady Darcy solution with prescribed bottom influx and zero surface p.
 4. Initially the fault is nearly locked above 17 km and creeps at Vp below,
