@@ -298,6 +298,30 @@ Case & First seismic onset (yr) & Peak speed (m/s) & Maximum slip (m) & Large?\\
 The first seismic event can be a small rupture that precedes the first large
 event. The table retains this distinction when comparing resolution. Peak speed
 comes from every accepted step; slip and the rupture footprint use stored fields.
+'''
+    comparison+=r'''\begin{center}\begin{tabular}{lrrrr}
+\toprule
+Case & \shortstack{Onset\\difference (s)} & \shortstack{Duration\\difference (\%)} & \shortstack{Peak speed\\difference (\%)} & \shortstack{Maximum slip\\difference (\%)}\\
+\midrule
+'''
+    reference=validation['baseline']['first_seismic_event']
+    for case in ['baseline_coarse','baseline_fine','baseline_tight']:
+        event=validation[case]['first_seismic_event'];difference=None
+        if event and reference:
+            difference=dict(onset_s=event['start_s']-reference['start_s'],
+                duration_percent=100*((event['end_s']-event['start_s'])/(reference['end_s']-reference['start_s'])-1),
+                peak_speed_percent=100*(event['peak_velocity']/reference['peak_velocity']-1),
+                maximum_slip_percent=100*(event['max_slip_m']/reference['max_slip_m']-1)
+                    if reference['max_slip_m']>0 else None)
+        validation[case]['first_event_difference_from_baseline']=difference
+        values=[difference[key] if difference else None for key in
+            ['onset_s','duration_percent','peak_speed_percent','maximum_slip_percent']]
+        comparison+=' & '.join([tex(case)]+[number(value) for value in values])+r'\\'+'\n'
+    comparison+=r'''\bottomrule\end{tabular}\end{center}
+Differences are signed relative to the baseline's first complete seismic event.
+Duration is the whole-fault threshold excursion defined above. These comparisons
+use a common initialization and include the finite saved-profile spacing in the
+slip measurement; they do not establish convergence of subsequent event sequences.
 
 Exact friction profiles, prestress, startup procedure, spatial grid, and the
 authors' saved cycle states cannot be recovered from the article and supplement.
