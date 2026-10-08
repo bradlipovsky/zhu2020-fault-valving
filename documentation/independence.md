@@ -59,6 +59,11 @@ in `_years`. A year is 365.25 days.
    surface node. Pressure uses a conservative second-order finite-volume
    scheme and harmonic face permeability. These numerical changes require
    verification and refinement, not a claim of identical trajectories.
+   Physical fault spacing is graded, with finest spacing 3.81 m, using a
+   weighted Galerkin projection of the cosine operator. The mesh family and
+   verification are in `graded_mesh.md`. Earlier uniform exploratory runs
+   were explicitly archived because they inadequately resolved the frictional
+   weakening length for the high-effective-stress cases; none supplies panels.
 6. Time integration uses independently implemented ARK4(3)6L[2]SA, a fourth-order
    additive Runge–Kutta method, with nonlinear implicit pressure stages and
    explicit slip, state, and k*. An embedded third-order solution estimates local

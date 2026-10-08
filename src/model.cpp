@@ -39,6 +39,8 @@ struct Parameters {
     double years=200, tolerance=1e-3, dt_max=1e6;
     double output_years=.025, output_seconds=.5, output_depth=30000;
     double output_spacing=30, seismic_threshold=1e-3;
+    double fine_depth=0, stretch_scale=10000, maximum_spacing=2000;
+    double surface_ratio=1, surface_scale=1000;
     bool fixed_pressure=false;
 };
 
@@ -62,6 +64,9 @@ Parameters read_config(const std::string& path) {
         {"output_years",&p.output_years},{"output_seconds",&p.output_seconds},
         {"output_depth",&p.output_depth},{"output_spacing",&p.output_spacing},
         {"seismic_threshold",&p.seismic_threshold}};
+    d["fine_depth"]=&p.fine_depth;d["stretch_scale"]=&p.stretch_scale;
+    d["maximum_spacing"]=&p.maximum_spacing;
+    d["surface_ratio"]=&p.surface_ratio;d["surface_scale"]=&p.surface_scale;
     std::ifstream f(path); if(!f) throw std::runtime_error("Cannot open config: "+path);
     std::string line;
     while(std::getline(f,line)) {
@@ -107,33 +112,74 @@ double velocity(double tau,double psi,double a,double normal,const Parameters& p
     return std::copysign(std::exp(w),tau);
 }
 
+std::vector<int> mesh_indices(const Parameters& p) {
+    std::vector<int> result;double h=p.Lz/p.n;
+    if(p.surface_ratio<1 || p.surface_scale<=0)throw std::runtime_error("Invalid surface mesh");
+    int j=int((p.surface_ratio-1)/2);
+    if(j>=p.n-1)throw std::runtime_error("Surface spacing exceeds domain");
+    if(p.fine_depth>0 && (p.stretch_scale<=0 || p.maximum_spacing<h))
+        throw std::runtime_error("Invalid graded mesh");
+    while(true) {
+        result.push_back(j);if(j==p.n-1)break;
+        double z=(j+.5)*h,ratio=std::max(1.,p.surface_ratio*std::exp(-z/p.surface_scale));
+        if(p.fine_depth>0 && z>p.fine_depth)
+            ratio=std::exp(std::min(std::log(p.maximum_spacing/h),(z-p.fine_depth)/p.stretch_scale));
+        int stride=std::max(1,int(std::round(ratio))),remaining=p.n-1-j;
+        // Keep the last interval comparable to its neighbor rather than create
+        // an isolated, tiny deep cell when the final stride does not divide N.
+        j+=remaining<1.5*stride?remaining:stride;
+    }
+    return result;
+}
+
 struct Model {
     Parameters p;
-    int n;
+    int nf;
     double h;
-    Vec z,a,b,prestress,buffer,spectral,stiffness,vel,tau;
+    std::vector<int> nodes;
+    int n;
+    Vec z,volume,distance,a,b,prestress,buffer,spectral,stiffness,vel,tau;
+    std::vector<int> interpolation_left;
+    Vec interpolation_right_weight;
     Vec permeability,face,lower,diagonal,upper,rhs,iterate,next;
     fftw_plan forward,backward;
-    Model(Parameters parameters):p(parameters),n(p.n),h(p.Lz/n),
-        z(n),a(n),b(n),prestress(n),buffer(n),spectral(n),stiffness(n),vel(n),tau(n),
+    Model(Parameters parameters):p(parameters),nf(p.n),h(p.Lz/nf),nodes(mesh_indices(p)),n(int(nodes.size())),
+        z(n),volume(n),distance(n),a(n),b(n),prestress(n),buffer(nf),spectral(nf),stiffness(nf),vel(n),tau(n),
+        interpolation_left(nf),interpolation_right_weight(nf),
         permeability(n),face(n+1),lower(n),diagonal(n),upper(n),rhs(n),iterate(n),next(n) {
         omp_set_num_threads(p.threads);
         for(int i=0;i<n;i++) {
-            z[i]=(i+.5)*h;
+            z[i]=(nodes[i]+.5)*h;
+            distance[i]=i?z[i]-z[i-1]:z[i];
+            double left=i?.5*(nodes[i]+nodes[i-1]+1)*h:0;
+            double right=i<n-1?.5*(nodes[i]+nodes[i+1]+1)*h:p.Lz;
+            volume[i]=right-left;
             a[i]=z[i]<=15000?p.a_surface+(p.a_15km-p.a_surface)*z[i]/15000:
                 p.a_15km+p.a_deep_slope*(z[i]-15000);
             double ab=z[i]<=p.ab_corner?p.ab_shallow:
                 p.ab_shallow+(-p.ab_shallow)*(z[i]-p.ab_corner)/(p.vw_bottom-p.ab_corner);
             b[i]=a[i]-ab;
             if(a[i]<=0 || b[i]<=0) throw std::runtime_error("Nonpositive friction parameter");
+        }
+        int left=0;
+        for(int i=0;i<nf;i++) {
+            while(left<n-2 && i>nodes[left+1])left++;
+            interpolation_left[i]=left;
+            interpolation_right_weight[i]=std::clamp(double(i-nodes[left])/(nodes[left+1]-nodes[left]),0.,1.);
             double wave=PI*i/p.Lz;
             stiffness[i]=i==0?p.mu/(2*p.Ly):.5*p.mu*wave/std::tanh(wave*p.Ly);
         }
-        forward=fftw_plan_r2r_1d(n,buffer.data(),spectral.data(),FFTW_REDFT10,FFTW_ESTIMATE);
-        backward=fftw_plan_r2r_1d(n,spectral.data(),buffer.data(),FFTW_REDFT01,FFTW_ESTIMATE);
+        forward=fftw_plan_r2r_1d(nf,buffer.data(),spectral.data(),FFTW_REDFT10,FFTW_ESTIMATE);
+        backward=fftw_plan_r2r_1d(nf,spectral.data(),buffer.data(),FFTW_REDFT01,FFTW_ESTIMATE);
         if(!forward||!backward) throw std::runtime_error("FFTW plan failed");
     }
     ~Model(){fftw_destroy_plan(forward);fftw_destroy_plan(backward);}
+    int nearest(double depth) const {
+        int i=int(std::lower_bound(z.begin(),z.end(),depth)-z.begin());
+        if(i==n)return n-1;
+        if(i>0 && depth-z[i-1]<z[i]-depth)return i-1;
+        return i;
+    }
     double kstar(double u) const { return p.kmin+(p.kmax-p.kmin)*u; }
     double normal(int i,double excess) const {return (p.normal_gradient-p.rho*p.gravity)*z[i]-excess;}
     double k_value(int i,double u,double excess) const {
@@ -155,7 +201,7 @@ struct Model {
             for(int k=0;k<70;k++) {
                 double mid=.5*(low+high), current=k_value(i,u,mid);
                 double left=i==0?kstar(u):k_value(i-1,u,x[3][i-1]);
-                double flux=harmonic(left,current)*(mid-(i==0?0:x[3][i-1]))/(p.viscosity*h*(i==0?.5:1.));
+                double flux=harmonic(left,current)*(mid-(i==0?0:x[3][i-1]))/(p.viscosity*distance[i]);
                 if(flux>p.influx) high=mid; else low=mid;
             }
             x[3][i]=.5*(low+high);
@@ -170,11 +216,20 @@ struct Model {
         return x;
     }
     void elastic(const Vec& slip_deficit) {
-        std::copy(slip_deficit.begin(),slip_deficit.end(),buffer.begin());
+        for(int j=0;j<nf;j++) {
+            int i=interpolation_left[j];double w=interpolation_right_weight[j];
+            buffer[j]=(1-w)*slip_deficit[i]+w*slip_deficit[i+1];
+        }
         fftw_execute(forward);
-        for(int i=0;i<n;i++) spectral[i]*=stiffness[i];
+        for(int i=0;i<nf;i++) spectral[i]*=stiffness[i];
         fftw_execute(backward);
-        for(int i=0;i<n;i++) tau[i]=prestress[i]-buffer[i]/(2*n);
+        std::fill(tau.begin(),tau.end(),0);
+        for(int j=0;j<nf;j++) {
+            int i=interpolation_left[j];double w=interpolation_right_weight[j];
+            double force=buffer[j]*h/(2*nf);
+            tau[i]+=(1-w)*force;tau[i+1]+=w*force;
+        }
+        for(int i=0;i<n;i++)tau[i]=prestress[i]-tau[i]/volume[i];
     }
     bool mechanical(const State& x,State& f) {
         elastic(x[0]);
@@ -195,15 +250,16 @@ struct Model {
     bool pressure(const Vec& base,const Vec& u,double dt,Vec& result) {
         if(p.fixed_pressure || dt==0) {result=base;return true;}
         iterate=base;
-        double factor=dt/(p.storage*p.viscosity*h*h);
+        double factor=dt/(p.storage*p.viscosity);
         for(int k=0;k<50;k++) {
             faces(u,iterate);
             for(int i=0;i<n;i++) {
-                double l=factor*face[i]*(i==0?2:1), r=i==n-1?0:factor*face[i+1];
+                double l=factor*face[i]/(volume[i]*distance[i]);
+                double r=i==n-1?0:factor*face[i+1]/(volume[i]*distance[i+1]);
                 lower[i]=i==0?0:-l; upper[i]=-r; diagonal[i]=1+l+r;
                 rhs[i]=base[i];
             }
-            rhs[n-1]+=dt*p.influx/(p.storage*h);
+            rhs[n-1]+=dt*p.influx/(p.storage*volume[n-1]);
             for(int i=1;i<n;i++) {
                 double m=lower[i]/diagonal[i-1];
                 diagonal[i]-=m*upper[i-1]; rhs[i]-=m*rhs[i-1];
@@ -242,8 +298,8 @@ struct Model {
     }
     Vec flux(const State& x) {
         faces(x[2],x[3]); Vec q(n+1);
-        q[0]=face[0]*x[3][0]*2/(p.viscosity*h);
-        for(int i=1;i<n;i++) q[i]=face[i]*(x[3][i]-x[3][i-1])/(p.viscosity*h);
+        q[0]=face[0]*x[3][0]/(p.viscosity*distance[0]);
+        for(int i=1;i<n;i++) q[i]=face[i]*(x[3][i]-x[3][i-1])/(p.viscosity*distance[i]);
         q[n]=p.influx;return q;
     }
 };
@@ -284,7 +340,7 @@ struct ARK4 {
             if(!m.mechanical(stage,rate[s]))return false;
             if(!m.p.fixed_pressure) {
                 Vec q=m.flux(stage);
-                for(int i=0;i<m.n;i++)rate[s][3][i]=(q[i+1]-q[i])/(m.p.storage*m.h);
+                for(int i=0;i<m.n;i++)rate[s][3][i]=(q[i+1]-q[i])/(m.p.storage*m.volume[i]);
             }
         }
         error=0;
@@ -314,18 +370,21 @@ struct Output {
     std::ofstream fields,history;
     std::vector<int> indices;
     double last_time=-1e100,last_snapshot_speed=0;
+    double minimum_Lb_cells=1e100,minimum_hstar_cells=1e100;
     int64_t snapshots=0;
     Output(Model& model,std::string directory,bool resume):m(model),dir(directory) {
         std::filesystem::create_directories(dir);
-        int stride=std::max(1,int(std::round(m.p.output_spacing/m.h)));
-        for(int i=0;i<m.n&&m.z[i]<=m.p.output_depth;i+=stride) indices.push_back(i);
+        for(double depth=m.z[0];depth<=m.p.output_depth;depth+=m.p.output_spacing) {
+            int i=m.nearest(depth);
+            if(m.z[i]<=m.p.output_depth && (indices.empty() || i!=indices.back()))indices.push_back(i);
+        }
         fields.open(dir+"/fields.bin",std::ios::binary|(resume?std::ios::app:std::ios::trunc));
         history.open(dir+"/history.csv",resume?std::ios::app:std::ios::trunc);
         if(!fields||!history) throw std::runtime_error("Cannot open output files");
         if(!resume) {
             fields.write("ZHUIND01",8); uint64_t nz=indices.size();put(fields,nz);
             for(int i:indices) put(fields,m.z[i]);
-            history<<"time_s,dt_s,step,vmax_m_s,z_vmax_m,min_effective_pa,surface_flux_m_s,error";
+            history<<"time_s,dt_s,step,vmax_m_s,z_vmax_m,min_effective_pa,surface_flux_m_s,error,min_Lb_cells,min_hstar_cells";
             for(int depth:{5000,10000,15000,20000})
                 for(auto s:{"velocity","slip","effective","permeability","flux"})history<<","<<s<<"_"<<depth;
             history<<"\n";
@@ -337,10 +396,20 @@ struct Output {
         Vec q=m.flux(x);
         auto it=std::max_element(m.vel.begin(),m.vel.end(),[](double x,double y){return std::abs(x)<std::abs(y);});
         int imax=int(it-m.vel.begin()); double vmax=std::abs(*it), minN=1e100;
-        for(int i=0;i<m.n;i++)minN=std::min(minN,m.normal(i,x[3][i]));
-        history<<t<<","<<dt<<","<<step<<","<<vmax<<","<<m.z[imax]<<","<<minN<<","<<q[0]<<","<<err;
+        double Lb_cells=1e100,hstar_cells=1e100;
+        for(int i=0;i<m.n;i++) {
+            double normal=m.normal(i,x[3][i]);minN=std::min(minN,normal);
+            if(m.b[i]>m.a[i]) {
+                Lb_cells=std::min(Lb_cells,m.p.mu*m.p.dc/(normal*m.b[i]*m.volume[i]));
+                hstar_cells=std::min(hstar_cells,m.p.mu*m.p.dc/(normal*(m.b[i]-m.a[i])*m.volume[i]));
+            }
+        }
+        minimum_Lb_cells=std::min(minimum_Lb_cells,Lb_cells);
+        minimum_hstar_cells=std::min(minimum_hstar_cells,hstar_cells);
+        history<<t<<","<<dt<<","<<step<<","<<vmax<<","<<m.z[imax]<<","<<minN<<","<<q[0]<<","<<err
+            <<","<<Lb_cells<<","<<hstar_cells;
         for(int depth:{5000,10000,15000,20000}) {
-            int i=std::min(m.n-1,int(depth/m.h));
+            int i=m.nearest(depth);
             history<<","<<m.vel[i]<<","<<x[0][i]+m.p.Vp*t<<","<<m.normal(i,x[3][i])<<","<<m.permeability[i]<<","<<.5*(q[i]+q[i+1]);
         }
         history<<"\n";
@@ -368,7 +437,7 @@ struct Output {
 
 void run(const std::string& config,const std::string& directory,bool resume) {
     Parameters p=read_config(config); Model m(p); State x=m.initial();
-    State fine=zeros(p.n);ARK4 solver(m);
+    State fine=zeros(m.n);ARK4 solver(m);
     double t=0,dt=10; int64_t steps=0,rejected=0;
     std::filesystem::create_directories(directory);
     if(resume) {
@@ -406,7 +475,8 @@ void run(const std::string& config,const std::string& directory,bool resume) {
     std::ofstream meta(directory+"/completed.json");
     meta<<std::setprecision(15)<<"{\n  \"completed\": true, \"time_s\": "<<t<<", \"years\": "<<t/YEAR
         <<", \"accepted_steps\": "<<steps<<", \"rejected_steps\": "<<rejected<<", \"elapsed_s\": "<<elapsed
-        <<", \"n\": "<<p.n<<", \"dz_m\": "<<m.h<<", \"tolerance\": "<<p.tolerance<<"\n}\n";
+        <<", \"n\": "<<p.n<<", \"dynamic_nodes\": "<<m.n<<", \"dz_m\": "<<m.h<<", \"tolerance\": "<<p.tolerance
+        <<", \"minimum_Lb_cells\": "<<out.minimum_Lb_cells<<", \"minimum_hstar_cells\": "<<out.minimum_hstar_cells<<"\n}\n";
     std::cout<<"COMPLETED years="<<t/YEAR<<" steps="<<steps<<" elapsed_s="<<elapsed<<std::endl;
 }
 

@@ -8,6 +8,7 @@ from common import YEAR, fields, history, configuration, save_json, MAIN_CASES
 
 def analyze(case):
     z,r=fields(case); h=history(case); t=np.asarray(r['time']); v=np.asarray(r['fields'][:,1,:])
+    completed=json.loads(Path('data',case,'completed.json').read_text())
     cfg=configuration(Path('data',case,'config.cfg'))
     seismic=h['vmax_m_s']>=cfg['seismic_threshold']
     starts=np.flatnonzero(seismic & ~np.r_[False,seismic[:-1]])
@@ -104,6 +105,7 @@ def analyze(case):
             median_duration_years=float(np.median([e['duration_years'] for e in episodes])) if episodes else None,
             median_net_slip_m=float(np.median([e['net_slip_m'] for e in episodes])) if episodes else None)
     result=dict(case=case,configuration=cfg,events=events,complete_cycles_s=cycles,
+        resolution={key:completed[key] for key in ['n','dynamic_nodes','dz_m','minimum_Lb_cells','minimum_hstar_cells']},
         event_definition='maximum accepted-step speed >= 1e-3 m/s; connected event-slip footprint >= 0.01 m; large if top < 2 km and span > 10 km',
         selected_cycle_s=selected,selection_rule='last complete large-event cycle; entire run if none',
         selected_cycle_complete=bool(cycles),large_event_count=len(large),

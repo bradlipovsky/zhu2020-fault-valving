@@ -29,6 +29,8 @@ def main():
         configured=configuration('configs/'+case+'.cfg')
         assert abs(done['years']-configured['years'])<1e-9,case+' incorrect end time'
         assert done['n']==int(configured['n']),case+' incorrect mesh'
+        assert 8<=done['dynamic_nodes']<=done['n'],case+' invalid physical mesh'
+        assert done['minimum_Lb_cells']>0 and done['minimum_hstar_cells']>0,case+' invalid resolution diagnostic'
         checked.extend([folder/'completed.json',folder/'analysis.json',folder/'provenance.json'])
     for name,spec in PANELS.items():
         path=Path(spec['data_file']);meta=json.loads(path.with_suffix('.json').read_text())
@@ -43,6 +45,7 @@ def main():
             if 'values' in d:
                 assert d['values'].shape==(len(d['time_s']),len(d['depth_m'])),name
                 assert len(d['time_s'])>1 and np.all(np.diff(d['time_s'])>=0),name
+                assert d['step'].shape==d['time_s'].shape and np.all(np.diff(d['step'])>=0),name+' inconsistent step coordinate'
                 assert np.all(np.diff(d['depth_m'])>0),name
                 field=int(d['field'])
                 if field==2:assert d['values'].min()>0,name+' nonpositive effective stress'
@@ -65,7 +68,7 @@ def main():
     for error in ['LaTeX Error','There were undefined references','Citation `']:
         assert error not in log,error
     checked.extend(Path('report').glob('*.tex'));checked.append(pdf)
-    checked.extend([Path('data/verification.txt'),Path('data/coupled_verification.txt'),Path('data/steady_verification.txt'),
+    checked.extend([Path('data/verification.txt'),Path('data/coupled_verification.txt'),Path('data/steady_verification.txt'),Path('data/graded_verification.txt'),
         Path('data/quantitative_comparisons.json'),Path('data/validation_summary.json')])
     checked.extend(Path('data/laws').glob('*.csv'))
     checked.extend(Path('configs',case+'.cfg') for case in MAIN_CASES+VALIDATION_CASES)

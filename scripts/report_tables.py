@@ -74,7 +74,7 @@ We compare the production initial-pressure solver with these separately
 integrated solutions for both the published permeability floor and its zero limit.
 Errors decrease by approximately four when grid spacing is halved.
 {\small\begin{verbatim}
-'''+Path('data/verification.txt').read_text()+Path('data/coupled_verification.txt').read_text()+Path('data/steady_verification.txt').read_text()+r'''\end{verbatim}
+'''+Path('data/verification.txt').read_text()+Path('data/coupled_verification.txt').read_text()+Path('data/steady_verification.txt').read_text()+Path('data/graded_verification.txt').read_text()+r'''\end{verbatim}
 }
 The diffusion errors decrease by approximately four on each joint space/time
 refinement. The coupled test compares fixed steps of 20,000, 10,000, and 5,000 s
@@ -205,7 +205,7 @@ specify an equivalent threshold, so duration comparisons carry that ambiguity.
 \begin{center}
 \begin{tabular}{lrrrr}
 \toprule
-Case & Cells & Tolerance & First large event (yr) & Difference from baseline (yr)\\
+Case & Finest spacing (m) & Tolerance & First large event (yr) & Difference (yr)\\
 \midrule
 '''
     for case in ['baseline']+VALIDATION_CASES:
@@ -217,11 +217,13 @@ Case & Cells & Tolerance & First large event (yr) & Difference from baseline (yr
             final_time_years=a['final_time_years'],large_event_count=a['large_event_count'],
             front_speed_m_per_year=front_speed(a),
             first_seismic_event=a['events'][0] if a['events'] else None)
-        comparison+=' & '.join([tex(case),str(int(a['configuration']['n'])),number(a['configuration']['tolerance']),number(first),number(difference)])+r'\\'+'\n'
+        comparison+=' & '.join([tex(case),number(a['resolution']['dz_m']),number(a['configuration']['tolerance']),number(first),number(difference)])+r'\\'+'\n'
     comparison+=r'''\bottomrule
 \end{tabular}
 \end{center}
-The coarse and fine meshes have spacings of 30.52 and 7.63 m. The tight case
+The coarse and fine meshes have minimum spacings of 7.63 and 1.91 m, compared
+with 3.81 m in the baseline. The maximum deep spacing also halves on refinement.
+The tight case
 reduces the integration tolerance by four. The initialization case doubles the
 small state perturbation; the normal-stress case uses 23 rather than 22 MPa/km.
 The fine-grid and input-sensitivity runs cover 100 years; other baseline
@@ -230,6 +232,21 @@ sample the same cycle. First-event times compare a common initialization and
 are reported without relabeling one event as another to improve agreement.
 These tests quantify sensitivity; a small first-event difference alone does
 not establish convergence of later swarm sequences.
+\begin{center}\begin{tabular}{lrrr}
+\toprule
+Case & Physical fault nodes & Minimum $L_b/\Delta z$ & Minimum $h^*/\Delta z$\\
+\midrule
+'''
+    for case in MAIN_CASES:
+        resolution=analyses[case]['resolution']
+        comparison+=' & '.join([tex(case),str(resolution['dynamic_nodes']),number(resolution['minimum_Lb_cells']),
+            number(resolution['minimum_hstar_cells'])])+r'\\'+'\n'
+    comparison+=r'''\bottomrule\end{tabular}\end{center}
+Here $L_b=\mu d_c/[N b]$ and $h^*=\mu d_c/[N(b-a)]$, with $N=\sigma-p$.
+The minima include every accepted step and every velocity-weakening node;
+$\Delta z$ is its actual control-volume width. These diagnostics follow the
+length scales discussed by Allison and Dunham\ \cite{allison}, Eqs. (20)--(21).
+They quantify local resolution and do not alone establish sequence convergence.
 \begin{center}\begin{tabular}{lrrrr}
 \toprule
 Case & First seismic onset (yr) & Peak speed (m/s) & Maximum slip (m) & Large?\\

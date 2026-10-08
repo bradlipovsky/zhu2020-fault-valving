@@ -1,0 +1,333 @@
+{
+  "archive": ".tmp/uniform-exploration-20261008T055943Z",
+  "reason": "Uniform 15.26 m mesh insufficiently resolves Lb in high-effective-stress cases. New graded simulations start from independent initial conditions; these outputs are excluded from final panel inputs.",
+  "runs": [
+    {
+      "case": "reference",
+      "completed_before_stop": false,
+      "last_log": "year=64.795609 steps=25975 rejected=11098 dt=76050.991 elapsed_s=3226.7927",
+      "original_provenance": {
+        "case": "reference",
+        "command": [
+          "build/valving",
+          "configs/reference.cfg",
+          "data/reference"
+        ],
+        "config_sha256": "98ada7fef7b2db0f79f03ce03e8f9f0d83e4a6c81c11b925fe4f997d209894b1",
+        "cpu_affinity": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581128,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581128,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "baseline",
+      "completed_before_stop": false,
+      "last_log": "year=10.801073 steps=16205 rejected=5873 dt=85878.711 elapsed_s=3233.0289",
+      "original_provenance": {
+        "case": "baseline",
+        "command": [
+          "build/valving",
+          "configs/baseline.cfg",
+          "data/baseline"
+        ],
+        "config_sha256": "694095e5b22b93d6aca877dc075fc0a26f53b967e3a129abc6f11944d53eb970",
+        "cpu_affinity": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581129,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581129,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "short",
+      "completed_before_stop": false,
+      "last_log": "year=37.264092 steps=15317 rejected=6367 dt=120669.97 elapsed_s=3232.2567",
+      "original_provenance": {
+        "case": "short",
+        "command": [
+          "build/valving",
+          "configs/short.cfg",
+          "data/short"
+        ],
+        "config_sha256": "554498c19c0623344d5eb9e9b48d731e67d6e370b6b29ba58646af0ba263b84d",
+        "cpu_affinity": [
+          8,
+          9,
+          10,
+          11
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581130,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581130,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "long",
+      "completed_before_stop": false,
+      "last_log": "year=28.221361 steps=16865 rejected=6397 dt=0.0071130454 elapsed_s=3232.5495",
+      "original_provenance": {
+        "case": "long",
+        "command": [
+          "build/valving",
+          "configs/long.cfg",
+          "data/long"
+        ],
+        "config_sha256": "d9c53a17706b60d5a652b93e602ab2cf1487d86d228eeb47f46709cc1f147838",
+        "cpu_affinity": [
+          12,
+          13,
+          14,
+          15
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581131,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581131,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "long_reference",
+      "completed_before_stop": false,
+      "last_log": "year=110.19276 steps=31788 rejected=11318 dt=109796.09 elapsed_s=3225.4124",
+      "original_provenance": {
+        "case": "long_reference",
+        "command": [
+          "build/valving",
+          "configs/long_reference.cfg",
+          "data/long_reference"
+        ],
+        "config_sha256": "30a0092f4c936551ca2be27642273b4def20dfce2e32db8c7c6c7434580963ec",
+        "cpu_affinity": [
+          16,
+          17,
+          18,
+          19
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581132,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581132,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "verylong",
+      "completed_before_stop": false,
+      "last_log": "year=73.592298 steps=17610 rejected=6411 dt=29609.149 elapsed_s=3231.5217",
+      "original_provenance": {
+        "case": "verylong",
+        "command": [
+          "build/valving",
+          "configs/verylong.cfg",
+          "data/verylong"
+        ],
+        "config_sha256": "80b770eb24517c2a49068bea9276c1e6a4ad951f36ee417c4e7c72fec21887d6",
+        "cpu_affinity": [
+          20,
+          21,
+          22,
+          23
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581133,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581133,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "verylong_reference",
+      "completed_before_stop": false,
+      "last_log": "year=106.2098 steps=28744 rejected=10512 dt=57754.552 elapsed_s=3226.7428",
+      "original_provenance": {
+        "case": "verylong_reference",
+        "command": [
+          "build/valving",
+          "configs/verylong_reference.cfg",
+          "data/verylong_reference"
+        ],
+        "config_sha256": "9bea9edd349f7fdf7f0aa5730b8035096644f00f01b98b6a7467b723bbe934b0",
+        "cpu_affinity": [
+          24,
+          25,
+          26,
+          27
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581134,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581134,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "baseline_coarse",
+      "completed_before_stop": false,
+      "last_log": "year=47.184296 steps=30770 rejected=11719 dt=136860.19 elapsed_s=3226.7143",
+      "original_provenance": {
+        "case": "baseline_coarse",
+        "command": [
+          "build/valving",
+          "configs/baseline_coarse.cfg",
+          "data/baseline_coarse"
+        ],
+        "config_sha256": "399cb98f5136815aaff1feeb6b77ad7c2db48a4af57cd00ee952189231416041",
+        "cpu_affinity": [
+          28,
+          29,
+          30,
+          31
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581135,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581135,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "baseline_fine",
+      "completed_before_stop": false,
+      "last_log": "year=7.7122671 steps=7370 rejected=3037 dt=983.92171 elapsed_s=3228.842",
+      "original_provenance": {
+        "case": "baseline_fine",
+        "command": [
+          "build/valving",
+          "configs/baseline_fine.cfg",
+          "data/baseline_fine"
+        ],
+        "config_sha256": "a470770c32eeaa8b94dea7e66d63f086dfa3f45c35b64d6602097707a3c1a606",
+        "cpu_affinity": [
+          32,
+          33,
+          34,
+          35
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581136,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581136,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "baseline_tight",
+      "completed_before_stop": false,
+      "last_log": "year=8.1063241 steps=16538 rejected=5392 dt=0.0031243451 elapsed_s=3231.5063",
+      "original_provenance": {
+        "case": "baseline_tight",
+        "command": [
+          "build/valving",
+          "configs/baseline_tight.cfg",
+          "data/baseline_tight"
+        ],
+        "config_sha256": "db219856edc18625fd4ae6bde84f7dad4c1a0d0c3c2107cba4a93ed4c30bd2f1",
+        "cpu_affinity": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581137,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581137,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "initialization",
+      "completed_before_stop": false,
+      "last_log": "year=8.8339936 steps=15387 rejected=5488 dt=133686.53 elapsed_s=3233.2704",
+      "original_provenance": {
+        "case": "initialization",
+        "command": [
+          "build/valving",
+          "configs/initialization.cfg",
+          "data/initialization"
+        ],
+        "config_sha256": "62b256ed3dbed6ff00fe7cbdf46b7993cd638869581d29f37edc9d3def8ab8dc",
+        "cpu_affinity": [
+          40,
+          41,
+          42,
+          43
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581138,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581138,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    },
+    {
+      "case": "normal_stress",
+      "completed_before_stop": false,
+      "last_log": "year=10.795426 steps=15820 rejected=5777 dt=68234.069 elapsed_s=3234.0653",
+      "original_provenance": {
+        "case": "normal_stress",
+        "command": [
+          "build/valving",
+          "configs/normal_stress.cfg",
+          "data/normal_stress"
+        ],
+        "config_sha256": "b6150b8fe796ad232fc03b82166f0fea12118676a9c8f99acfade2d2b60f5361",
+        "cpu_affinity": [
+          44,
+          45,
+          46,
+          47
+        ],
+        "executable_sha256": "102ae7671e9d0787e2c6788335e0035576abf5a29456f706e73aa53b14a49b72",
+        "pid": 2581139,
+        "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+        "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+        "start_utc": "2026-10-08T05:05:45Z"
+      },
+      "pid": 2581139,
+      "termination": "SIGTERM deliberately sent to replace underresolved exploratory mesh"
+    }
+  ],
+  "source_commit": "586ebfd",
+  "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+  "stopped_utc": "2026-10-08T05:59:43Z"
+}

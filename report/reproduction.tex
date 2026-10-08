@@ -120,20 +120,36 @@ eigenvalues retain the finite side and bottom boundaries. FFTW cosine transforms
 apply this operator on cell centers, with $\tau_{\rm qs}=\tau_{\rm initial}-Kd$
 and $d$ equal to accumulated slip minus $V_pt$.
 
+Physical fault nodes form a graded subset of this auxiliary grid. If $P$
+linearly interpolates physical slip to the cosine grid, the physical operator is
+$W^{-1}P^T h K P$, where $W$ contains control-volume widths and $h$ is the
+auxiliary spacing. This weighted Galerkin projection preserves constant traction,
+elastic reciprocity, and positive elastic energy. It retains the fine grid
+through the rupture region while reducing the number of far-depth unknowns.
+
 Pressure is discretized by conservative finite volumes, using excess pressure
-$p-\rho gz$ and harmonic face permeability. Surface pressure is imposed a half
-cell from the first unknown; bottom flux enters the storage balance directly.
+$p-\rho gz$ and harmonic face permeability. Gradients use actual node distances;
+surface pressure is imposed at the surface and bottom flux enters storage directly.
 This scheme differs from the paper's fourth-order summation-by-parts method.
-The production mesh has 32,768 cells, giving $\Delta z=15.259$ m over the
-500 km domain. The refinement cases use 16,384 and 65,536 cells.
+The production cosine grid has 131,072 points, giving a minimum fault spacing
+of 3.815 m. Spacing is finest through the rupture depths and down to 30 km;
+it increases at greater depths toward a 1 km target. The final interval can
+reach about 1.5 times that target to avoid an undersized boundary interval.
+The surface spacing is about
+eight times the minimum and decreases to the minimum over the upper 2 km.
+Both the minimum and maximum spacings halve or double in refinement cases.
+The number of physical nodes and the resolved frictional length scales are
+reported below. No stress or velocity floor replaces spatial resolution.
 
 We use the fourth-order additive Runge--Kutta method ARK4(3)6L[2]SA\ \cite{kennedy},
 treating fluid flow implicitly and slip, state, and $k_*$ explicitly. The nonlinear pressure
 solve iterates permeability and a tridiagonal solve to an absolute pressure-update
 tolerance of 0.001 Pa. An embedded third-order estimate controls errors in slip,
 state, permeability, and pressure. The fourth-order solution is accepted. Production tolerance is
-$10^{-3}$ in the scaled maximum norm; the time-accuracy case uses
-$2.5\times10^{-4}$. The maximum step is $10^6$ s. Detailed coefficients, scales,
+$10^{-5}$ in the scaled maximum norm; the time-accuracy case uses
+$2.5\times10^{-6}$. A controlled interseismic benchmark showed that this tighter
+tolerance reduced accumulated errors without substantially increasing the cost
+of the graded calculation. The maximum step is $10^6$ s. Detailed coefficients, scales,
 boundary formulas, and data formats are given in \code{documentation/numerics.md}.
 
 \input{verification.tex}

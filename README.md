@@ -12,6 +12,9 @@ friction, one-dimensional fault-zone Darcy flow, pore pressure, and permeability
 evolution. FFTW supplies cosine transforms. Python supplies output analysis and
 plotting. All physical constants, assumptions, and numerical settings are written
 in `configs/*.cfg`; see `documentation/independence.md`.
+The fault mesh resolves the rupture region at 3.81 m and coarsens at depth.
+`documentation/graded_mesh.md` describes its conservative fluid operator,
+energy-preserving elastic projection, and refinement checks.
 
 ## Regeneration
 

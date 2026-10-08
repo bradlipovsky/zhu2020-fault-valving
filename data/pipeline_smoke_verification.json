@@ -1,12 +1,14 @@
 {
   "purpose": "software integration only; no smoke figure used in scientific report",
-  "isolated_directory": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791436487577023488",
+  "isolated_directory": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
   "configuration_overrides": {
     "n": 512,
     "threads": 1,
     "years": 0.002,
     "output_years": 0.0001,
-    "output_spacing": 1000
+    "output_spacing": 1000,
+    "fine_depth": 0,
+    "surface_ratio": 1
   },
   "command": [
     "python3",
@@ -14,7 +16,38 @@
     "--jobs",
     "3"
   ],
-  "source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
   "exit_code": 0,
-  "wall_s": 173.5309498310089
+  "wall_s": 171.85968947410583,
+  "postprocess_update": {
+    "command": [
+      "python3",
+      "scripts/reproduce.py",
+      "--postprocess-only"
+    ],
+    "exit_code": 0,
+    "wall_s": 122.73641300201416
+  },
+  "final_report_update": {
+    "exit_code": 0,
+    "wall_s": 5.622314691543579,
+    "commands": [
+      [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ]
+    ]
+  }
 }

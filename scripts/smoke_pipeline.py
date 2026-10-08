@@ -19,7 +19,8 @@ def main():
     for name in ['CMakeLists.txt','requirements.txt']:shutil.copy(str(root/name),str(test/name))
     (test/'.deps').symlink_to(root/'.deps',target_is_directory=True)
     # These intentionally coarse, short runs test software integration only.
-    overrides=dict(n=512,threads=1,years=.002,output_years=.0001,output_spacing=1000)
+    overrides=dict(n=512,threads=1,years=.002,output_years=.0001,output_spacing=1000,
+                   fine_depth=0,surface_ratio=1)
     for path in (test/'configs').glob('*.cfg'):
         lines=[]
         for line in path.read_text().splitlines():

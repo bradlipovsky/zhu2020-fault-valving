@@ -42,7 +42,8 @@ def run_panel(name,spec):
         lookup={1:'velocity',2:'effective',3:'permeability',5:'flux'}
         vals=np.column_stack([hh[lookup[field]+'_'+str(d)] for d in [5000,10000,15000,20000]])
         # Store all accepted samples; no interpolation or copied reference curves.
-        result.update(depth_m=np.array([5000,10000,15000,20000]),time_s=hh['time_s'],values=vals)
+        result.update(depth_m=np.array([5000,10000,15000,20000]),time_s=hh['time_s'],step=hh['step'],values=vals,
+            steady_values=np.array([h[lookup[field]+'_'+str(d)][0] for d in [5000,10000,15000,20000]]))
     if kind in ['profiles','slip_profiles']:
         interval=1.5 if cfg['T']<=1e8 else 4
         requested=np.arange(window[0],window[1],interval*YEAR)

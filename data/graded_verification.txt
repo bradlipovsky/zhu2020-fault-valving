@@ -1,0 +1,18 @@
+surface_ratio=1 graded_nodes=2868 fourier_nodes=32768
+constant_mode_error=2.22044604925e-16 reciprocity_error=1.16357279828e-16
+localized_elastic_error=0 storage_residual_m=7.16879627467e-14
+graded_steady_fourier_n=2048 dynamic_nodes=602 error=2.00698239456e-06
+graded_steady_fourier_n=4096 dynamic_nodes=1202 error=5.15524780502e-07
+graded_steady_fourier_n=8192 dynamic_nodes=2404 error=1.2927981019e-07
+graded_steady_fourier_n=16384 dynamic_nodes=4806 error=3.24071727693e-08
+surface_ratio=8 graded_nodes=2791 fourier_nodes=32768
+constant_mode_error=2.22044604925e-16 reciprocity_error=1.04084544342e-16
+localized_elastic_error=0 storage_residual_m=6.882771449e-14
+graded_steady_fourier_n=2048 dynamic_nodes=523 error=2.66392618343e-06
+graded_steady_fourier_n=4096 dynamic_nodes=1044 error=6.51199921531e-07
+graded_steady_fourier_n=8192 dynamic_nodes=2090 error=1.61386928397e-07
+graded_steady_fourier_n=16384 dynamic_nodes=4178 error=4.06003429244e-08
+graded_diffusion_fourier_n=256 dynamic_nodes=101 error=5.27033916706e-05
+graded_diffusion_fourier_n=512 dynamic_nodes=202 error=1.47145735301e-05
+graded_diffusion_fourier_n=1024 dynamic_nodes=403 error=3.85536145309e-06
+GRADED MESH TESTS PASSED

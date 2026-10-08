@@ -9,7 +9,7 @@
   "plot_command": "python3 scripts/plot.py F1a",
   "data_file": "data/panels/F1a.npz",
   "parameters": {
-    "n": 32768.0,
+    "n": 131072.0,
     "threads": 4.0,
     "Ly": 500000.0,
     "Lz": 500000.0,
@@ -43,8 +43,13 @@
     "initial_transition_width": 1500.0,
     "initial_velocity_fraction": 0.0001,
     "years": 200.0,
-    "tolerance": 0.001,
+    "tolerance": 1e-05,
     "dt_max": 1000000.0,
+    "fine_depth": 30000.0,
+    "stretch_scale": 10000.0,
+    "maximum_spacing": 1000.0,
+    "surface_ratio": 8.0,
+    "surface_scale": 1000.0,
     "output_years": 0.025,
     "output_seconds": 0.5,
     "output_depth": 30000.0,
@@ -56,12 +61,12 @@
   "selection": "Direct constitutive laws or independently calculated steady state",
   "status": "partial",
   "main_discrepancy": "New schematic, not a simulation reproduction; friction profiles are declared approximations.",
-  "model_source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f",
+  "model_source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
   "pipeline_source_sha256": {
     "scripts/common.py": "f1d71ce0be91ecc2543f370370257f3ae619f6732fad588cbf0c5a7b92041fcb",
-    "scripts/analyze.py": "f3cc95b851747ec5214f6cc7f1b8398181305743cd097da7196871b19d48c018",
-    "scripts/prepare_panels.py": "600d0435b21c5609c923f80c7367bfb6d009c1e7d7fe037e2b4f446a46c1dbea",
+    "scripts/analyze.py": "670cceb8acab0a40edbd7a36e5ef59169a1d8bf75245ff925a9a94c59fc4ef26",
+    "scripts/prepare_panels.py": "538fbfc06ee8b2c159d614f4bae10e61dadea16ffb9d4e706225aeb265acc497",
     "scripts/inventory.py": "09dc09f3f31821ab23b0686ba06ba47c08e0c8fb91a48836e2c7217bf17c122c",
-    "scripts/plot.py": "9c14dd5aa4d1370da6f6ce72d17197e68c9f9524a68489cdaa2e01f99618059c"
+    "scripts/plot.py": "f844a21f100819ae806f97cfe7bd26a196914fd57c24e61e0d22190b3a283c9a"
   }
 }

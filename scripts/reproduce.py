@@ -30,6 +30,7 @@ def main():
         with open('data/verification.txt','w') as f:subprocess.run(['build/valving','--test'],stdout=f,check=True)
         with open('data/coupled_verification.txt','w') as f:subprocess.run(['build/coupled_test'],stdout=f,check=True)
         with open('data/steady_verification.txt','w') as f:subprocess.run(['build/steady_test'],stdout=f,check=True)
+        with open('data/graded_verification.txt','w') as f:subprocess.run(['build/graded_test'],stdout=f,check=True)
         subprocess.run(['build/valving','--laws','configs/baseline.cfg','data/laws'],check=True)
         source_hash=digest('src/model.cpp'); executable_hash=digest('build/valving')
         pending=[]

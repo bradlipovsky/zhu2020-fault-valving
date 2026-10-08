@@ -71,6 +71,8 @@ def render(fig,slot,name):
         for p in [8,9,10]:top.semilogy(d['time_s']/YEAR,d['T_1e'+str(p)],label='$T={:.2f}$ yr'.format(10**p/YEAR))
         top.set(xlabel='Time without slip (yr)',ylabel='$k_*$ (m$^2$)',title='F1c: constitutive limiting solutions');top.legend()
         bottom.semilogy(d['slip_m'],d['kstar_m2']);bottom.set(xlabel='Slip with negligible healing (m)',ylabel='$k_*$ (m$^2$)')
+        for ax in [top,bottom]:
+            ax.set_ylim(6e-20,2e-15);ax.set_yticks([1e-19,1e-17,1e-15])
     elif kind=='steady':
         ax=axes(fig,slot);z=d['depth_m']/1000
         for key,label,style in [('pressure_pa','Pore pressure','-'),('effective_pa','Effective stress','-'),

@@ -23,6 +23,12 @@ finite-domain operator, not an infinite-half-space approximation. The initial
 prestress is equivalent to an initial slip field -K^{-1} tau_initial with zero
 remote displacement; only subsequent accumulated slip is plotted.
 
+The production fault mesh is graded. Linear interpolation P maps its slip to
+the auxiliary cosine grid. Tractions return by the weighted adjoint
+W^(-1) P^T h, where W contains physical control-volume widths. This preserves
+constant traction and weighted elastic reciprocity. The complete construction,
+mesh-refinement family, and verification are given in `graded_mesh.md`.
+
 ## Friction and state
 
 At each explicit stage solve the scalar, monotone equation
@@ -44,12 +50,13 @@ the calculation and cannot produce a `completed.json` record.
 ## Fluid flow
 
 We evolve excess pressure e=p-rho g z, giving q=(k/eta) de/dz. Integrating
-fluid conservation over a cell gives n beta h de_i/dt=q_{i+1/2}-q_{i-1/2}.
+fluid conservation over a cell gives n beta width_i de_i/dt=q_{i+1/2}-q_{i-1/2}.
 Interior face permeability is the harmonic mean of adjacent cell values.
-At the surface the pressure is zero at the boundary face, half a cell from
-the first unknown; the face permeability is the harmonic mean of the first
+Pressure gradients use the actual distance between adjacent physical nodes.
+At the surface the pressure is zero at the boundary face, at its actual distance
+from the first unknown; the face permeability is the harmonic mean of the first
 cell and its extrapolated zero-effective-stress boundary value k*_0. This is
-a second-order boundary approximation for smooth profiles. At the bottom the
+the half-cell distance for a uniform mesh. At the bottom the
 flux is the prescribed q0. There are no internal fluid sources.
 
 Each implicit pressure stage uses fixed-point iteration: form k(e), assemble
@@ -128,6 +135,8 @@ effective normal stress, permeability, k*, upward flux. The numerical integratio
 itself uses float64 throughout. These snapshots cover the upper 30 km with about
 30 m output spacing; spatial output subsampling does not change the solution grid.
 Every accepted step also writes a text history with maxima and four depth traces.
+It additionally records the minimum numbers of physical cell widths across
+Lb and h* in the velocity-weakening region, using the current effective stress.
 The text histories use 17 significant decimal digits, preserving float64 times.
 Binary snapshot times likewise retain full float64 precision.
 

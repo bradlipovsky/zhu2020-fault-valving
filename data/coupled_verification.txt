@@ -1,6 +1,6 @@
 uniform_elastic_relative_error=0
 hydrostatic_excess_pressure_error_pa=0
-nonlinear_storage_residual_m=2.9440493554307e-15
+nonlinear_storage_residual_m=1.2489941264397e-15
 coupled_dt_s=20000 scaled_error=1.1455805435266e-05
 coupled_dt_s=10000 scaled_error=2.7157522411609e-06
 coupled_dt_s=5000 scaled_error=5.4202585316747e-07
