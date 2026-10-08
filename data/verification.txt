@@ -1,0 +1,10 @@
+steady_flux_relative_error=1.23234755733e-14
+steady_velocity_relative_error=7.54951656745e-15
+elastic_mode_error=3.336220189e-14
+diffusion_n=32 relative_error=3.85079466105e-05 storage_balance_m=3.4863876109e-18
+diffusion_n=64 relative_error=9.62955615735e-06 storage_balance_m=8.57874968979e-18
+diffusion_n=128 relative_error=2.40755035108e-06 storage_balance_m=3.15096256379e-18
+constitutive_steps=100 error=7.93333505777e-07
+constitutive_steps=200 error=1.95996174401e-07
+constitutive_steps=400 error=4.8710390943e-08
+ALL EQUATION AND LIMIT TESTS PASSED

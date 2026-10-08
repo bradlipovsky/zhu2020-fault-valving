@@ -1,2 +1,0 @@
-{
-"n": 16385, "nz": 849, "dz": 35.336467348266602, "height_m": 578952.68103400001, "width_m": 500000, "T_s": 100000000, "q0_m_s": 3e-09, "rtol": 0.0001, "max_dt_s": 300000, "years": 14.699999999999999, "coupled": true, "initial_state_perturbation": 0.0001, "continuation_start_year": 12, "initial_profile": "inputs/T1e8_restart.csv", "fields": ["slip_m","velocity_m_s","effective_stress_Pa","permeability_m2","flux_m_s","psi","kstar_m2"]}

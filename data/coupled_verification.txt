@@ -1,0 +1,5 @@
+nonlinear_storage_residual_m=2.9440493554307e-15
+coupled_dt_s=20000 scaled_error=1.1455805435266e-05
+coupled_dt_s=10000 scaled_error=2.7157522411609e-06
+coupled_dt_s=5000 scaled_error=5.4202585316747e-07
+NONLINEAR COUPLED TESTS PASSED

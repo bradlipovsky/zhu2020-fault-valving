@@ -1,2 +1,0 @@
-{
-"n": 16385, "nz": 849, "dz": 35.336467348266602, "height_m": 578952.68103400001, "width_m": 500000, "T_s": 10000000000, "q0_m_s": 3e-09, "rtol": 0.0001, "max_dt_s": 300000, "years": 129.39156149744386, "stride": 10, "checkpoint_stride": 500, "rk_max_dt_s": 3000, "worker_threads": 8, "coupled": true, "initial_state_perturbation": 0, "continuation_start_year": 129.39156146573407, "initial_profile": "inputs/T1e10_restart.csv", "fields": ["slip_m","velocity_m_s","effective_stress_Pa","permeability_m2","flux_m_s","psi","kstar_m2"]}

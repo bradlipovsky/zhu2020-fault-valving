@@ -1,0 +1,8 @@
+{
+  "python": "3.6.8",
+  "numpy": "1.19.5",
+  "matplotlib": "3.3.4",
+  "fftw": "3.3.10",
+  "compiler": "g++ (GCC) 8.5.0 20210514 (Red Hat 8.5.0-28)",
+  "platform": "Linux-4.18.0-553.22.1.el8_10.x86_64-x86_64-with-centos-8.10-Green_Obsidian"
+}

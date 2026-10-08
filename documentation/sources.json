@@ -1,0 +1,26 @@
+[
+  {
+    "document": "article.pdf",
+    "url": "https://www.nature.com/articles/s41467-020-18598-z.pdf",
+    "sha256": "ad165738ad1208b0673d0839b076006270fa24adf122bfd62faf7cab0c407f88",
+    "use": "written model documentation and reference inspection only; not a plotting or model input"
+  },
+  {
+    "document": "supplement.pdf",
+    "url": "https://media.springernature.com/full/springer-static/esm/art%3A10.1038%2Fs41467-020-18598-z/MediaObjects/41467_2020_18598_MOESM1_ESM.pdf",
+    "sha256": "2f03174e6ece469622fb9b3b171dbb72dc89c841d389a6875e2621a2caea60c8",
+    "use": "written model documentation and reference inspection only; not a plotting or model input"
+  },
+  {
+    "document": "allison2018.pdf",
+    "url": "https://pangea.stanford.edu/~edunham/publications/Allison_Dunham_viscoelastic-cycles_T18.pdf",
+    "sha256": "9c151f7dcb09eb2f40c74a8f70920e40c873adda757ea49dcbc769e664964e07",
+    "use": "written model documentation and reference inspection only; not a plotting or model input"
+  },
+  {
+    "document": "article.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7515873/fullTextXML",
+    "sha256": "b64a995c61c90e320a31a7219e3d0ed8943316bf00b8e33f81b6beba7e95c7d1",
+    "use": "written model documentation and reference inspection only; not a plotting or model input"
+  }
+]
