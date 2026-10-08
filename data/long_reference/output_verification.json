@@ -1,0 +1,39 @@
+{
+  "case": "long_reference",
+  "checks_passed": true,
+  "command": [
+    "python3",
+    "scripts/verify_outputs.py",
+    "long_reference"
+  ],
+  "scope": "All accepted-step history rows and all saved field profiles; does not establish convergence or agreement with the paper.",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "24ff4f0c236c07289e56f98693e010005438626e3f1189abd5f8372afbde7874",
+  "verifier_sha256": "fbf459815fdaf7f8782c50d6dfec1c1ee87d17acc817455fa6e8029805bf4d86",
+  "years": 350,
+  "accepted_steps": 209873,
+  "saved_profiles": 12897,
+  "maximum_accepted_error": 0.9999861378839461,
+  "minimum_effective_pa": 154856.78716355853,
+  "minimum_Lb_cells": 5.071431787605566,
+  "minimum_hstar_cells": 19.270560900936804,
+  "raw_files": {
+    "history.csv": {
+      "bytes": 128119008,
+      "sha256": "07e4b95b6ebf5921ded286380253f71204d78b0d31eee3f5789022432549a452"
+    },
+    "fields.bin": {
+      "bytes": 309742368,
+      "sha256": "f59ab6b476aa3a953f7fe669c9a8c8210612c806ae0dccbdd7a2bfb612ec46a0"
+    }
+  },
+  "checks": [
+    "Successful completed run, source/executable/configuration hashes, archived configuration, end time and mesh.",
+    "Finite complete history, consecutive accepted steps, increasing time, consistent step durations and accepted errors at most one.",
+    "Positive effective stress, permeability bounds and whole-history resolution minima.",
+    "Complete binary records, mesh coordinates, finite fields and exact saved time/step agreement with history.",
+    "Positive saved stress, constitutive permeability bounds and permeability no greater than reference permeability.",
+    "Effective stress constant in every fixed-pressure saved profile when that option is enabled."
+  ]
+}

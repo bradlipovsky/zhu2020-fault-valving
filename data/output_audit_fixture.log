@@ -1,0 +1,13 @@
+VERIFIED reference 13 accepted steps; 6 saved profiles
+VERIFIED baseline 13 accepted steps; 6 saved profiles
+VERIFIED short 13 accepted steps; 6 saved profiles
+VERIFIED long 13 accepted steps; 6 saved profiles
+VERIFIED long_reference 13 accepted steps; 6 saved profiles
+VERIFIED verylong 13 accepted steps; 6 saved profiles
+VERIFIED verylong_reference 13 accepted steps; 6 saved profiles
+VERIFIED baseline_coarse 13 accepted steps; 6 saved profiles
+VERIFIED baseline_fine 13 accepted steps; 6 saved profiles
+VERIFIED baseline_tight 13 accepted steps; 6 saved profiles
+VERIFIED initialization 13 accepted steps; 6 saved profiles
+VERIFIED normal_stress 13 accepted steps; 6 saved profiles
+VERIFIED: 12 completed numerical cases, 49 panel datasets, 49 individual panel figures, 12 figure groups, compiled report.

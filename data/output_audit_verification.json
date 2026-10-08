@@ -1,0 +1,80 @@
+{
+  "scope": "Software audit validation only; no damaged or fixture output is used as a scientific result.",
+  "command": [
+    "python3",
+    "tests/output_audit.py",
+    ".tmp/pipeline-smoke-1791439281001144320"
+  ],
+  "fixture": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+  "verifier_sha256": "fbf459815fdaf7f8782c50d6dfec1c1ee87d17acc817455fa6e8029805bf4d86",
+  "test_sha256": "7bffc1f093a8cb85b80a7bcabf8966b752be882ef3ad4b6caeab3acdf0eb6adb",
+  "checks_passed": true,
+  "outcomes": [
+    {
+      "check": "Intact independently calculated short fixture",
+      "expected_failure": null,
+      "exit_code": 0,
+      "output": "VERIFIED reference 13 accepted steps; 6 saved profiles\n"
+    },
+    {
+      "check": "Truncated final binary record",
+      "expected_failure": "truncated field record",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\n  File \"scripts/verify_outputs.py\", line 100, in <module>\n    for case in args.cases or MAIN_CASES+VALIDATION_CASES:verify_case(case)\n  File \"scripts/verify_outputs.py\", line 59, in verify_case\n    assert (folder/'fields.bin').stat().st_size==expected_size,case+' truncated field record'\nAssertionError: reference truncated field record\n"
+    },
+    {
+      "check": "Missing accepted history row",
+      "expected_failure": "history length",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\n  File \"scripts/verify_outputs.py\", line 100, in <module>\n    for case in args.cases or MAIN_CASES+VALIDATION_CASES:verify_case(case)\n  File \"scripts/verify_outputs.py\", line 36, in verify_case\n    assert values.shape==(done['accepted_steps']+1,len(names)),case+' history length'\nAssertionError: reference history length\n"
+    },
+    {
+      "check": "Nonfinite history value",
+      "expected_failure": "nonfinite history",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\n  File \"scripts/verify_outputs.py\", line 100, in <module>\n    for case in args.cases or MAIN_CASES+VALIDATION_CASES:verify_case(case)\n  File \"scripts/verify_outputs.py\", line 37, in verify_case\n    assert np.all(np.isfinite(values)),case+' nonfinite history'\nAssertionError: reference nonfinite history\n"
+    },
+    {
+      "check": "Nonpositive effective stress",
+      "expected_failure": "nonpositive effective stress",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\n  File \"scripts/verify_outputs.py\", line 100, in <module>\n    for case in args.cases or MAIN_CASES+VALIDATION_CASES:verify_case(case)\n  File \"scripts/verify_outputs.py\", line 46, in verify_case\n    assert np.all(h['min_effective_pa']>0),case+' nonpositive effective stress'\nAssertionError: reference nonpositive effective stress\n"
+    },
+    {
+      "check": "Accepted error above one",
+      "expected_failure": "accepted error",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\n  File \"scripts/verify_outputs.py\", line 100, in <module>\n    for case in args.cases or MAIN_CASES+VALIDATION_CASES:verify_case(case)\n  File \"scripts/verify_outputs.py\", line 45, in verify_case\n    assert np.all((h['error']>=0)&(h['error']<=1)),case+' accepted error'\nAssertionError: reference accepted error\n"
+    },
+    {
+      "check": "Inconsistent saved time",
+      "expected_failure": "saved times differ from history",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\n  File \"scripts/verify_outputs.py\", line 100, in <module>\n    for case in args.cases or MAIN_CASES+VALIDATION_CASES:verify_case(case)\n  File \"scripts/verify_outputs.py\", line 62, in verify_case\n    assert np.array_equal(records['time'],h['time_s'][steps]),case+' saved times differ from history'\nAssertionError: reference saved times differ from history\n"
+    },
+    {
+      "check": "Permeability outside constitutive bounds",
+      "expected_failure": "saved permeability bounds",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\n  File \"scripts/verify_outputs.py\", line 100, in <module>\n    for case in args.cases or MAIN_CASES+VALIDATION_CASES:verify_case(case)\n  File \"scripts/verify_outputs.py\", line 70, in verify_case\n    assert np.all(chunk[:,field]>=cfg['kmin']*(1-rounding)) and np.all(chunk[:,field]<=cfg['kmax']*(1+rounding)),case+' saved permeability bounds'\nAssertionError: reference saved permeability bounds\n"
+    },
+    {
+      "check": "Changing fixed-pressure profile",
+      "expected_failure": "fixed pressure changed",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\n  File \"scripts/verify_outputs.py\", line 100, in <module>\n    for case in args.cases or MAIN_CASES+VALIDATION_CASES:verify_case(case)\n  File \"scripts/verify_outputs.py\", line 73, in verify_case\n    assert np.all(chunk[:,2]==records['fields'][0,2]),case+' fixed pressure changed'\nAssertionError: reference fixed pressure changed\n"
+    }
+  ],
+  "existing_fixture_artifact_audit": {
+    "command": [
+      "python3",
+      "scripts/verify_artifacts.py"
+    ],
+    "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+    "exit_code": 0,
+    "wall_s": 1.9198081493377686,
+    "log": "data/output_audit_fixture.log",
+    "log_sha256": "e2679265d8325d6ec527188346d17f6faf5221aaa7c6794a0c77ff0e2492b2c4",
+    "scope": "Rechecked existing 12 short cases, 49 datasets/panels, 12 groups and compiled fixture report using the new raw-output audit; did not rerun production simulations."
+  }
+}

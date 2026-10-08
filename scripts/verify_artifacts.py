@@ -8,6 +8,7 @@ import numpy as np
 from common import MAIN_CASES, save_json, configuration, physical_depths
 from inventory import PANELS, GROUPS
 from reproduce import VALIDATION_CASES
+from verify_outputs import verify_case
 
 def sha(path):
     h=hashlib.sha256()
@@ -19,6 +20,7 @@ def main():
     source=sha('src/model.cpp');checked=[]
     assert len(PANELS)==49 and len(GROUPS)==12
     for case in MAIN_CASES+VALIDATION_CASES:
+        verify_case(case)
         folder=Path('data',case)
         done=json.loads((folder/'completed.json').read_text());provenance=json.loads((folder/'provenance.json').read_text())
         assert done['completed'] and done['accepted_steps']>0,case
@@ -31,7 +33,7 @@ def main():
         assert done['n']==int(configured['n']),case+' incorrect mesh'
         assert 8<=done['dynamic_nodes']<=done['n'],case+' invalid physical mesh'
         assert done['minimum_Lb_cells']>0 and done['minimum_hstar_cells']>0,case+' invalid resolution diagnostic'
-        checked.extend([folder/'completed.json',folder/'analysis.json',folder/'provenance.json'])
+        checked.extend([folder/'completed.json',folder/'analysis.json',folder/'provenance.json',folder/'output_verification.json'])
     for name,spec in PANELS.items():
         path=Path(spec['data_file']);meta=json.loads(path.with_suffix('.json').read_text())
         assert meta['model_source_sha256']==source,name

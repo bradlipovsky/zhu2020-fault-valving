@@ -36,6 +36,12 @@ before starting a new calculation. Do not use it while another run is active.
 The command also creates `report/latex-source.zip` and verifies that its extracted
 LaTeX sources and generated figures compile in an isolated directory.
 `report/reproduction-complete.tex` is the expanded single-file LaTeX source.
+The final audit checks every accepted history row and every saved field profile,
+including times outside the figure windows. It records per-case results and raw
+file hashes in `data/*/output_verification.json`. These consistency checks do not
+establish numerical convergence or agreement with the paper. Run them separately
+after simulations finish with `python3 scripts/verify_outputs.py` (or append case
+names to check selected completed runs).
 
 The committed `data/panels/*.npz` files contain the plotted numerical arrays.
 Full field files, accepted-step histories, and checkpoints are generated locally
@@ -75,3 +81,6 @@ The complete software pipeline can also be checked with
 `python3 scripts/smoke_pipeline.py`. It creates its own directory under `.tmp`,
 uses deliberately short and coarse simulations, and verifies all panel products
 and both report builds. Those test outputs are never used as scientific results.
+`python3 tests/output_audit.py <fixture-directory>` then checks that the raw-output
+audit rejects deliberately damaged copies of that fixture. The test records its
+results in `data/output_audit_verification.json` and leaves the fixture intact.
