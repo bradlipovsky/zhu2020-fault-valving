@@ -1,0 +1,22 @@
+{
+  "case": "long",
+  "command": [
+    "build/valving",
+    "configs/long.cfg",
+    "data/long"
+  ],
+  "pid": 2604920,
+  "start_utc": "2026-10-08T06:01:26Z",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "822de8613e3a6792e9acf76e24214b62a0da2774561bb96e38e1b1093436fb19",
+  "cpu_affinity": [
+    12,
+    13,
+    14,
+    15
+  ],
+  "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+  "exit_code": 0,
+  "end_utc": "2026-10-08T20:43:51Z"
+}
