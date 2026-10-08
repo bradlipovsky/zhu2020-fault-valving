@@ -336,6 +336,25 @@ Duration is the whole-fault threshold excursion defined above. These comparisons
 use a common initialization and include the finite saved-profile spacing in the
 slip measurement; they do not establish convergence of subsequent event sequences.
 '''
+    onset_order=None
+    onset_events=[validation[case]['first_seismic_event'] for case in
+        ['baseline_coarse','baseline','baseline_fine']]
+    if all(onset_events):
+        times=[event['start_s'] for event in onset_events]
+        coarse_change=abs(times[0]-times[1]);fine_change=abs(times[1]-times[2])
+        spacings=[analyses[case]['resolution']['dz_m'] for case in
+            ['baseline_coarse','baseline','baseline_fine']]
+        ratio=spacings[0]/spacings[1]
+        if coarse_change>0 and fine_change>0 and ratio>1 and abs(ratio-spacings[1]/spacings[2])<1e-10:
+            onset_order=dict(coarse_to_main_change_s=coarse_change,main_to_fine_change_s=fine_change,
+                spacing_ratio=ratio,apparent_order=math.log(coarse_change/fine_change)/math.log(ratio))
+    validation['baseline']['first_onset_refinement']=onset_order
+    if onset_order:
+        comparison+=('Successive mesh refinements change the first seismic onset by {} and {} s, '
+            'giving an apparent order of {} from the ratio of these differences. '
+            'This estimate includes residual time-integration error and the finite threshold-crossing bracket; '
+            'it applies only to this first-onset statistic.\n').format(number(coarse_change),number(fine_change),
+                number(onset_order['apparent_order']))
     horizon=min(analyses[case]['final_time_years'] for case in validation)
     large_times={case:[e['end_s']/YEAR for e in analyses[case]['events']
         if e['complete'] and e['large'] and e['end_s']/YEAR<=horizon] for case in validation}
