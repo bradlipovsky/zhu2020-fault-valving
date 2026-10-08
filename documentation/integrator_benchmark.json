@@ -1,0 +1,36 @@
+{
+  "stopped_utc": "2026-10-08T05:04:59Z",
+  "reason": "Replace second-order time integration with validated fourth-order integration; regenerate final runs from initial conditions.",
+  "original_source_sha256": "1bf7dde009aec776d87d92fd6fb4d79ca88adb04fcfa53c850a128a6c0f1d79c",
+  "archived_directory": ".tmp/ars2-exploration",
+  "processes": {
+    "2566451": "reference",
+    "2566452": "baseline",
+    "2566453": "short",
+    "2566454": "long",
+    "2566455": "long_reference",
+    "2566456": "verylong",
+    "2566457": "verylong_reference"
+  },
+  "benchmark_initial_state_sha256": "a4e3c1d11197d7b9ddb696b964cef9376db0e0df2aff52571b71efaa3e73a6c7",
+  "benchmark_duration_seconds": 1,
+  "ars2": {
+    "steps": 495,
+    "rejected": 108,
+    "wall_s": 121.265469392
+  },
+  "ark4": {
+    "steps": 175,
+    "rejected": 55,
+    "wall_s": 49.190691223
+  },
+  "ark4_tight": {
+    "steps": 289,
+    "rejected": 48,
+    "wall_s": 56.219032867
+  },
+  "max_scaled_difference_from_tight": {
+    "ars2": 0.00599024334435023,
+    "ark4": 0.0036445121862713954
+  }
+}

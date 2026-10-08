@@ -19,7 +19,7 @@ def main():
     parser.add_argument('--simulate-only',action='store_true')
     parser.add_argument('--postprocess-only',action='store_true')
     parser.add_argument('--cases',nargs='+')
-    parser.add_argument('--jobs',type=int,default=7)
+    parser.add_argument('--jobs',type=int,default=12)
     parser.add_argument('--fresh',action='store_true',help='Move existing generated cases aside before regenerating.')
     args=parser.parse_args()
     root=Path(__file__).resolve().parent.parent;os.chdir(str(root))
@@ -86,6 +86,7 @@ def main():
         subprocess.run(['python3','scripts/plot.py','all'],check=True)
         subprocess.run(['python3','scripts/report_tables.py'],check=True)
         subprocess.run(['latexmk','-pdf','-interaction=nonstopmode','-halt-on-error','reproduction.tex'],cwd='report',check=True)
+        subprocess.run(['python3','scripts/package_report.py','--verify'],check=True)
         subprocess.run(['python3','scripts/verify_artifacts.py'],check=True)
 
 if __name__=='__main__':main()

@@ -248,6 +248,63 @@ struct Model {
     }
 };
 
+// Kennedy and Carpenter, NASA/TM-2001-211038, Appendix C.
+// Coefficients checked against the SUNDIALS 7.7 written Butcher-table documentation.
+struct ARK4 {
+    Model& m;
+    std::array<State,6> rate;
+    State stage;
+    Vec base;
+    static constexpr double ae[6][6]={
+        {0,0,0,0,0,0}, {.5,0,0,0,0,0},
+        {13861./62500,6889./62500,0,0,0,0},
+        {-116923316275./2393684061468,-2731218467317./15368042101831,9408046702089./11113171139209,0,0,0},
+        {-451086348788./2902428689909,-2682348792572./7519795681897,12662868775082./11960479115383,3355817975965./11060851509271,0,0},
+        {647845179188./3216320057751,73281519250./8382639484533,552539513391./3454668386233,3354512671639./8306763924573,4040./17871,0}};
+    static constexpr double ai[6][6]={
+        {0,0,0,0,0,0}, {.25,.25,0,0,0,0},
+        {8611./62500,-1743./31250,.25,0,0,0},
+        {5012029./34652500,-654441./2922500,174375./388108,.25,0,0},
+        {15267082809./155376265600,-71443401./120774400,730878875./902184768,2285395./8070912,.25,0},
+        {82889./524892,0,15625./83664,69875./102672,-2260./8211,.25}};
+    static constexpr double high[6]={82889./524892,0,15625./83664,69875./102672,-2260./8211,.25};
+    static constexpr double low[6]={4586570599./29645900160,0,178811875./945068544,814220225./1159782912,-3700637./11593932,61727./225920};
+    ARK4(Model& model):m(model),stage(zeros(m.n)),base(m.n) {for(auto& r:rate)r=zeros(m.n);}
+    bool step(const State& x,double dt,State& out,double& error) {
+        for(int s=0;s<6;s++) {
+            for(int j=0;j<4;j++)for(int i=0;i<m.n;i++) {
+                double change=0;
+                for(int k=0;k<s;k++)change+=(j==3?ai[s][k]:ae[s][k])*rate[k][j][i];
+                stage[j][i]=x[j][i]+dt*change;
+            }
+            if(s>0) {
+                base=stage[3];
+                if(!m.pressure(base,stage[2],ai[s][s]*dt,stage[3]))return false;
+            }
+            if(!m.mechanical(stage,rate[s]))return false;
+            if(!m.p.fixed_pressure) {
+                Vec q=m.flux(stage);
+                for(int i=0;i<m.n;i++)rate[s][3][i]=(q[i+1]-q[i])/(m.p.storage*m.h);
+            }
+        }
+        error=0;
+        for(int j=0;j<4;j++)for(int i=0;i<m.n;i++) {
+            double increment=0,estimate=0;
+            for(int s=0;s<6;s++) {
+                increment+=high[s]*rate[s][j][i];
+                estimate+=(high[s]-low[s])*rate[s][j][i];
+            }
+            out[j][i]=x[j][i]+dt*increment;
+            double scale=j==0?m.p.dc:j==1?m.a[i]:j==2?.01+std::abs(out[j][i]):m.p.stress_scale;
+            error=std::max(error,std::abs(dt*estimate)/(m.p.tolerance*scale));
+            if(!std::isfinite(out[j][i]))return false;
+            if(j==2 && (out[j][i]<0 || out[j][i]>1))return false;
+            if(j==3 && m.normal(i,out[j][i])<=0)return false;
+        }
+        return true;
+    }
+};
+
 template<typename T> void put(std::ostream& f,const T& x){f.write(reinterpret_cast<const char*>(&x),sizeof(T));}
 template<typename T> void get(std::istream& f,T& x){f.read(reinterpret_cast<char*>(&x),sizeof(T));}
 
@@ -273,7 +330,7 @@ struct Output {
                 for(auto s:{"velocity","slip","effective","permeability","flux"})history<<","<<s<<"_"<<depth;
             history<<"\n";
         }
-        history<<std::setprecision(12);
+        history<<std::setprecision(17);
     }
     void record(const State& x,double t,double dt,int64_t step,double err,bool force=false) {
         State f=zeros(m.n); if(!m.mechanical(x,f)) throw std::runtime_error("Invalid accepted state");
@@ -311,7 +368,7 @@ struct Output {
 
 void run(const std::string& config,const std::string& directory,bool resume) {
     Parameters p=read_config(config); Model m(p); State x=m.initial();
-    State coarse=zeros(p.n),half=zeros(p.n),fine=zeros(p.n),stage=zeros(p.n),f0=zeros(p.n),f1=zeros(p.n);
+    State fine=zeros(p.n);ARK4 solver(m);
     double t=0,dt=10; int64_t steps=0,rejected=0;
     std::filesystem::create_directories(directory);
     if(resume) {
@@ -326,16 +383,17 @@ void run(const std::string& config,const std::string& directory,bool resume) {
     double end=p.years*YEAR;
     while(t<end) {
         dt=std::min({dt,p.dt_max,end-t});
-        bool okay=m.step(x,dt,coarse,stage,f0,f1) && m.step(x,.5*dt,half,stage,f0,f1) && m.step(half,.5*dt,fine,stage,f0,f1);
-        double error=okay?m.error(coarse,fine):1e20;
+        double error=1e20;
+        bool okay=solver.step(x,dt,fine,error);
+        if(!okay)error=1e20;
         if(!std::isfinite(error))error=1e20;
         if(error<=1) {
             x.swap(fine);t+=dt;steps++;
             out.record(x,t,dt,steps,error,t==end);
         } else rejected++;
-        double multiplier=error==0?2.:std::clamp(.9*std::pow(error,-1./3.),.15,2.);
+        double multiplier=error==0?2.:std::clamp(.9*std::pow(error,-.25),.15,2.);
         dt*=multiplier;
-        if(dt<1e-10)throw std::runtime_error("Step below 1e-10 s; model or nonlinear solver failed at year "+std::to_string(t/YEAR));
+        if(dt<1e-10 || t+dt==t)throw std::runtime_error("Step below 1e-10 s; model or nonlinear solver failed at year "+std::to_string(t/YEAR));
         auto now=std::chrono::steady_clock::now();
         if(std::chrono::duration<double>(now-last).count()>20) {
             double elapsed=std::chrono::duration<double>(now-start).count();
@@ -372,6 +430,9 @@ void test() {
     State out=zeros(p.n),stage=zeros(p.n),f0=zeros(p.n),f1=zeros(p.n);
     require(m.step(x,1e5,out,stage,f0,f1),"stationary IMEX step");
     require(m.error(x,out)<1e-5,"steady state preservation");
+    ARK4 solver(m);double estimate;
+    require(solver.step(x,1e5,out,estimate),"stationary production ARK4 step");
+    require(m.error(x,out)<1e-5,"production ARK4 steady state preservation");
     std::cout<<std::setprecision(12)<<"steady_flux_relative_error="<<qerr<<"\nsteady_velocity_relative_error="<<verr<<"\nelastic_mode_error="<<elastic_error<<"\n";
     // Constant-k diffusion: Dirichlet at the surface, no flux at the base.
     // The exact mode decays as exp(-D [pi/(2H)]^2 t).

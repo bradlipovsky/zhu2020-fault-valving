@@ -48,6 +48,23 @@ int main() {
             if(prior>0)require(prior/error>3.4,"second-order coupled convergence");
             prior=error;
         }
+        ARK4 solver(m);
+        auto integrate4=[&](double timestep){
+            State x=initial,out=zeros(p.n);double estimate;
+            int steps=int(std::ceil(1e6/timestep));timestep=1e6/steps;
+            for(int i=0;i<steps;i++) {
+                require(solver.step(x,timestep,out,estimate),"production ARK4 coupled integration");x.swap(out);
+            }
+            return x;
+        };
+        exact=integrate4(2500);prior=0;
+        for(double timestep:{80000.,40000.,20000.,10000.}) {
+            timestep=1e6/std::ceil(1e6/timestep);
+            State result=integrate4(timestep);double error=m.error(exact,result)*3*p.tolerance;
+            std::cout<<"ark4_dt_s="<<timestep<<" scaled_error="<<error<<"\n";
+            if(prior>0)require(prior/error>10,"fourth-order coupled convergence");
+            prior=error;
+        }
         std::cout<<"NONLINEAR COUPLED TESTS PASSED\n";
     } catch(const std::exception& e) {std::cerr<<e.what()<<"\n";return 1;}
 }

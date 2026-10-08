@@ -125,11 +125,11 @@ This scheme differs from the paper's fourth-order summation-by-parts method.
 The production mesh has 32,768 cells, giving $\Delta z=15.259$ m over the
 500 km domain. The refinement cases use 16,384 and 65,536 cells.
 
-We use a second-order additive Runge--Kutta method, ARS(2,2,2), treating fluid
-flow implicitly and slip, state, and $k_*$ explicitly. The nonlinear pressure
+We use the fourth-order additive Runge--Kutta method ARK4(3)6L[2]SA\ \cite{kennedy},
+treating fluid flow implicitly and slip, state, and $k_*$ explicitly. The nonlinear pressure
 solve iterates permeability and a tridiagonal solve to an absolute pressure-update
-tolerance of 0.001 Pa. Step doubling controls errors in slip, state, permeability,
-and pressure. The two-half-step solution is accepted. Production tolerance is
+tolerance of 0.001 Pa. An embedded third-order estimate controls errors in slip,
+state, permeability, and pressure. The fourth-order solution is accepted. Production tolerance is
 $10^{-3}$ in the scaled maximum norm; the time-accuracy case uses
 $2.5\times10^{-4}$. The maximum step is $10^6$ s. Detailed coefficients, scales,
 boundary formulas, and data formats are given in \code{documentation/numerics.md}.
@@ -146,7 +146,9 @@ published curves or importing a published state.
 
 An event begins when the maximum slip speed exceeds $10^{-3}$ m s$^{-1}$.
 Its rupture footprint requires both that speed threshold and at least 1 cm
-of slip. A large event reaches above 2 km and spans more than 10 km in depth.
+of slip. A large event has a connected footprint reaching above 2 km and spanning
+more than 10 km in depth; disconnected shallow motion accompanying a deep event
+does not qualify.
 The principal figure window is the final complete cycle between such events.
 Alternate cycles are selected by their chronological position, not visual
 similarity. For the swarm panels we use the final two years before the selected
@@ -201,5 +203,9 @@ Includes the published Supplementary Information.
 Earthquake cycle simulations with rate-and-state friction and power-law viscoelasticity.
 \emph{Tectonophysics}, 733, 232--256.
 \href{https://doi.org/10.1016/j.tecto.2017.10.021}{doi:10.1016/j.tecto.2017.10.021}.
+\bibitem{kennedy} Kennedy, C. A., and M. H. Carpenter (2001).
+Additive Runge--Kutta schemes for convection--diffusion--reaction equations.
+NASA/TM-2001-211038, Appendix C.
+\href{https://ntrs.nasa.gov/citations/20010075154}{NASA technical report}.
 \end{thebibliography}
 \end{document}

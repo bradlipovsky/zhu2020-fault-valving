@@ -16,3 +16,4 @@ report/*.synctex.gz
 data/probe*/
 data/probe*.log
 configs/probe*.cfg
+figures/previews/

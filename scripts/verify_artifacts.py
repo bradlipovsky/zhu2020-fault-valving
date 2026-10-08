@@ -5,7 +5,7 @@ import hashlib
 import json
 import subprocess
 import numpy as np
-from common import MAIN_CASES, save_json
+from common import MAIN_CASES, save_json, configuration
 from inventory import PANELS, GROUPS
 from reproduce import VALIDATION_CASES
 
@@ -26,6 +26,9 @@ def main():
         assert provenance['config_sha256']==sha('configs/'+case+'.cfg'),case+' configuration changed'
         assert provenance['exit_code']==0,case+' failed'
         assert abs(done['time_s']/31557600-done['years'])<1e-10
+        configured=configuration('configs/'+case+'.cfg')
+        assert abs(done['years']-configured['years'])<1e-9,case+' incorrect end time'
+        assert done['n']==int(configured['n']),case+' incorrect mesh'
         checked.extend([folder/'completed.json',folder/'analysis.json',folder/'provenance.json'])
     for name,spec in PANELS.items():
         path=Path(spec['data_file']);meta=json.loads(path.with_suffix('.json').read_text())
@@ -63,6 +66,9 @@ def main():
     checked.extend(Path('report').glob('*.tex'));checked.append(pdf)
     checked.extend([Path('data/verification.txt'),Path('data/coupled_verification.txt'),
         Path('data/quantitative_comparisons.json'),Path('data/validation_summary.json')])
+    bundle=json.loads(Path('data/report_bundle_verification.json').read_text())
+    assert bundle['isolated_compile'] and bundle['sha256']==sha(bundle['archive'])
+    checked.extend([Path(bundle['archive']),Path('data/report_bundle_verification.json'),Path('data/report_bundle_build.log')])
     manifest={str(p):dict(bytes=p.stat().st_size,sha256=sha(p)) for p in sorted(set(checked))}
     save_json('data/artifact_manifest.json',dict(model_source_sha256=source,panels=49,figure_groups=12,
         complete_cases=len(MAIN_CASES+VALIDATION_CASES),files=manifest))

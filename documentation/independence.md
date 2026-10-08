@@ -59,9 +59,14 @@ in `_years`. A year is 365.25 days.
    surface node. Pressure uses a conservative second-order finite-volume
    scheme and harmonic face permeability. These numerical changes require
    verification and refinement, not a claim of identical trajectories.
-6. Time integration uses the independently implemented second-order ARS(2,2,2)
-   IMEX Runge–Kutta method, with nonlinear implicit pressure stages and explicit
-   slip, state, and k*. Step doubling estimates local error in all four fields.
+6. Time integration uses independently implemented ARK4(3)6L[2]SA, a fourth-order
+   additive Runge–Kutta method, with nonlinear implicit pressure stages and
+   explicit slip, state, and k*. An embedded third-order solution estimates local
+   error in all four fields. Coefficients come from Kennedy and Carpenter's
+   published numerical-method documentation, not an earthquake codebase.
+   Second-order ARS(2,2,2) is retained only for limiting tests and comparison.
+   Its exploratory earthquake runs were archived and excluded from final panels
+   after a direct accuracy/runtime comparison; see `integrator_benchmark.json`.
 7. Signed velocity is allowed by regularized friction. State evolution and
    permeability enhancement use slip speed |V|, extending the paper's positive
    sliding convention to possible reverse slip. No velocity, effective stress,

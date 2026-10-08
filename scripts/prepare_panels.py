@@ -101,10 +101,37 @@ def prepare(name):
         discrepancy='New schematic, not a simulation reproduction; friction profiles are declared approximations.'
     elif name=='F1d':discrepancy='Normal stress gradient is assumed; steady Darcy balance is independently verified.'
     elif name.startswith('F4'):
-        a=analysis('baseline');small=[e for e in a['events'] if not e['large'] and metadata['window_s'][0]<e['peak_s']<=metadata['window_s'][1]]
-        if len(small)<3:status='not reproduced';discrepancy='Fewer than three distinct small earthquakes in the fixed pre-rupture window; generated attempt shown.'
+        a=analysis('baseline');small=[e for e in a['events'] if not e['large']
+            and metadata['window_s'][0]<e['peak_s']<=metadata['window_s'][1]
+            and any(top<10000 and bottom>2000 for top,bottom in e['rupture_intervals_m'])]
+        metadata['middepth_small_events']=small
+        discrepancy='{} small ruptures intersect 2--10 km in the fixed two-year window; exact swarm sequence differs.'.format(len(small))
+        if len(small)<3:
+            status='not reproduced'
+            discrepancy+=' Fewer than three such events; generated attempt shown.'
     elif name.startswith('S2') and not metadata.get('complete_cycle'):
         status='not reproduced';discrepancy='Too few complete cycles to produce this alternate-cycle comparison.'
+    elif name.startswith('F5'):
+        a=analysis('short');pulse=a['slow_slip']['18000'];interval=pulse['median_interval_years']
+        discrepancy='{} complete aseismic episodes above 10 Vp at 18 km'.format(len(pulse['episodes']))
+        if interval is not None:discrepancy+='; median interval {:.3g} yr'.format(interval)
+        discrepancy+='; exact pulse sequence is not recovered.'
+        metadata['slow_slip_diagnostic']=pulse
+    elif name.startswith('F2'):
+        case=spec['cases'][0];a=analysis(case);target=50 if case=='reference' else 32
+        recurrence=a['median_recurrence_years']
+        discrepancy=('No complete large-event recurrence obtained.' if recurrence is None else
+            'Median recurrence {:.3g} yr versus approximately {} yr in the displayed reference cycle ({:+.1f}%).'.format(
+                recurrence,target,100*(recurrence/target-1)))
+        discrepancy+=' Initial state and friction profiles remain uncertain.'
+    elif name.startswith('F3'):
+        a=analysis('baseline');sample=a['sample_depths']['10000']
+        if spec['field']==2:
+            discrepancy='At 10 km, stress varies by {:.3g} MPa; article gives an order 10--20 MPa scale. Phase timing differs.'.format(sample['effective_range_mpa'])
+        elif spec['field']==3:
+            discrepancy='At 10 km, k spans {:.3g}--{:.3g} square metres; exact cycle phases are not recovered.'.format(sample['permeability_min'],sample['permeability_max'])
+        else:
+            discrepancy='At 10 km, maximum flux is {:.3g} m/s; the article gives an order 1e-7 m/s upper scale. Phase timing differs.'.format(sample['flux_max'])
     metadata.update(status=status,main_discrepancy=discrepancy,
         model_source_sha256=hashlib.sha256(Path('src/model.cpp').read_bytes()).hexdigest())
     Path('data/panels').mkdir(exist_ok=True)

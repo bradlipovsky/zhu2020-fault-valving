@@ -64,21 +64,36 @@ discrete steady solution of the same operator used in time integration.
 
 ## Time integration
 
-The method is ARS(2,2,2), a second-order additive Runge–Kutta scheme. Define
-gamma=1-1/sqrt(2), delta=1-1/(2 gamma); F contains slip, state and k* rates and
-G contains the fluid-pressure rate. Its stages are
+The production method is ARK4(3)6L[2]SA, a six-stage fourth-order additive
+Runge–Kutta scheme with a third-order embedded estimate. Its exact rational
+coefficients are written in `struct ARK4` in `src/model.cpp`. They are from
+Kennedy and Carpenter (2001), NASA/TM-2001-211038, Appendix C, checked against
+the SUNDIALS 7.7 written Butcher tables:
+https://sundials.readthedocs.io/en/v7.7.0/arkode/Butcher_link.html.
+We implement the table directly; no earthquake simulator is a source.
 
-    Y1 = Y0 + gamma dt F(Y0) + gamma dt G(Y1)
-    Y2 = Y0 + dt[delta F(Y0)+(1-delta) F(Y1)]
-                 + dt[(1-gamma) G(Y1)+gamma G(Y2)].
+Let F contain slip, state, and k* rates, and G contain the pressure rate.
+For explicit coefficients Ae and implicit coefficients Ai, each stage satisfies
 
-F has zero pressure component, while G has zero mechanical/permeability-state
-components, so both implicit solves are scalar tridiagonal pressure systems.
-The final value is Y2. One full step and two half steps provide an error
-estimate (Y_fine-Y_coarse)/3; the two-half-step value is accepted. Error is
-bounded in the maximum norm after scaling slip by dc, psi by a, normalized k*
-by 0.01+|u|, and pressure by sigma*. The controller uses 0.9 error^(-1/3),
-bounded between 0.15 and 2. Configurations state the tolerance and maximum step.
+    Y_s = Y_0 + dt sum_{j<s} [Ae_sj F(Y_j) + Ai_sj G(Y_j)]
+                + dt Ai_ss G(Y_s).
+
+F has zero pressure component and G has zero mechanical/state components.
+Thus the implicit stage is only a tridiagonal nonlinear pressure solve; all
+other stage fields are already known. The pressure derivative is evaluated
+from conservative face fluxes at the converged stage. The accepted solution
+uses the fourth-order weights b4; the estimate is dt sum (b4-b3)(F+G).
+Error is bounded in the maximum norm after scaling slip by dc, psi by a,
+normalized k* by 0.01+|u|, and pressure by sigma*. The controller uses
+0.9 error^(-1/4), bounded between 0.15 and 2. Configurations state the tolerance
+and maximum step. Invalid final values reject the trial just as invalid stages do.
+
+ARS(2,2,2) with step doubling is retained as an independent, lower-order
+comparison, and for simple limiting tests. It is not used for final figure data.
+The coupled verification test measures fourth-order convergence of the production
+method and second-order convergence of that comparison. The exploratory
+rupture benchmark and the reason for changing the method are recorded in
+`integrator_benchmark.json`; all final production runs start anew.
 
 This integrator is an explicit deviation from the paper's stage-split adaptive
 Runge–Kutta/backward-Euler method. Convergence is checked for constant-coefficient
@@ -95,13 +110,13 @@ effective normal stress, permeability, k*, upward flux. The numerical integratio
 itself uses float64 throughout. These snapshots cover the upper 30 km with about
 30 m output spacing; spatial output subsampling does not change the solution grid.
 Every accepted step also writes a text history with maxima and four depth traces.
-The text histories use 12 significant decimal digits; at late simulation times
-their time stamps can coincide after rounding. Binary snapshot times retain
-full float64 precision. This distinction is immaterial to year-scale recurrence
-comparisons but must be retained when interpreting subsecond event timing.
+The text histories use 17 significant decimal digits, preserving float64 times.
+Binary snapshot times likewise retain full float64 precision.
 
-Snapshot intervals are at most 0.025 yr during slow slip and 0.5 s during an
-earthquake. Additional snapshots capture crossings of 1e-3 m/s and changes
+Nominal snapshot intervals are 0.025 yr during slow slip and 0.5 s during an
+earthquake; each snapshot is taken at the first accepted step reaching its
+target interval, so the actual spacing can exceed it by one step.
+Additional snapshots capture crossings of 1e-3 m/s and changes
 exceeding 0.2 in log10 maximum speed. The exact snapshot times and macro-step
 indices are retained. Coseismic profile contours use nearest snapshots to a
 one-second sequence, not a claimed exact one-second sampling of the integrator.
@@ -111,3 +126,7 @@ and migration fits. The last complete large-event cycle is selected by a fixed
 rule. The published time origins and restarts are never imported or fitted.
 Figure 6 uses the independently computed |V|=Vp contour; its definition is an
 analysis assumption because the paper does not specify its exact extraction rule.
+Slow-slip diagnostics at 15, 18, and 20 km count complete local intervals above
+10 Vp, longer than 0.01 yr, during which the maximum slip speed anywhere remains
+below 1e-3 m/s. Truncated intervals at a selected window edge are excluded.
+This is a declared measurement convention, not a prescribed condition in the model.

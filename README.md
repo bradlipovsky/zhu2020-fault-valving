@@ -15,7 +15,7 @@ in `configs/*.cfg`; see `documentation/independence.md`.
 
 ## Regeneration
 
-Requirements: a C++17 compiler, CMake, OpenMP, Python 3 with NumPy and Matplotlib,
+Requirements: Linux, a C++17 compiler, CMake, OpenMP, Python 3 with NumPy and Matplotlib,
 and LaTeX with `latexmk`. `scripts/bootstrap.sh` installs a pinned FFTW release
 under `.deps` if required. It needs internet access only for that numerical library.
 The model and figure pipeline do not download scientific data.
@@ -30,6 +30,8 @@ validation cases, generates panel data and figures, and compiles
 `report/reproduction.pdf`. Complete runs are reused only when their source and
 configuration hashes match. `--fresh` moves previous generated cases to `.tmp`
 before starting a new calculation. Do not use it while another run is active.
+The command also creates `report/latex-source.zip` and verifies that its extracted
+LaTeX sources and generated figures compile in an isolated directory.
 
 ```
 # A short smoke calculation

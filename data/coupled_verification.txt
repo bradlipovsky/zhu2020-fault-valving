@@ -4,4 +4,8 @@ nonlinear_storage_residual_m=2.9440493554307e-15
 coupled_dt_s=20000 scaled_error=1.1455805435266e-05
 coupled_dt_s=10000 scaled_error=2.7157522411609e-06
 coupled_dt_s=5000 scaled_error=5.4202585316747e-07
+ark4_dt_s=76923.076923077 scaled_error=5.8296464931649e-09
+ark4_dt_s=40000 scaled_error=4.227978105968e-10
+ark4_dt_s=20000 scaled_error=2.6298375496304e-11
+ark4_dt_s=10000 scaled_error=1.6240976817374e-12
 NONLINEAR COUPLED TESTS PASSED

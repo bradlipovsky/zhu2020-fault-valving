@@ -22,14 +22,17 @@ def analyze(case):
         depths=z[rupture]; imax=i+np.argmax(h['vmax_m_s'][i:j])
         shallow=float(depths.min()) if len(depths) else None
         deep=float(depths.max()) if len(depths) else None
-        # Surface motion alone is not enough: require slip across at least 10 km.
-        large=bool(len(depths) and shallow<2000 and deep-shallow>10000)
+        # Do not join disconnected shallow quasi-dynamic motion to a deep rupture.
+        edges=np.diff(np.r_[False,rupture,False].astype(int))
+        intervals=[[float(z[i]),float(z[j-1])] for i,j in zip(np.flatnonzero(edges==1),np.flatnonzero(edges==-1))]
+        large=any(top<2000 and bottom-top>10000 for top,bottom in intervals)
         events.append(dict(start_s=t0,end_s=t1,peak_s=float(h['time_s'][imax]),
             peak_velocity=float(h['vmax_m_s'][imax]),nucleation_depth_m=float(h['z_vmax_m'][i]),
-            shallow_m=shallow,deep_m=deep,max_slip_m=float(np.max(np.abs(slip))),large=large))
+            shallow_m=shallow,deep_m=deep,rupture_intervals_m=intervals,
+            max_slip_m=float(np.max(np.abs(slip))),large=large))
     large=[e for e in events if e['large']]
     cycles=[[large[i]['end_s'],large[i+1]['end_s']] for i in range(len(large)-1)]
-    # Fixed, disclosed rule: final complete surface-breaking cycle, not best visual match.
+    # Fixed, disclosed rule: final complete shallow-reaching large-event cycle.
     selected=cycles[-1] if cycles else [float(t[0]),float(t[-1])]
     mask=(t>=selected[0])&(t<=selected[1]); ids=np.flatnonzero(mask)
     if len(ids)<2: raise RuntimeError('No usable cycle samples: '+case)
@@ -76,13 +79,32 @@ def analyze(case):
         if usable:group.append([time,depth])
     close_group()
     intervals=np.diff([e['end_s'] for e in large])/YEAR
+    slow_slip={}
+    maximum_speed=np.max(np.abs(v),axis=1)
+    for depth in [15000,18000,20000]:
+        k=int(np.argmin(abs(z-depth)));speed=np.abs(v[ids,k]);above=speed>=10*cfg['Vp']
+        changes=np.diff(np.r_[False,above,False].astype(int));episodes=[]
+        for begin,end in zip(np.flatnonzero(changes==1),np.flatnonzero(changes==-1)):
+            # Require two threshold crossings inside the window. A truncated
+            # episode is not assigned a duration or recurrence peak.
+            if begin==0 or end==len(ids):continue
+            subset=ids[begin:end];duration=(t[subset[-1]]-t[subset[0]])/YEAR
+            if duration<.01 or np.max(maximum_speed[subset])>=cfg['seismic_threshold']:continue
+            peak=subset[np.argmax(speed[begin:end])]
+            episodes.append(dict(start_s=float(t[subset[0]]),end_s=float(t[subset[-1]]),
+                peak_s=float(t[peak]),duration_years=float(duration),peak_velocity=float(abs(v[peak,k]))))
+        spacings=np.diff([e['peak_s'] for e in episodes])/YEAR
+        slow_slip[str(depth)]=dict(sample_depth_m=float(z[k]),threshold_m_s=10*cfg['Vp'],episodes=episodes,
+            median_interval_years=float(np.median(spacings)) if len(spacings) else None,
+            interval_coefficient_of_variation=float(np.std(spacings)/np.mean(spacings)) if len(spacings)>1 else None,
+            median_duration_years=float(np.median([e['duration_years'] for e in episodes])) if episodes else None)
     result=dict(case=case,configuration=cfg,events=events,complete_cycles_s=cycles,
         selected_cycle_s=selected,selection_rule='last complete large-event cycle; entire run if none',
         selected_cycle_complete=bool(cycles),large_event_count=len(large),
         recurrence_years=intervals.tolist(),
         median_recurrence_years=float(np.median(intervals)) if len(intervals) else None,
         selected_event_count=len(selected_events),selected_small_events=sum(not e['large'] for e in selected_events),
-        sample_depths=sample_depths,migration_segments=segments,
+        sample_depths=sample_depths,migration_segments=segments,slow_slip=slow_slip,
         minimum_effective_pa=float(h['min_effective_pa'].min()),
         maximum_velocity=float(h['vmax_m_s'].max()),
         negative_velocity_samples=int(np.sum(v<0)),

@@ -22,5 +22,11 @@
     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7515873/fullTextXML",
     "sha256": "b64a995c61c90e320a31a7219e3d0ed8943316bf00b8e33f81b6beba7e95c7d1",
     "use": "written model documentation and reference inspection only; not a plotting or model input"
+  },
+  {
+    "document": "kennedy-carpenter.pdf",
+    "url": "https://ntrs.nasa.gov/api/citations/20010075154/downloads/20010075154.pdf",
+    "sha256": "462859e32d22b7bd476828cd27cf2f81803460eb59ac00a31c0578f6538ee6a8",
+    "use": "published generic time-integration coefficients; no earthquake model or data"
   }
 ]

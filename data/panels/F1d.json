@@ -55,5 +55,6 @@
   "config_file": "configs/baseline.cfg",
   "selection": "Direct constitutive laws or independently calculated steady state",
   "status": "partial",
-  "main_discrepancy": "Normal stress gradient is assumed; steady Darcy balance is independently verified."
+  "main_discrepancy": "Normal stress gradient is assumed; steady Darcy balance is independently verified.",
+  "model_source_sha256": "fbd7f82444b087cc38d1eb02e8d9b5aa5180eeaf1979c26226737804082f104f"
 }

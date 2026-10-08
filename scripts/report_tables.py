@@ -37,7 +37,7 @@ def main():
         'The two independently reproduced panels are the constitutive-law limits in Fig. 1b,c. '
         'The baseline calculation produces {} large events over {} years. Its selected comparison window '
         'lasts {} years and contains {} smaller seismic events. Operator tests verify steady Darcy flow, '
-        'friction inversion, elasticity, fluid conservation, and second-order convergence. '
+        'friction inversion, elasticity, fluid conservation, and fourth-order temporal convergence. '
         'The remaining trajectory comparisons retain explicit uncertainty from friction profiles, initial '
         'conditions, and numerical resolution; we do not claim recovery of the authors\' exact earthquake sequence.'
         ).format(counts['independently reproduced'],counts['partial'],counts['not reproduced'],
@@ -57,8 +57,10 @@ calculation refines all time-dependent fields together.
 '''+Path('data/verification.txt').read_text()+Path('data/coupled_verification.txt').read_text()+r'''\end{verbatim}
 The diffusion errors decrease by approximately four on each joint space/time
 refinement. The coupled test compares fixed steps of 20,000, 10,000, and 5,000 s
-with a 2,500 s reference in a separate 30 km test domain; it is a temporal-order
-test, not evidence that the 500 km earthquake calculation is spatially converged.
+with a 2,500 s reference for the second-order comparison integrator. The production
+fourth-order method uses approximately 80,000, 40,000, 20,000, and 10,000 s steps,
+again against a 2,500 s reference. These are temporal-order tests in a separate
+30 km domain, not evidence that the 500 km earthquake calculation is spatially converged.
 '''
     write('verification',verification)
 
@@ -217,7 +219,7 @@ Original figure/panel & Quantity and output data & Documentation used & Command 
 code were developed. Both stages are the same stages invoked by the single
 command above:
 \begin{verbatim}
-python3 scripts/reproduce.py --simulate-only --jobs 7
+python3 scripts/reproduce.py --simulate-only --jobs 12
 python3 scripts/reproduce.py --postprocess-only
 \end{verbatim}
 \begin{center}\begin{tabular}{lrrrr}
