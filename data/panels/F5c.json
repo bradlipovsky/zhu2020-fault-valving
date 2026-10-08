@@ -1,0 +1,350 @@
+{
+  "panel": "F5c",
+  "quantity": "Effective normal stress",
+  "kind": "heatmap",
+  "cases": [
+    "short"
+  ],
+  "documentation": "Main Fig. 5; Eqs. (1)-(9); Table 1; T=1e7 s, q0=3.3e-10 m/s",
+  "field": 2,
+  "data_command": "python3 scripts/panel.py F5c --data",
+  "plot_command": "python3 scripts/plot.py F5c",
+  "data_file": "data/panels/F5c.npz",
+  "case": "short",
+  "config_file": "configs/short.cfg",
+  "parameters": {
+    "n": 131072.0,
+    "threads": 4.0,
+    "Ly": 500000.0,
+    "Lz": 500000.0,
+    "mu": 32400000000.0,
+    "radiation": 4680000.0,
+    "Vp": 1e-09,
+    "V0": 1e-06,
+    "f0": 0.6,
+    "dc": 0.002,
+    "rho": 1000.0,
+    "gravity": 9.8,
+    "viscosity": 0.0001,
+    "storage": 1e-11,
+    "normal_gradient": 22000.0,
+    "stress_scale": 30000000.0,
+    "kmin": 1e-19,
+    "kmax": 1e-15,
+    "L": 1.0,
+    "T": 10000000.0,
+    "influx": 3.3e-10,
+    "a_surface": 0.01,
+    "a_15km": 0.03,
+    "a_deep_slope": 3e-06,
+    "ab_shallow": -0.01,
+    "ab_corner": 13500.0,
+    "vw_bottom": 17000.0,
+    "perturbation": 0.0001,
+    "perturb_depth": 12000.0,
+    "perturb_width": 1000.0,
+    "initial_locking_depth": 17000.0,
+    "initial_transition_width": 1500.0,
+    "initial_velocity_fraction": 0.0001,
+    "years": 200.0,
+    "tolerance": 1e-05,
+    "dt_max": 1000000.0,
+    "fine_depth": 30000.0,
+    "stretch_scale": 10000.0,
+    "maximum_spacing": 1000.0,
+    "surface_ratio": 8.0,
+    "surface_scale": 1000.0,
+    "output_years": 0.025,
+    "output_seconds": 0.5,
+    "output_depth": 30000.0,
+    "output_spacing": 30.0,
+    "seismic_threshold": 0.001,
+    "fixed_pressure": 0.0
+  },
+  "window_s": [
+    4449934684.559666,
+    6021627645.236342
+  ],
+  "selection": "last complete large-event cycle; entire run if none",
+  "complete_cycle": true,
+  "source_provenance": {
+    "case": "short",
+    "command": [
+      "build/valving",
+      "configs/short.cfg",
+      "data/short"
+    ],
+    "pid": 2604919,
+    "start_utc": "2026-10-08T06:01:26Z",
+    "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+    "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+    "config_sha256": "80347840ec2644278c60cf2e88219e645c89dc764295aeaa66763132ef8ac4d2",
+    "cpu_affinity": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+    "exit_code": 0,
+    "end_utc": "2026-10-08T20:56:42Z"
+  },
+  "slow_slip_diagnostics": {
+    "15000": {
+      "sample_depth_m": 15012.741088867188,
+      "threshold_m_s": 1.1000000000000001e-09,
+      "episodes": [
+        {
+          "start_s": 4740669384.585415,
+          "end_s": 4746933251.799859,
+          "peak_s": 4742522590.265242,
+          "duration_years": 0.19848997434672347,
+          "peak_velocity": 1.614362088453447e-09,
+          "net_slip_m": 0.009171009063720703
+        },
+        {
+          "start_s": 4800539313.347747,
+          "end_s": 4805815965.266085,
+          "peak_s": 4801676787.0351925,
+          "duration_years": 0.16720700935235322,
+          "peak_velocity": 2.0834283631643302e-08,
+          "net_slip_m": 0.04653167724609375
+        },
+        {
+          "start_s": 4898361861.131278,
+          "end_s": 4906760387.852916,
+          "peak_s": 4899151620.212005,
+          "duration_years": 0.2661332522637249,
+          "peak_velocity": 1.8454359818065313e-08,
+          "net_slip_m": 0.06817388534545898
+        },
+        {
+          "start_s": 5001318312.799442,
+          "end_s": 5013269980.956247,
+          "peak_s": 5001318312.799442,
+          "duration_years": 0.3787255100769716,
+          "peak_velocity": 1.790397519130238e-08,
+          "net_slip_m": 0.04684162139892578
+        },
+        {
+          "start_s": 5088185535.69907,
+          "end_s": 5097041569.397642,
+          "peak_s": 5089002812.720252,
+          "duration_years": 0.28063077352435417,
+          "peak_velocity": 1.0639884528984567e-08,
+          "net_slip_m": 0.03528022766113281
+        },
+        {
+          "start_s": 5165771670.598068,
+          "end_s": 5176119719.980237,
+          "peak_s": 5165771670.598068,
+          "duration_years": 0.327909897526072,
+          "peak_velocity": 1.6647341283260175e-08,
+          "net_slip_m": 0.04120588302612305
+        },
+        {
+          "start_s": 5266484523.990449,
+          "end_s": 5275201938.884417,
+          "peak_s": 5266484523.990449,
+          "duration_years": 0.27623820867137006,
+          "peak_velocity": 2.6848244516486375e-08,
+          "net_slip_m": 0.051512718200683594
+        },
+        {
+          "start_s": 5374896045.05053,
+          "end_s": 5384452320.832701,
+          "peak_s": 5374896045.05053,
+          "duration_years": 0.30282010616049054,
+          "peak_velocity": 2.7002322156022274e-08,
+          "net_slip_m": 0.04822587966918945
+        },
+        {
+          "start_s": 5470033421.095459,
+          "end_s": 5480378720.013014,
+          "peak_s": 5470826917.200918,
+          "duration_years": 0.3278227405618569,
+          "peak_velocity": 1.456791220988407e-08,
+          "net_slip_m": 0.0476536750793457
+        },
+        {
+          "start_s": 5556435943.6339035,
+          "end_s": 5566822568.767539,
+          "peak_s": 5557235208.038617,
+          "duration_years": 0.32913228932604255,
+          "peak_velocity": 1.6231497923513416e-08,
+          "net_slip_m": 0.044895172119140625
+        },
+        {
+          "start_s": 5644880096.354772,
+          "end_s": 5655214470.052291,
+          "peak_s": 5645676300.052495,
+          "duration_years": 0.3274765412299827,
+          "peak_velocity": 1.4863786645946675e-08,
+          "net_slip_m": 0.055882930755615234
+        },
+        {
+          "start_s": 5748205218.037924,
+          "end_s": 5757704618.39936,
+          "peak_s": 5748205218.037924,
+          "duration_years": 0.30101783283379885,
+          "peak_velocity": 3.5172291745766415e-08,
+          "net_slip_m": 0.054268836975097656
+        },
+        {
+          "start_s": 5845598901.154594,
+          "end_s": 5855177361.211705,
+          "peak_s": 5845598901.154594,
+          "duration_years": 0.30352308341289536,
+          "peak_velocity": 2.023360146097275e-08,
+          "net_slip_m": 0.050984859466552734
+        },
+        {
+          "start_s": 5936628690.6656065,
+          "end_s": 5945402540.435221,
+          "peak_s": 5936628690.6656065,
+          "duration_years": 0.2780265219666331,
+          "peak_velocity": 2.0508299058974444e-08,
+          "net_slip_m": 0.040078163146972656
+        }
+      ],
+      "median_interval_years": 3.0398659007778717,
+      "interval_coefficient_of_variation": 0.1353055231126626,
+      "median_duration_years": 0.3019189694971447,
+      "median_net_slip_m": 0.04724764823913574
+    },
+    "18000": {
+      "sample_depth_m": 18014.907836914062,
+      "threshold_m_s": 1.1000000000000001e-09,
+      "episodes": [
+        {
+          "start_s": 4542546320.89695,
+          "end_s": 4682917918.036763,
+          "peak_s": 4543399095.9748535,
+          "duration_years": 4.448107496761903,
+          "peak_velocity": 7.851912897649527e-09,
+          "net_slip_m": 0.20836973190307617
+        },
+        {
+          "start_s": 4702716295.318523,
+          "end_s": 4744212334.390673,
+          "peak_s": 4729395007.253824,
+          "duration_years": 1.3149301300526426,
+          "peak_velocity": 1.3122897213335705e-09,
+          "net_slip_m": 0.050373077392578125
+        },
+        {
+          "start_s": 4795767680.94624,
+          "end_s": 4823165109.034715,
+          "peak_s": 4811461491.578559,
+          "duration_years": 0.8681721071461161,
+          "peak_velocity": 1.5685792664754672e-09,
+          "net_slip_m": 0.036995887756347656
+        },
+        {
+          "start_s": 4891981498.638053,
+          "end_s": 4918200286.318205,
+          "peak_s": 4905948446.579287,
+          "duration_years": 0.830823246386035,
+          "peak_velocity": 1.5019555599238288e-09,
+          "net_slip_m": 0.03476142883300781
+        },
+        {
+          "start_s": 4997327997.111126,
+          "end_s": 5017699768.766461,
+          "peak_s": 5007701251.597257,
+          "duration_years": 0.6455424891416149,
+          "peak_velocity": 1.2636842683377836e-09,
+          "net_slip_m": 0.02456188201904297
+        },
+        {
+          "start_s": 5179297572.640891,
+          "end_s": 5193690033.660474,
+          "peak_s": 5186487347.485313,
+          "duration_years": 0.45606956864852677,
+          "peak_velocity": 1.1909890851313776e-09,
+          "net_slip_m": 0.016724586486816406
+        },
+        {
+          "start_s": 5272031246.203683,
+          "end_s": 5291328286.947198,
+          "peak_s": 5282332073.974504,
+          "duration_years": 0.6114863216313983,
+          "peak_velocity": 1.5704124667337283e-09,
+          "net_slip_m": 0.026530742645263672
+        },
+        {
+          "start_s": 5378890384.517021,
+          "end_s": 5393994051.923036,
+          "peak_s": 5386824904.7275,
+          "duration_years": 0.4786063390756725,
+          "peak_velocity": 1.2516990777200476e-09,
+          "net_slip_m": 0.018174171447753906
+        },
+        {
+          "start_s": 5659190926.8340845,
+          "end_s": 5672707599.815937,
+          "peak_s": 5666352776.480642,
+          "duration_years": 0.4283175204024556,
+          "peak_velocity": 1.235914148800532e-09,
+          "net_slip_m": 0.01612377166748047
+        },
+        {
+          "start_s": 5756121499.979742,
+          "end_s": 5772749631.039094,
+          "peak_s": 5764828225.075861,
+          "duration_years": 0.5269136771919259,
+          "peak_velocity": 1.3422976063992564e-09,
+          "net_slip_m": 0.02081298828125
+        },
+        {
+          "start_s": 5855984061.24279,
+          "end_s": 5864727774.286894,
+          "peak_s": 5860758963.461005,
+          "duration_years": 0.27707154676222595,
+          "peak_velocity": 1.1436347424620408e-09,
+          "net_slip_m": 0.009899139404296875
+        }
+      ],
+      "median_interval_years": 3.172425241672192,
+      "interval_coefficient_of_variation": 0.45654621708128734,
+      "median_duration_years": 0.6114863216313983,
+      "median_net_slip_m": 0.02456188201904297
+    },
+    "20000": {
+      "sample_depth_m": 19994.735717773438,
+      "threshold_m_s": 1.1000000000000001e-09,
+      "episodes": [
+        {
+          "start_s": 4998919427.746287,
+          "end_s": 5038614322.85246,
+          "peak_s": 5020121875.058176,
+          "duration_years": 1.2578553218930641,
+          "peak_velocity": 1.160528562138552e-09,
+          "net_slip_m": 0.04516744613647461
+        },
+        {
+          "start_s": 5284407203.9114685,
+          "end_s": 5301113835.173871,
+          "peak_s": 5292913441.8219385,
+          "duration_years": 0.5294011985196129,
+          "peak_velocity": 1.1267711208517994e-09,
+          "net_slip_m": 0.018691539764404297
+        }
+      ],
+      "median_interval_years": 8.644243122536647,
+      "interval_coefficient_of_variation": null,
+      "median_duration_years": 0.8936282602063386,
+      "median_net_slip_m": 0.03192949295043945
+    }
+  },
+  "status": "partial",
+  "main_discrepancy": "Complete aseismic episodes above 1.1 Vp at 15/18/20 km: 14/11/2. Median intervals: 3.04, 3.17, 8.64 yr. Durations and slip are tabulated in the report; exact pulse sequence is not recovered.",
+  "model_source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "pipeline_source_sha256": {
+    "scripts/common.py": "60bc209b1f71391a4172016d5b1bcbc0e1040cfa95c8bf972852039c83243142",
+    "scripts/analyze.py": "3e4791cc732267a7dae80f8faab1de7e5d24f75ac69653433a4136d5dfc73f12",
+    "scripts/prepare_panels.py": "ba7e2b2955cc66ba956a1efd1e66099327e93df87d6b085e03356b2cf290395f",
+    "scripts/inventory.py": "bcf57967af1f7c0dadd74894a79834c4007bd9a6ff9d1c92812396a6a4f4fb39",
+    "scripts/plot.py": "2d2ecef344331fdcf5e4c16f44d80f8c828d40852af497d2c974b6662a73cd8f"
+  }
+}
