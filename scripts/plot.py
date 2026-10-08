@@ -87,13 +87,13 @@ def render(fig,slot,name):
             t=d[case+'_time_years'];z=d[case+'_depth_m']/1000;v=np.maximum(abs(d[case+'_velocity']),1e-35)
             ax.contour(t,z,np.log10(v).T,levels=[np.log10(float(d[case+'_Vp']))],colors=[COLORS[case]],linewidths=.9)
             ax.plot([],[],color=COLORS[case],label='$T={:.3g}$ yr'.format(meta['selections'][case]['configuration']['T']/YEAR))
-        ax.set(ylim=(25,0),xlabel='Time since selected cycle onset (yr)',ylabel='Depth (km)',title='F6: independently generated $|V|=V_p$ contours')
+        ax.set(ylim=(25,0),xlabel='Time since selected window start (yr)',ylabel='Depth (km)',title='F6: independently generated $|V|=V_p$ contours')
         ax.legend();ax.text(.02,.98,'Contour definition is an analysis assumption',transform=ax.transAxes,va='top',fontsize=7)
     elif kind in ['velocity_pair','heatmap','step_heatmap']:
         t=(d['time_s']-float(d['origin_s']))/YEAR;step=d['step']-d['step'][0];z=d['depth_m'];field=int(d['field'])
         if kind=='velocity_pair':
             grid=slot.subgridspec(1,2,wspace=.4)
-            for i,(xx,label) in enumerate([(t,'Time since cycle onset (yr)'),(step,'Accepted integration step')]):
+            for i,(xx,label) in enumerate([(t,'Time since window start (yr)'),(step,'Accepted integration step')]):
                 ax=axes(fig,grid[i]);map_field(fig,ax,xx,z,d['values'],field,float(d['influx']));ax.set_xlabel(label)
                 ax.set_title(name+': '+str(d['case'])+(' — time' if i==0 else ' — step'))
         else:

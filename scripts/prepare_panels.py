@@ -56,7 +56,7 @@ def run_panel(name,spec):
             for target in np.arange(window[0],min(window[0]+10*YEAR,window[1]),(.5 if cfg['T']<=1e8 else 1)*YEAR):
                 selected.append(int(np.clip(np.searchsorted(t,target),0,len(t)-1)));labels.append('early')
         for event in a['events']:
-            if window[0]<event['peak_s']<=window[1]:
+            if event['complete'] and window[0]<event['peak_s']<=window[1]:
                 for target in np.arange(event['start_s'],event['end_s'],1.):
                     selected.append(int(np.clip(np.searchsorted(t,target),0,len(t)-1)));labels.append('coseismic')
         result.update(profile_time_s=t[selected],profile_values=np.asarray(r['fields'][selected,field,:][:,zi]),
@@ -91,7 +91,8 @@ def prepare(name):
             ti=np.flatnonzero((r['time']>=window[0])&(r['time']<=window[1]));zi=np.flatnonzero(z<=25000)
             result[case+'_depth_m']=z[zi];result[case+'_time_years']=(r['time'][ti]-window[0])/YEAR
             result[case+'_velocity']=np.asarray(r['fields'][ti,1,:][:,zi]);result[case+'_Vp']=np.array(a['configuration']['Vp'])
-            selections[case]=dict(window_s=window,configuration=a['configuration'])
+            selections[case]=dict(window_s=window,configuration=a['configuration'],
+                complete_cycle=a['selected_cycle_complete'],selection=a['selection_rule'])
         metadata['selections']=selections
     else:
         result,details=run_panel(name,spec);metadata.update(details)
@@ -102,7 +103,7 @@ def prepare(name):
         discrepancy='New schematic, not a simulation reproduction; friction profiles are declared approximations.'
     elif name=='F1d':discrepancy='Normal stress gradient is assumed; steady Darcy balance is independently verified.'
     elif name.startswith('F4'):
-        a=analysis('baseline');small=[e for e in a['events'] if not e['large']
+        a=analysis('baseline');small=[e for e in a['events'] if e['complete'] and not e['large']
             and metadata['window_s'][0]<e['peak_s']<=metadata['window_s'][1]
             and any(top<10000 and bottom>2000 for top,bottom in e['rupture_intervals_m'])]
         metadata['middepth_small_events']=small
@@ -131,6 +132,10 @@ def prepare(name):
             'Median recurrence {:.3g} yr versus approximately {} yr in the displayed reference cycle ({:+.1f}%).'.format(
                 recurrence,target,100*(recurrence/target-1)))
         discrepancy+=' Initial state and friction profiles remain uncertain.'
+        if case=='baseline' and a['selected_cycle_complete']:
+            ruptures=a['phase_diagnostics']['largest_partial_ruptures']
+            bounds=['{:.2f}--{:.2f}'.format(e['footprint_top_m']/1000,e['footprint_bottom_m']/1000) for e in ruptures]
+            discrepancy+=' Largest partial footprints: '+(', '.join(bounds)+' km.' if bounds else 'none.')
     elif name.startswith('F3'):
         a=analysis('baseline');sample=a['sample_depths']['10000']
         if spec['field']==2:

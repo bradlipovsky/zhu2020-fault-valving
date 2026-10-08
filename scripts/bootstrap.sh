@@ -23,3 +23,4 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j4
 ctest --test-dir build --output-on-failure
 python3 -c 'import numpy, matplotlib; print("Plotting dependencies:", numpy.__version__, matplotlib.__version__)'
+python3 tests/analysis_boundaries.py

@@ -74,8 +74,11 @@ We compare the production initial-pressure solver with these separately
 integrated solutions for both the published permeability floor and its zero limit.
 Errors decrease by approximately four when grid spacing is halved.
 {\small\begin{verbatim}
-'''+Path('data/verification.txt').read_text()+Path('data/coupled_verification.txt').read_text()+Path('data/steady_verification.txt').read_text()+Path('data/graded_verification.txt').read_text()+r'''\end{verbatim}
+'''+Path('data/verification.txt').read_text()+Path('data/coupled_verification.txt').read_text()+Path('data/steady_verification.txt').read_text()+Path('data/graded_verification.txt').read_text()+Path('data/analysis_verification.txt').read_text()+r'''\end{verbatim}
 }
+Catalog and phase-diagnostic checks use synthetic output arrays in a temporary
+directory. They verify event boundaries, connected depth intervals, and pressure
+extrema; those test arrays never supply the scientific figures.
 The diffusion errors decrease by approximately four on each joint space/time
 refinement. The coupled test compares fixed steps of 20,000, 10,000, and 5,000 s
 with a 2,500 s reference for the second-order comparison integrator. The production
@@ -88,7 +91,7 @@ again against a 2,500 s reference. These are temporal-order tests in a separate
     comparison=r'''\begin{center}
 \begin{tabular}{lrrrr}
 \toprule
-Case & $T$ (yr) & Large events & Median recurrence (yr) & Small events in selected cycle\\
+Case & $T$ (yr) & Large events & Median recurrence (yr) & Small events in window\\
 \midrule
 '''
     for case in MAIN_CASES:
@@ -149,13 +152,45 @@ Baseline depth (km) & Minimum $N$ (MPa) & Maximum $N$ (MPa) & Range (MPa) & Maxi
 \end{center}
 The article describes effective-stress changes of order 10--20 MPa and an
 upper flux scale of order $10^{-7}$ m s$^{-1}$. The table measures those
-quantities in the selected independently generated cycle. It does not imply
+quantities in the selected independently generated window. It does not imply
 that the timing, rupture depths, or four phases of the published cycle match.
+'''
+    phase=baseline['phase_diagnostics'];metrics['baseline']['phase_diagnostics']=phase
+    comparison+=r'''\subsection{Rupture depths and drainage timing}
+The published description places two partial ruptures at approximately
+13--18 and 8--19 km depth before the final swarm and surface-reaching event.
+For a quantitative spatial comparison, we select the two partial events with
+the largest local slip in our comparison window, then list them in time order.
+Their depth ranges are the longest connected components exceeding 1 cm of event
+slip. This rule does not select the events closest to the published footprints.
+\begin{center}\begin{tabular}{lrrr}
+\toprule
+Time in window (yr) & Connected footprint (km) & Maximum slip (m) & Peak speed (m/s)\\
+\midrule
+'''
+    for event in phase['largest_partial_ruptures']:
+        comparison+=' & '.join([number(event['peak_since_window_start_years']),
+            number(event['footprint_top_m']/1000)+'--'+number(event['footprint_bottom_m']/1000),
+            number(event['max_slip_m']),number(event['peak_velocity'])])+r'\\'+'\n'
+    if not phase['largest_partial_ruptures']:
+        comparison+=r'\multicolumn{4}{c}{No complete partial rupture with a resolved 1 cm footprint.}\\'+'\n'
+    comparison+=r'\bottomrule\end{tabular}\end{center}'+'\n'
+    comparison+=('At the sampled depth of {} km, effective stress reaches its window maximum '
+        '{} yr after the window starts; pressure has decreased by {} MPa from its initial value.\n').format(
+            number(phase['sample_depth_m']/1000),number(phase['maximum_effective_stress_since_window_start_years']),
+            number(phase['pressure_drop_from_window_start_mpa']))
+    comparison+=r'''The article describes a transition from postseismic drainage to renewed
+pressurization after approximately 5--10 years. Our stress-maximum time is an
+explicit diagnostic at one depth, rather than the authors' unspecified phase
+boundary. It must be read with the pressure maps. When no complete large-event
+cycle exists, the comparison window covers the entire run, including startup;
+such a window cannot establish the four-phase cycle. Events truncated by an
+output boundary cannot close a complete cycle and are excluded from this table.
 '''
     comparison+=r'''\subsection{Dependence on healing time}
 The article and Supplementary Figs. 3--6 predict reduced pressure cycling when
 healing is slow relative to earthquake recurrence. The following quantities
-are measured at 10 km in each run's selected cycle. They test that trend without
+are measured at 10 km in each run's selected window. They test that trend without
 equating cycles that begin from different independently generated states.
 \begin{center}\begin{tabular}{lrrrr}
 \toprule
@@ -172,6 +207,8 @@ Here subscripts min and max denote temporal extrema at the sampled depth;
 the permeability ratio does not refer to the constitutive bounds. These are
 amplitude comparisons. They do not establish agreement in individual event
 times or demonstrate grid convergence of the long-healing cases.
+Entries from runs with fewer than two complete large events include startup;
+they cannot establish the amplitude of a repeating cycle.
 '''
     comparison+=r'''\subsection{Aseismic pulse diagnostics}
 For the short-healing case, a local episode has $|V|\geq1.1V_p$ for at least
@@ -200,7 +237,7 @@ CV targets. Our threshold defines the measured pulse width; the authors do not
 specify an equivalent threshold, so duration comparisons carry that ambiguity.
 '''
 
-    validation={};ref_events=[e for e in baseline['events'] if e['large']]
+    validation={};ref_events=[e for e in baseline['events'] if e['large'] and e['complete']]
     comparison+=r'''\subsection{Resolution and initial-condition sensitivity}
 \begin{center}
 \begin{tabular}{lrrrr}
@@ -209,14 +246,14 @@ Case & Finest spacing (m) & Tolerance & First large event (yr) & Difference (yr)
 \midrule
 '''
     for case in ['baseline']+VALIDATION_CASES:
-        a=analyses[case];ee=[e for e in a['events'] if e['large']]
+        a=analyses[case];events=[e for e in a['events'] if e['complete']];ee=[e for e in events if e['large']]
         first=ee[0]['peak_s']/YEAR if ee else None
         reference=ref_events[0]['peak_s']/YEAR if ref_events else None
         difference=None if first is None or reference is None else first-reference
         validation[case]=dict(first_large_event_year=first,first_event_difference_year=difference,
             final_time_years=a['final_time_years'],large_event_count=a['large_event_count'],
             front_speed_m_per_year=front_speed(a),
-            first_seismic_event=a['events'][0] if a['events'] else None)
+            first_seismic_event=events[0] if events else None)
         comparison+=' & '.join([tex(case),number(a['resolution']['dz_m']),number(a['configuration']['tolerance']),number(first),number(difference)])+r'\\'+'\n'
     comparison+=r'''\bottomrule
 \end{tabular}

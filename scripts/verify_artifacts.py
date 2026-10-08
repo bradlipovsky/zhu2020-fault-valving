@@ -68,11 +68,14 @@ def main():
     for error in ['LaTeX Error','There were undefined references','Citation `']:
         assert error not in log,error
     checked.extend(Path('report').glob('*.tex'));checked.append(pdf)
-    checked.extend([Path('data/verification.txt'),Path('data/coupled_verification.txt'),Path('data/steady_verification.txt'),Path('data/graded_verification.txt'),
+    checked.extend([Path('data/verification.txt'),Path('data/coupled_verification.txt'),Path('data/steady_verification.txt'),Path('data/graded_verification.txt'),Path('data/analysis_verification.txt'),
         Path('data/quantitative_comparisons.json'),Path('data/validation_summary.json')])
     checked.extend(Path('data/laws').glob('*.csv'))
     checked.extend(Path('configs',case+'.cfg') for case in MAIN_CASES+VALIDATION_CASES)
     checked.extend(Path('scripts').glob('*.py'));checked.extend(Path('src').glob('*.cpp'))
+    checked.extend(Path('tests').glob('*.cpp'));checked.extend(Path('tests').glob('*.py'))
+    checked.extend(Path('documentation').glob('*.md'));checked.extend(Path('documentation').glob('*.json'))
+    checked.extend([Path('CMakeLists.txt'),Path('README.md'),Path('requirements.txt'),Path('scripts/bootstrap.sh')])
     bundle=json.loads(Path('data/report_bundle_verification.json').read_text())
     assert bundle['isolated_compile'] and bundle['sha256']==sha(bundle['archive'])
     checked.extend([Path(bundle['archive']),Path('data/report_bundle_verification.json'),Path('data/report_bundle_build.log')])

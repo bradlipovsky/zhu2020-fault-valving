@@ -156,11 +156,19 @@ snapshots bracketing each event; a local velocity maximum can be missed by
 Large events have a connected footprint reaching above 2 km and spanning more
 than 10 km. The last complete large-event cycle is selected by a fixed
 rule. The published time origins and restarts are never imported or fitted.
+Threshold events truncated at either output boundary are retained with
+complete=false and cannot close a cycle or enter complete-event comparisons.
+The report compares the two largest complete partial events by local slip,
+ordered chronologically, using each event's longest connected footprint.
+The time of maximum effective stress near 10 km provides a separately defined
+drainage diagnostic; it is not equated automatically to a published phase boundary.
 Figure 6 uses the independently computed |V|=Vp contour; its definition is an
 analysis assumption because the paper does not specify its exact extraction rule.
 Slow-slip diagnostics at 15, 18, and 20 km count complete local intervals above
 1.1 Vp, longer than 0.01 yr, during which the maximum slip speed anywhere remains
 below 1e-3 m/s. Truncated intervals at a selected window edge are excluded.
+The seismicity exclusion uses the whole-fault maximum at every accepted step,
+including depths beyond the saved profile range and times between snapshots.
 The threshold is near the plate rate because the article describes centimetres
 of slip over about a year; a 10 Vp threshold would exclude that amplitude scale.
 This is a declared measurement convention, not a prescribed condition in the model.

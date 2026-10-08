@@ -6,6 +6,8 @@ build/
 __pycache__/
 data/*/fields.bin
 data/*/checkpoint.bin
+data/*/checkpoint.tmp
+data/*/history.csv
 report/*.aux
 report/*.log
 report/*.out

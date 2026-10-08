@@ -31,7 +31,7 @@ for fig,case in [('F4','baseline'),('F5','short')]:
             ('c','heatmap',2,'Effective normal stress'),('d','heatmap',3,'Permeability')]:
         add(fig+letter,quantity,kind,[case],'Main '+fig.replace('F','Fig. ')+
             '; Eqs. (1)-(9); Table 1'+('; T=1e7 s, q0=3.3e-10 m/s' if fig=='F5' else ''),field)
-add('F6','Upward migration of the V=Vp contour','fronts',['short','baseline','long','verylong'],
+add('F6','Upward migration of the |V|=Vp contour','fronts',['short','baseline','long','verylong'],
     'Main Fig. 6 and Discussion; reported rates 2.50, 0.38, 0.12, 0.03 km/year')
 for letter,field,quantity in [('a',1,'Slip velocity'),('b',3,'Permeability'),('c',5,'Upward flux'),('d',2,'Effective stress')]:
     add('S1'+letter,quantity+' at 5, 10, 15, and 20 km','depth_histories',['baseline'],

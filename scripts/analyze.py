@@ -31,15 +31,15 @@ def analyze(case):
         events.append(dict(start_s=t0,end_s=t1,peak_s=float(h['time_s'][imax]),
             peak_velocity=float(h['vmax_m_s'][imax]),nucleation_depth_m=float(h['z_vmax_m'][i]),
             shallow_m=shallow,deep_m=deep,rupture_intervals_m=intervals,
-            max_slip_m=float(np.max(np.abs(slip))),large=large))
-    large=[e for e in events if e['large']]
+            max_slip_m=float(np.max(np.abs(slip))),large=large,complete=bool(i>0 and j<len(h))))
+    large=[e for e in events if e['large'] and e['complete']]
     cycles=[[large[i]['end_s'],large[i+1]['end_s']] for i in range(len(large)-1)]
     # Fixed, disclosed rule: final complete shallow-reaching large-event cycle.
     selected=cycles[-1] if cycles else [float(t[0]),float(t[-1])]
     mask=(t>=selected[0])&(t<=selected[1]); ids=np.flatnonzero(mask)
     if len(ids)<2: raise RuntimeError('No usable cycle samples: '+case)
     Ne=np.asarray(r['fields'][ids,2,:]); kval=np.asarray(r['fields'][ids,3,:]); flux=np.asarray(r['fields'][ids,5,:])
-    selected_events=[e for e in events if selected[0]<e['peak_s']<=selected[1]]
+    selected_events=[e for e in events if e['complete'] and selected[0]<e['peak_s']<=selected[1]]
     sample_depths={}
     for d in [5000,10000,15000,20000]:
         k=int(np.argmin(abs(z-d)))
@@ -51,6 +51,8 @@ def analyze(case):
     # Migration speed: consecutive upward V=Vp crossings connected to deep creep.
     front=[]
     zz=z[z<=25000]
+    snapshot_history=np.searchsorted(h['time_s'],t)
+    snapshot_maximum=h['vmax_m_s'][snapshot_history]
     for it in ids:
         vv=np.abs(v[it,:len(zz)])
         crossings=np.flatnonzero((vv[:-1]<cfg['Vp'])&(vv[1:]>=cfg['Vp']))
@@ -60,7 +62,7 @@ def analyze(case):
             weight=(np.log(cfg['Vp'])-np.log(max(vv[k],1e-35)))/(np.log(max(vv[k+1],1e-35))-np.log(max(vv[k],1e-35)))
             depth=float(zz[k]+weight*(zz[k+1]-zz[k]))
         else: depth=None
-        front.append([float((t[it]-selected[0])/YEAR),depth,float(np.max(vv))])
+        front.append([float((t[it]-selected[0])/YEAR),depth,float(snapshot_maximum[it])])
     segments=[]; group=[]
     def close_group():
         if len(group)>=5:
@@ -82,7 +84,6 @@ def analyze(case):
     close_group()
     intervals=np.diff([e['end_s'] for e in large])/YEAR
     slow_slip={}
-    maximum_speed=np.max(np.abs(v),axis=1)
     for depth in [15000,18000,20000]:
         # The article describes centimetres of slip over about a year, hence
         # speeds near Vp. A 10 Vp cutoff would miss such low-amplitude pulses.
@@ -93,7 +94,9 @@ def analyze(case):
             # episode is not assigned a duration or recurrence peak.
             if begin==0 or end==len(ids):continue
             subset=ids[begin:end];duration=(t[subset[-1]]-t[subset[0]])/YEAR
-            if duration<.01 or np.max(maximum_speed[subset])>=cfg['seismic_threshold']:continue
+            lo=np.searchsorted(h['time_s'],t[subset[0]])
+            hi=np.searchsorted(h['time_s'],t[subset[-1]],side='right')
+            if duration<.01 or np.max(h['vmax_m_s'][lo:hi])>=cfg['seismic_threshold']:continue
             peak=subset[np.argmax(speed[begin:end])]
             episodes.append(dict(start_s=float(t[subset[0]]),end_s=float(t[subset[-1]]),
                 peak_s=float(t[peak]),duration_years=float(duration),peak_velocity=float(abs(v[peak,k])),
@@ -104,6 +107,20 @@ def analyze(case):
             interval_coefficient_of_variation=float(np.std(spacings)/np.mean(spacings)) if len(spacings)>1 else None,
             median_duration_years=float(np.median([e['duration_years'] for e in episodes])) if episodes else None,
             median_net_slip_m=float(np.median([e['net_slip_m'] for e in episodes])) if episodes else None)
+    k10=int(np.argmin(abs(z-10000)));peak10=int(np.argmax(Ne[:,k10]))
+    partial=[e for e in selected_events if not e['large'] and e['rupture_intervals_m']]
+    partial=sorted(sorted(partial,key=lambda e:e['max_slip_m'],reverse=True)[:2],key=lambda e:e['peak_s'])
+    ruptures=[]
+    for event in partial:
+        top,bottom=max(event['rupture_intervals_m'],key=lambda interval:interval[1]-interval[0])
+        ruptures.append(dict(peak_since_window_start_years=(event['peak_s']-selected[0])/YEAR,
+            footprint_top_m=top,footprint_bottom_m=bottom,max_slip_m=event['max_slip_m'],
+            peak_velocity=event['peak_velocity']))
+    phase_diagnostics=dict(sample_depth_m=float(z[k10]),
+        maximum_effective_stress_since_window_start_years=float((t[ids[peak10]]-selected[0])/YEAR),
+        pressure_drop_from_window_start_mpa=float((Ne[peak10,k10]-Ne[0,k10])/1e6),
+        largest_partial_ruptures=ruptures,
+        rupture_selection='Two largest complete partial events by maximum local slip, listed chronologically; each depth interval is its longest connected >=1 cm footprint.')
     result=dict(case=case,configuration=cfg,events=events,complete_cycles_s=cycles,
         resolution={key:completed[key] for key in ['n','dynamic_nodes','dz_m','minimum_Lb_cells','minimum_hstar_cells']},
         event_definition='maximum accepted-step speed >= 1e-3 m/s; connected event-slip footprint >= 0.01 m; large if top < 2 km and span > 10 km',
@@ -112,7 +129,8 @@ def analyze(case):
         recurrence_years=intervals.tolist(),
         median_recurrence_years=float(np.median(intervals)) if len(intervals) else None,
         selected_event_count=len(selected_events),selected_small_events=sum(not e['large'] for e in selected_events),
-        sample_depths=sample_depths,migration_segments=segments,slow_slip=slow_slip,
+        sample_depths=sample_depths,migration_segments=segments,slow_slip=slow_slip,phase_diagnostics=phase_diagnostics,
+        truncated_event_count=sum(not e['complete'] for e in events),
         minimum_effective_pa=float(h['min_effective_pa'].min()),
         maximum_velocity=float(h['vmax_m_s'].max()),
         negative_velocity_samples=int(np.sum(v<0)),

@@ -37,6 +37,11 @@ The command also creates `report/latex-source.zip` and verifies that its extract
 LaTeX sources and generated figures compile in an isolated directory.
 `report/reproduction-complete.tex` is the expanded single-file LaTeX source.
 
+The committed `data/panels/*.npz` files contain the plotted numerical arrays.
+Full field files, accepted-step histories, and checkpoints are generated locally
+by the numerical runs. The supplied panel files support plotting directly with
+`python3 scripts/plot.py all`.
+
 ```
 # A short smoke calculation
 bash scripts/bootstrap.sh

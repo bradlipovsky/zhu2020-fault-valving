@@ -16,7 +16,7 @@ def main():
         shutil.copytree(str(root/name),str(test/name),ignore=shutil.ignore_patterns('__pycache__'))
     (test/'report').mkdir()
     shutil.copy(str(root/'report/reproduction.tex'),str(test/'report/reproduction.tex'))
-    for name in ['CMakeLists.txt','requirements.txt']:shutil.copy(str(root/name),str(test/name))
+    for name in ['CMakeLists.txt','requirements.txt','README.md']:shutil.copy(str(root/name),str(test/name))
     (test/'.deps').symlink_to(root/'.deps',target_is_directory=True)
     # These intentionally coarse, short runs test software integration only.
     overrides=dict(n=512,threads=1,years=.002,output_years=.0001,output_spacing=1000,
