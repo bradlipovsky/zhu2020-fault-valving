@@ -14,7 +14,7 @@ int main(int argc,char** argv) {
         for(auto& v:initial)f.read(reinterpret_cast<char*>(v.data()),v.size()*sizeof(double));
         require(bool(f),"candidate checkpoint read");
         int method=std::stoi(argv[3]);double end=std::stod(argv[4]);
-        State x=initial,out=zeros(p.n),coarse=zeros(p.n),half=zeros(p.n),stage=zeros(p.n),f0=zeros(p.n),f1=zeros(p.n);
+        State x=initial,out=zeros(m.n),coarse=zeros(m.n),half=zeros(m.n),stage=zeros(m.n),f0=zeros(m.n),f1=zeros(m.n);
         ARK4 solver(m);double t=0,dt=dt0;int steps=0,rejects=0;
         auto begin=std::chrono::steady_clock::now();
         while(t<end) {

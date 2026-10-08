@@ -1,0 +1,20 @@
+{
+  "pid": 2613424,
+  "command": [
+    "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/coseismic-profile/integrator_compare",
+    "config.cfg",
+    "checkpoint.bin",
+    "4",
+    "1"
+  ],
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "checkpoint_sha256": "16bc4fe81a9e4e126204699538454f153a1f6ffcf9f63f705574bd13513c5ce0",
+  "purpose": "Performance profile from our own active coarse run; not a source of manuscript-panel data.",
+  "measured_run_summary": "method=4 t0=243472037.36772 duration=1 steps=945 rejects=76 wall_s=52.50417624",
+  "comparison_output_bytes": 171936,
+  "driver_validation": {
+    "2": "method=2 t0=243472037.36772 duration=0.01 steps=59 rejects=4 wall_s=3.315362138",
+    "4": "method=4 t0=243472037.36772 duration=0.01 steps=14 rejects=1 wall_s=0.725551481"
+  },
+  "interpretation": "One second of a coarse-mesh earthquake requires approximately 53 seconds in this profiled single-thread calculation. Instrumentation and concurrent workloads affect timing. No performance claim for the full study or source-code change to the production solver is inferred."
+}
