@@ -10,13 +10,15 @@ import numpy as np
 
 ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/'scripts'))
-from analyze import analyze,fit_migration
+from analyze import analyze,fit_migration,velocity_crossings
 
 def integrated(increments):
     # Increment i belongs to the interval from saved time i to time i+1.
     return np.r_[0.,np.cumsum(increments)[:-1]]
 
 def main():
+    assert np.allclose(velocity_crossings(np.arange(3,14,2)*1000,
+        np.array([1e-10,-1e-8,1e-10,1e-8,1e-10,1e-8]),1e-9),[4000,8000,12000])
     # Known translating front, followed by the same front interrupted by a quake.
     front=[[float(t),9000-4200*t,1e-8] for t in np.arange(60)*.025]
     fitted=fit_migration(front,2000,10000,.001)
@@ -109,6 +111,12 @@ def main():
             speed[4]=2e-9;maximum_depth[4]=15000;write_fixture()
             result=analyze('fixture')
             assert all(len(d['episodes'])==1 for d in result['slow_slip'].values())
+            # An interior pulse must not hide a simultaneous leading boundary.
+            records['fields'][:,1,:]=[1e-10,1e-10,1e-8,1e-10,1e-8]
+            speed[:]=1e-8;write_fixture();result=analyze('fixture')
+            fronts=np.genfromtxt(str(folder/'front.csv'),delimiter=',',names=True)
+            assert np.allclose(fronts['leading_front_depth_m'],7500,atol=.001)
+            assert np.allclose(fronts['deepest_front_depth_m'],17500,atol=.001)
         finally:os.chdir(str(original))
     print('CATALOG BOUNDARY CHECKS PASSED: truncated events cannot close complete cycles.')
     print('PHASE DIAGNOSTIC CHECKS PASSED: connected rupture depths and pressure-minimum timing.')
@@ -117,5 +125,6 @@ def main():
     print('CROSSING SNAPSHOT CHECKS PASSED: preceding creep excluded from event slip.')
     print('ASEISMIC CLASSIFICATION CHECKS PASSED: use the whole-fault accepted-step maximum.')
     print('MIGRATION FIT CHECKS PASSED: speed, depth selection, and seismic interruption.')
+    print('FRONT BRANCH CHECKS PASSED: preserve leading and deeper crossings separately.')
 
 if __name__=='__main__':main()

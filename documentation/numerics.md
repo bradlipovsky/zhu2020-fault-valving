@@ -181,10 +181,22 @@ without fitting a time shift or choosing the closest event. All paired differenc
 are retained, and event counts expose unequal catalog lengths.
 Figure 6 uses the independently computed |V|=Vp contour; its definition is an
 analysis assumption because the paper does not specify its exact extraction rule.
+The quantitative tracker retains two choices at every saved time: the shallowest
+and deepest crossings where speed increases through Vp with depth, between
+2 and 23 km, interpolated in log speed. The shallowest (leading) choice describes
+the outer boundary; the deepest can follow a secondary pulse behind it.
+Both are reported for every case without choosing the result closest to a
+published speed. Figure 6 itself retains all contours. The two tracked extrema
+can change branches; fit segments split at depth increments outside -250 to
++30 m, gaps longer than 0.25 year, or seismic intervals. Thus these diagnostics
+do not assign persistent identities to individual propagating pulses.
 Deep migration fits use 13--20 km; separate shallow fits use 2--10 km for
 comparison with the printed 4.56 km/year shallow-front annotation. Both require
 at least 1 km of upward motion over 0.1 year and report the median of segments
-with R-squared at least 0.8. All segment fits are retained in the analysis file.
+with R-squared at least 0.8 for each contour choice. All segment fits are retained
+in the analysis file, and `front.csv` stores both depth series. A missing fit does
+not establish that no propagating feature exists; it means the chosen contour
+and fit criteria do not provide a qualifying measurement.
 Slow-slip diagnostics at 15, 18, and 20 km count complete local intervals above
 1.1 Vp, longer than 0.01 yr, during which the maximum slip speed anywhere remains
 below 1e-3 m/s. Truncated intervals at a selected window edge are excluded.

@@ -516,5 +516,52 @@
     "exit_code": 0,
     "wall_s": 7.530269145965576,
     "overfull_boxes": 0
+  },
+  "front_branch_report_update": {
+    "commands": [
+      [
+        "python3",
+        "scripts/analyze.py",
+        "reference",
+        "baseline",
+        "short",
+        "long",
+        "long_reference",
+        "verylong",
+        "verylong_reference",
+        "baseline_coarse",
+        "baseline_fine",
+        "baseline_tight",
+        "initialization",
+        "normal_stress"
+      ],
+      [
+        "python3",
+        "scripts/prepare_panels.py"
+      ],
+      [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ]
+    ],
+    "exit_code": 0,
+    "wall_s": 7.246012926101685,
+    "overfull_boxes": 0
   }
 }

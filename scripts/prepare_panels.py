@@ -124,11 +124,17 @@ def prepare(name):
     elif name=='F6':
         measured=[]
         for case in spec['cases']:
-            rates=[s['speed_m_per_year'] for s in analysis(case)['migration_segments'] if s['r2']>=.8]
-            measured.append('{:.3g}'.format(float(np.median(rates))) if rates else 'unmeasured')
-        discrepancy='Deep rates, short through verylong: '+', '.join(measured)+' m/year; published targets 2500, 380, 120, 30. Contour extraction is assumed.'
-        shallow=[s['speed_m_per_year'] for s in analysis('baseline')['shallow_migration_segments'] if s['r2']>=.8]
-        discrepancy+=' Baseline shallow rate: '+('{:.3g}'.format(float(np.median(shallow))) if shallow else 'unmeasured')+' m/year versus 4560.'
+            pair=[]
+            for field in ['leading_migration_segments','migration_segments']:
+                rates=[s['speed_m_per_year'] for s in analysis(case)[field] if s['r2']>=.8]
+                pair.append('{:.3g}'.format(float(np.median(rates))) if rates else 'unmeasured')
+            measured.append('/'.join(pair))
+        discrepancy='Leading/deepest contour medians at 13--20 km, short through verylong: '+', '.join(measured)+' m/year; published targets 2500, 380, 120, 30. Both contour choices are retained.'
+        shallow=[]
+        for field in ['leading_shallow_migration_segments','shallow_migration_segments']:
+            rates=[s['speed_m_per_year'] for s in analysis('baseline')[field] if s['r2']>=.8]
+            shallow.append('{:.3g}'.format(float(np.median(rates))) if rates else 'unmeasured')
+        discrepancy+=' Baseline shallow medians: '+ '/'.join(shallow)+' m/year versus 4560.'
     elif name.startswith('F2'):
         case=spec['cases'][0];a=analysis(case);target=50 if case=='reference' else 32
         recurrence=a['median_recurrence_years']

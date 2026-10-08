@@ -5,3 +5,4 @@ THRESHOLD CATALOG CHECKS PASSED: retain intervals without resolved slip footprin
 CROSSING SNAPSHOT CHECKS PASSED: preceding creep excluded from event slip.
 ASEISMIC CLASSIFICATION CHECKS PASSED: use the whole-fault accepted-step maximum.
 MIGRATION FIT CHECKS PASSED: speed, depth selection, and seismic interruption.
+FRONT BRANCH CHECKS PASSED: preserve leading and deeper crossings separately.

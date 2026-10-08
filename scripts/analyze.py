@@ -6,6 +6,17 @@ import json
 import numpy as np
 from common import YEAR, fields, history, configuration, save_json, MAIN_CASES
 
+def velocity_crossings(z,velocity,plate_rate):
+    """Depths where speed increases through Vp, with logarithmic interpolation."""
+    speed=np.abs(velocity)
+    indices=np.flatnonzero((speed[:-1]<plate_rate)&(speed[1:]>=plate_rate))
+    depths=[]
+    for k in indices:
+        weight=(np.log(plate_rate)-np.log(max(speed[k],1e-35)))/(np.log(max(speed[k+1],1e-35))-np.log(max(speed[k],1e-35)))
+        depth=float(z[k]+weight*(z[k+1]-z[k]))
+        if 2000<depth<23000:depths.append(depth)
+    return depths
+
 def fit_migration(front, depth_min, depth_max, seismic_threshold):
     segments=[];group=[]
     def close_group():
@@ -75,23 +86,21 @@ def analyze(case):
             effective_range_mpa=float(np.ptp(Ne[:,k])/1e6),
             permeability_min=float(kval[:,k].min()),permeability_max=float(kval[:,k].max()),
             flux_min=float(flux[:,k].min()),flux_max=float(flux[:,k].max()))
-    # Migration speed: consecutive upward V=Vp crossings connected to deep creep.
-    front=[]
+    # Separate the leading boundary from deeper secondary pulses. Neither
+    # contour choice is selected by its agreement with a published speed.
+    front=[];leading_front=[]
     zz=z[z<=25000]
     snapshot_history=np.searchsorted(h['time_s'],t)
     snapshot_maximum=h['vmax_m_s'][snapshot_history]
     for it in ids:
-        vv=np.abs(v[it,:len(zz)])
-        crossings=np.flatnonzero((vv[:-1]<cfg['Vp'])&(vv[1:]>=cfg['Vp']))
-        crossings=crossings[(zz[crossings]>2000)&(zz[crossings]<23000)]
-        if len(crossings):
-            k=crossings[-1]
-            weight=(np.log(cfg['Vp'])-np.log(max(vv[k],1e-35)))/(np.log(max(vv[k+1],1e-35))-np.log(max(vv[k],1e-35)))
-            depth=float(zz[k]+weight*(zz[k+1]-zz[k]))
-        else: depth=None
-        front.append([float((t[it]-selected[0])/YEAR),depth,float(snapshot_maximum[it])])
+        crossings=velocity_crossings(zz,v[it,:len(zz)],cfg['Vp'])
+        time=float((t[it]-selected[0])/YEAR);maximum=float(snapshot_maximum[it])
+        front.append([time,crossings[-1] if crossings else None,maximum])
+        leading_front.append([time,crossings[0] if crossings else None,maximum])
     segments=fit_migration(front,13000,20000,cfg['seismic_threshold'])
     shallow_segments=fit_migration(front,2000,10000,cfg['seismic_threshold'])
+    leading_segments=fit_migration(leading_front,13000,20000,cfg['seismic_threshold'])
+    leading_shallow_segments=fit_migration(leading_front,2000,10000,cfg['seismic_threshold'])
     intervals=np.diff([e['end_s'] for e in large])/YEAR
     slow_slip={}
     for depth in [15000,18000,20000]:
@@ -142,6 +151,8 @@ def analyze(case):
         selected_small_ruptures=sum(not e['large'] and bool(e['rupture_intervals_m']) for e in selected_events),
         selected_unresolved_intervals=sum(not e['rupture_intervals_m'] for e in selected_events),
         sample_depths=sample_depths,migration_segments=segments,shallow_migration_segments=shallow_segments,
+        leading_migration_segments=leading_segments,leading_shallow_migration_segments=leading_shallow_segments,
+        front_definition='Speed increases through Vp with depth; interpolate log speed; retain crossings at 2--23 km. Leading selects the shallowest crossing, deepest selects the deepest. migration_segments and shallow_migration_segments describe the deepest choice; leading_* describes the leading choice. These extrema can change branches; fits split at large depth jumps, data gaps, and seismic intervals.',
         slow_slip=slow_slip,phase_diagnostics=phase_diagnostics,
         truncated_event_count=sum(not e['complete'] for e in events),
         minimum_effective_pa=float(h['min_effective_pa'].min()),
@@ -150,8 +161,10 @@ def analyze(case):
         minimum_flux=float(np.min(r['fields'][:,5,:])),
         final_time_years=float(t[-1]/YEAR))
     save_json(Path('data',case,'analysis.json'),result)
-    np.savetxt(Path('data',case,'front.csv'),np.array([[a,np.nan if b is None else b,c] for a,b,c in front]),
-        delimiter=',',header='cycle_time_years,front_depth_m,maximum_velocity_m_s',comments='')
+    np.savetxt(Path('data',case,'front.csv'),np.array([[deep[0],
+        np.nan if lead[1] is None else lead[1],np.nan if deep[1] is None else deep[1],deep[2]]
+        for lead,deep in zip(leading_front,front)]),delimiter=',',
+        header='cycle_time_years,leading_front_depth_m,deepest_front_depth_m,maximum_velocity_m_s',comments='')
     return result
 
 if __name__=='__main__':

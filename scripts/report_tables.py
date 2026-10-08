@@ -117,38 +117,51 @@ readings of the displayed time axes, not digitized curves or input data.
                 tex(case),number(measured),number(100*(measured/target-1)),number(target))
         else:comparison+='No complete large-event recurrence interval was obtained for {}.\n'.format(tex(case))
     comparison+=r'''\begin{center}
-\begin{tabular}{lrrr}
+\begin{tabular}{llrrr}
 \toprule
-Case & Published deep-front rate (m/yr) & Calculated median (m/yr) & Difference (\%)\\
+Case & Contour choice & Published (m/yr) & Median (m/yr) & Difference (\%)\\
 \midrule
 '''
     target_rates={'short':2500.,'baseline':380.,'long':120.,'verylong':30.}
     metrics={}
     for case,target in target_rates.items():
-        rate=front_speed(analyses[case]);diff=None if rate is None else 100*(rate/target-1)
-        comparison+=tex(case)+' & '+number(target)+' & '+number(rate)+' & '+number(diff)+r'\\'+'\n'
-        metrics[case]=dict(published_rate_m_per_year=target,calculated_rate_m_per_year=rate,relative_difference_percent=diff)
+        metrics[case]=dict(published_rate_m_per_year=target,front_rates={})
+        for branch,field in [('leading','leading_migration_segments'),('deepest','migration_segments')]:
+            rate=front_speed(analyses[case],field);diff=None if rate is None else 100*(rate/target-1)
+            comparison+=' & '.join([tex(case),branch,number(target),number(rate),number(diff)])+r'\\'+'\n'
+            metrics[case]['front_rates'][branch]=dict(calculated_rate_m_per_year=rate,relative_difference_percent=diff,
+                fitted_segments=analyses[case][field])
     comparison+=r'''\bottomrule
 \end{tabular}
 \end{center}
 Published rates are the numerical annotations in Fig. 6 and the Discussion.
-Calculated rates use upward portions of the $|V|=V_p$ contour between 13 and
-20 km, spanning at least 1 km and 0.1 yr, with linear-fit $R^2\geq0.8$.
+At each saved time, speed can increase through $V_p$ at several depths.
+The leading choice is the shallowest such crossing between 2 and 23 km;
+the deepest choice can follow a secondary pulse behind that boundary.
+Both choices use logarithmic interpolation and are reported for every case.
+Neither is selected by agreement with the published annotation. These are
+contour extrema rather than identities assigned to individual pulses; fits
+split at large depth jumps, gaps, and seismic intervals. Calculated rates use
+upward portions between 13 and 20 km, spanning at least 1 km and 0.1 yr, with
+linear-fit $R^2\geq0.8$.
 All fitted segments and their fit quality are saved, including rejected low-quality
 fits. The rate statistic therefore has an explicit definition and may differ
 from the authors' unspecified extraction procedure. A separate calculation uses
 the same fit criteria at 2--10 km depth to compare with the published shallow-front
 annotation of 4.56 km/yr. The depth interval is an explicit analysis choice.
 '''
-    shallow=front_speed(baseline,'shallow_migration_segments')
-    shallow_difference=None if shallow is None else 100*(shallow/4560-1)
-    metrics['baseline']['shallow_migration']=dict(depth_range_m=[2000,10000],published_rate_m_per_year=4560,
-        calculated_rate_m_per_year=shallow,relative_difference_percent=shallow_difference)
-    if shallow is None:
-        comparison+='No shallow segment satisfies the stated duration, distance, and fit-quality criteria.\n'
-    else:
-        comparison+=('The calculated shallow median is {} m/yr, a {}\\% difference '
-            'from the printed 4560 m/yr annotation.\n').format(number(shallow),number(shallow_difference))
+    metrics['baseline']['shallow_migration']=dict(depth_range_m=[2000,10000],published_rate_m_per_year=4560,front_rates={})
+    for branch,field in [('leading','leading_shallow_migration_segments'),('deepest','shallow_migration_segments')]:
+        shallow=front_speed(baseline,field)
+        shallow_difference=None if shallow is None else 100*(shallow/4560-1)
+        metrics['baseline']['shallow_migration']['front_rates'][branch]=dict(
+            calculated_rate_m_per_year=shallow,relative_difference_percent=shallow_difference,
+            fitted_segments=baseline[field])
+        if shallow is None:
+            comparison+='For the {} choice, no shallow segment satisfies the stated duration, distance, and fit-quality criteria.\n'.format(branch)
+        else:
+            comparison+=('The {} shallow median is {} m/yr, a {}\\% difference '
+                'from the printed 4560 m/yr annotation.\n').format(branch,number(shallow),number(shallow_difference))
     comparison+=r'''\begin{center}
 \begin{tabular}{lrrrr}
 \toprule
@@ -267,7 +280,8 @@ Case & Finest spacing (m) & Tolerance & First large event (yr) & Difference (yr)
         difference=None if first is None or reference is None else first-reference
         validation[case]=dict(first_large_event_year=first,first_event_difference_year=difference,
             final_time_years=a['final_time_years'],large_event_count=a['large_event_count'],
-            front_speed_m_per_year=front_speed(a),
+            deepest_front_speed_m_per_year=front_speed(a),
+            leading_front_speed_m_per_year=front_speed(a,'leading_migration_segments'),
             first_seismic_event=events[0] if events else None)
         comparison+=' & '.join([tex(case),number(a['resolution']['dz_m']),number(a['configuration']['tolerance']),number(first),number(difference)])+r'\\'+'\n'
     comparison+=r'''\bottomrule
