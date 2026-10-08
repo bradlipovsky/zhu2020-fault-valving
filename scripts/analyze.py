@@ -31,13 +31,18 @@ def analyze(case):
     z,r=fields(case); h=history(case); t=np.asarray(r['time']); v=np.asarray(r['fields'][:,1,:])
     completed=json.loads(Path('data',case,'completed.json').read_text())
     cfg=configuration(Path('data',case,'config.cfg'))
-    seismic=h['vmax_m_s']>=cfg['seismic_threshold']
+    seismic=h['vmax_m_s']>cfg['seismic_threshold']
     starts=np.flatnonzero(seismic & ~np.r_[False,seismic[:-1]])
     stops=np.flatnonzero(seismic & ~np.r_[seismic[1:],False])+1
     events=[]
     for i,j in zip(starts,stops):
         t0=float(h['time_s'][max(i-1,0)]); t1=float(h['time_s'][min(j,len(h)-1)])
-        k0=max(0,np.searchsorted(t,t0)-1); k1=min(len(t)-1,np.searchsorted(t,t1))
+        # The executable saves each threshold crossing. Earlier snapshots can
+        # contain substantial aseismic nucleation slip outside a brief excursion.
+        slip_start=float(h['time_s'][i]);slip_end=t1
+        k0=int(np.searchsorted(t,slip_start));k1=int(np.searchsorted(t,slip_end))
+        if k0>=len(t) or k1>=len(t) or t[k0]!=slip_start or t[k1]!=slip_end:
+            raise RuntimeError('Missing threshold-crossing snapshot: '+case)
         slip=np.asarray(r['fields'][k1,0,:]-r['fields'][k0,0,:])
         # A fast rupture tip may pass between the saved 0.5 s snapshots.
         # Integrated event slip is retained even when a local velocity peak is missed.
@@ -49,7 +54,8 @@ def analyze(case):
         edges=np.diff(np.r_[False,rupture,False].astype(int))
         intervals=[[float(z[i]),float(z[j-1])] for i,j in zip(np.flatnonzero(edges==1),np.flatnonzero(edges==-1))]
         large=any(top<2000 and bottom-top>10000 for top,bottom in intervals)
-        events.append(dict(start_s=t0,end_s=t1,peak_s=float(h['time_s'][imax]),
+        events.append(dict(start_s=t0,end_s=t1,slip_start_s=slip_start,slip_end_s=slip_end,
+            onset_bracket_s=[t0,slip_start],peak_s=float(h['time_s'][imax]),
             peak_velocity=float(h['vmax_m_s'][imax]),nucleation_depth_m=float(h['z_vmax_m'][i]),
             shallow_m=shallow,deep_m=deep,rupture_intervals_m=intervals,
             max_slip_m=float(np.max(np.abs(slip))),large=large,complete=bool(i>0 and j<len(h))))
@@ -127,7 +133,7 @@ def analyze(case):
         rupture_selection='First two complete partial events in chronological order; each depth interval is its longest connected >=1 cm footprint. The full event catalog is retained.')
     result=dict(case=case,configuration=cfg,events=events,complete_cycles_s=cycles,
         resolution={key:completed[key] for key in ['n','dynamic_nodes','dz_m','minimum_Lb_cells','minimum_hstar_cells']},
-        event_definition='Catalog every maximum accepted-step speed excursion >= 1e-3 m/s; a resolved rupture also has a connected >= 0.01 m slip footprint; large if footprint top < 2 km and span > 10 km',
+        event_definition='Catalog every maximum accepted-step speed excursion > 1e-3 m/s; measure slip between saved threshold crossings; resolved rupture requires a connected >= 0.01 m footprint; large if top < 2 km and span > 10 km',
         selected_cycle_s=selected,selection_rule='last complete large-event cycle; entire run if none',
         selected_cycle_complete=bool(cycles),large_event_count=len(large),
         recurrence_years=intervals.tolist(),

@@ -2,5 +2,6 @@ CATALOG BOUNDARY CHECKS PASSED: truncated events cannot close complete cycles.
 PHASE DIAGNOSTIC CHECKS PASSED: connected rupture depths and pressure-minimum timing.
 CATALOG ORDER CHECKS PASSED: first partials retained despite a larger later event.
 THRESHOLD CATALOG CHECKS PASSED: retain intervals without resolved slip footprints.
+CROSSING SNAPSHOT CHECKS PASSED: preceding creep excluded from event slip.
 ASEISMIC CLASSIFICATION CHECKS PASSED: use the whole-fault accepted-step maximum.
 MIGRATION FIT CHECKS PASSED: speed, depth selection, and seismic interruption.

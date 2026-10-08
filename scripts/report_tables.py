@@ -312,7 +312,8 @@ Case & First seismic onset (yr) & Peak speed (m/s) & Maximum slip (m) & Large?\\
     comparison+=r'''\bottomrule\end{tabular}\end{center}
 The first seismic event can be a small rupture that precedes the first large
 event. The table retains this distinction when comparing resolution. Peak speed
-comes from every accepted step; slip and the rupture footprint use stored fields.
+comes from every accepted step; slip and the rupture footprint use the saved
+first-above-threshold and first-below-threshold profiles. Earlier creep is excluded.
 '''
     comparison+=r'''\begin{center}\begin{tabular}{lrrrr}
 \toprule

@@ -164,8 +164,13 @@ published curves or importing a published state.
 
 An event begins when the maximum slip speed exceeds $10^{-3}$ m s$^{-1}$.
 Its rupture footprint comprises cells accumulating at least 1 cm of slip during
-that event, using the snapshots bracketing its onset and end. This avoids requiring
-a narrow local velocity peak to coincide with a saved snapshot.
+that event, measured between the first saved profile above the threshold and
+the first below it. The executable saves each crossing explicitly. Earlier
+snapshots can contain nucleation creep and are excluded from this measurement.
+The onset-time bracket extends from the preceding accepted step to the first
+above-threshold step; slip in that initial bracket is excluded from the footprint.
+Both the onset bracket and the measured slip interval are retained in the catalog.
+The footprint does not require a narrow local velocity peak to coincide with a saved profile.
 A large event has a connected footprint reaching above 2 km and spanning
 more than 10 km in depth; disconnected shallow motion accompanying a deep event
 does not qualify.

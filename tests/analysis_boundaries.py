@@ -12,6 +12,10 @@ ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/'scripts'))
 from analyze import analyze,fit_migration
 
+def integrated(increments):
+    # Increment i belongs to the interval from saved time i to time i+1.
+    return np.r_[0.,np.cumsum(increments)[:-1]]
+
 def main():
     # Known translating front, followed by the same front interrupted by a quake.
     front=[[float(t),9000-4200*t,1e-8] for t in np.arange(60)*.025]
@@ -30,7 +34,7 @@ def main():
             active=np.isin(np.arange(12),[2,3,6,7,10,11]);speed=np.where(active,.01,1e-10)
             dtype=np.dtype([('time','<f8'),('step','<i8'),('fields','<f4',(6,len(z)))])
             records=np.zeros(len(t),dtype=dtype);records['time']=t;records['step']=np.arange(len(t))
-            records['fields'][:,0,:]=(.5*np.cumsum(active))[:,None]
+            records['fields'][:,0,:]=(.5*integrated(active))[:,None]
             records['fields'][:,1,:]=speed[:,None];records['fields'][:,2,:]=2e7
             records['fields'][:,3:5,:]=1e-16;records['fields'][:,5,:]=3e-9
             maximum_depth=np.full(len(t),15000.)
@@ -57,9 +61,9 @@ def main():
             # Now the second closed event slips only at depth, and a later pressure minimum
             # gives a known drainage diagnostic. The final open event remains excluded.
             speed[:2]=1e-10;records['fields'][:2,1,:]=1e-10
-            records['fields'][:,0,:]=(.5*np.cumsum(np.isin(np.arange(12),[2,3])))[:,None]
-            records['fields'][:,0,2:]+=(.5*np.cumsum(np.isin(np.arange(12),[6,7])))[:,None]
-            records['fields'][:,0,:]+=(.5*np.cumsum(np.isin(np.arange(12),[10,11])))[:,None]
+            records['fields'][:,0,:]=(.5*integrated(np.isin(np.arange(12),[2,3])))[:,None]
+            records['fields'][:,0,2:]+=(.5*integrated(np.isin(np.arange(12),[6,7])))[:,None]
+            records['fields'][:,0,:]+=(.5*integrated(np.isin(np.arange(12),[10,11])))[:,None]
             records['fields'][9,2,:]=2.5e7
             write_fixture()
             result=analyze('fixture');phase=result['phase_diagnostics'];event=phase['first_partial_ruptures'][0]
@@ -72,24 +76,33 @@ def main():
             speed[:]=1e-10;speed[[2,3,6,7,10]]=.01
             records['fields'][:,1,:]=speed[:,None];records['fields'][:,0,:]=0
             increments=np.zeros(len(t));increments[[2,3]]=.1;increments[[6,7]]=.2;increments[10]=2
-            records['fields'][:,0,2:]=np.cumsum(increments)[:,None]
+            records['fields'][:,0,2:]=integrated(increments)[:,None]
             write_fixture();result=analyze('fixture')
             assert len(result['events'])==3 and all(e['complete'] for e in result['events'])
             partial=result['phase_diagnostics']['first_partial_ruptures']
             assert len(partial)==2 and np.allclose([e['max_slip_m'] for e in partial],[.2,.4])
             # A brief threshold excursion with sub-centimetre slip remains in
             # the catalog, but does not count as another resolved rupture.
-            increments[[2,3]]=.001;records['fields'][:,0,2:]=np.cumsum(increments)[:,None]
+            increments[[2,3]]=.001;records['fields'][:,0,2:]=integrated(increments)[:,None]
             write_fixture();result=analyze('fixture')
             assert len(result['events'])==3 and result['selected_event_count']==3
             assert result['selected_small_ruptures']==2 and result['selected_unresolved_intervals']==1
             partial=result['phase_diagnostics']['first_partial_ruptures']
             assert np.allclose([e['max_slip_m'] for e in partial],[.4,2])
+            # Earlier creep must not inflate the slip of a subsequent brief
+            # threshold excursion. Only the crossing profiles bound its slip.
+            speed[:]=1e-10;speed[[2,3]]=.002;records['fields'][:,1,:]=speed[:,None]
+            increments[:]=0;increments[0]=.02;increments[2:4]=.0002
+            records['fields'][:,0,:]=integrated(increments)[:,None]
+            write_fixture();result=analyze('fixture');event=result['events'][0]
+            assert len(result['events'])==1 and result['selected_unresolved_intervals']==1
+            assert event['onset_bracket_s']==[1.,2.] and event['slip_start_s']==2 and event['slip_end_s']==4
+            assert abs(event['max_slip_m']-.0004)<1e-8 and not event['rupture_intervals_m']
             # A seismic event outside the saved depth range still invalidates a slow-slip
             # episode. The accepted-step history carries that whole-fault maximum.
             t*=31557600;records['time']=t;speed[:]=1e-10;speed[2:6]=2e-9
             records['fields'][:,1,:]=speed[:,None]
-            records['fields'][:,0,:]=(np.cumsum(speed)*31557600)[:,None]
+            records['fields'][:,0,:]=(integrated(speed)*31557600)[:,None]
             speed[4]=.01;maximum_depth[4]=40000;write_fixture()
             result=analyze('fixture')
             assert all(not d['episodes'] for d in result['slow_slip'].values())
@@ -101,6 +114,7 @@ def main():
     print('PHASE DIAGNOSTIC CHECKS PASSED: connected rupture depths and pressure-minimum timing.')
     print('CATALOG ORDER CHECKS PASSED: first partials retained despite a larger later event.')
     print('THRESHOLD CATALOG CHECKS PASSED: retain intervals without resolved slip footprints.')
+    print('CROSSING SNAPSHOT CHECKS PASSED: preceding creep excluded from event slip.')
     print('ASEISMIC CLASSIFICATION CHECKS PASSED: use the whole-fault accepted-step maximum.')
     print('MIGRATION FIT CHECKS PASSED: speed, depth selection, and seismic interruption.')
 

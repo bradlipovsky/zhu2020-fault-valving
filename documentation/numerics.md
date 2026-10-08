@@ -151,8 +151,13 @@ one-second sequence, not a claimed exact one-second sampling of the integrator.
 `analyze.py` explicitly defines seismic events, large ruptures, selected cycles,
 and migration fits. Events use the maximum velocity recorded at every accepted
 step. Their rupture footprints use at least 1 cm of accumulated slip between
-snapshots bracketing each event; a local velocity maximum can be missed by
+the saved first-above-threshold and first-below-threshold profiles; a local velocity maximum can be missed by
 0.5 s snapshots and is therefore not an additional footprint requirement.
+Each crossing is saved explicitly by the executable. The catalog also retains
+the onset-time bracket between the preceding accepted step and the first step
+above threshold. Slip during that initial bracket is not included in the footprint;
+the exact measured slip interval is recorded separately. Using an earlier profile
+would incorrectly include nucleation creep in a brief threshold excursion.
 Large events have a connected footprint reaching above 2 km and spanning more
 than 10 km. The last complete large-event cycle is selected by a fixed
 rule. The published time origins and restarts are never imported or fitted.
