@@ -15,6 +15,10 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#ifdef _OPENMP
+#include <omp.h>
+#include <cstdlib>
+#endif
 using Vec = std::vector<double>;
 constexpr double pi=3.14159265358979323846, year=365.0*86400;
 constexpr double mu=32.4e9, damping=4.68e6, vp=1e-9, v0=1e-6;
@@ -123,15 +127,22 @@ struct Model {
     }
     void rates(const State& s,State& r,Vec& v) {
         elastic(s.d,v);
+        int failed=0;
+#ifdef _OPENMP
+#pragma omp parallel for if(n>=4096) reduction(|:failed)
+#endif
         for(int i=0;i<n;++i) {
+          try {
             double eff=std::max(1e6,sigma[i]-rhog*z[i]-s.h[i]);
             v[i]=velocity(tau0[i]+v[i],s.psi[i],a[i],eff);
             // The paper assumes a fixed slip direction, V>=0. Abort if violated.
-            if(v[i]<0) throw std::runtime_error("negative slip velocity outside model assumptions");
+            if(v[i]<0){failed=1;continue;}
             r.d[i]=v[i]-vp;
             r.psi[i]=b[i]/dc*(v0*std::exp((f0-s.psi[i])/b[i])-v[i]);
             r.k[i]=v[i]/L*(khi[i]-s.k[i])-(s.k[i]-klo[i])/T;
+          } catch(const std::exception&) {failed=1;}
         }
+        if(failed)throw std::runtime_error("negative or nonconvergent slip velocity");
     }
     void load_profile(State& s,const std::string& path) {
         std::ifstream in(path);if(!in)throw std::runtime_error("cannot read initial profile");
@@ -375,10 +386,32 @@ void tests() {
     };
     exact=evolve_rk(64);e1=std::abs(evolve_rk(2)-exact);e2=std::abs(evolve_rk(4)-exact);
     require(e1/e2>20 && e1/e2<50,"fifth-order time convergence");
-    std::cout<<"dopri_error_ratio "<<e1/e2<<"\nPASS\n";
+    std::cout<<"dopri_error_ratio "<<e1/e2<<'\n';
+#ifdef _OPENMP
+    // Independent node evaluations preserve arithmetic order within each node.
+    int threads=omp_get_max_threads();
+    Model parallel(4096,1e8,80000,500e3,true);
+    State initial(parallel.n),one(parallel.n),many(parallel.n);
+    Vec v_one(parallel.n),v_many(parallel.n);parallel.initialize(initial,.001);
+    omp_set_num_threads(1);require(parallel.all_rates(initial,one,v_one,1),"serial rates");
+    omp_set_num_threads(8);require(parallel.all_rates(initial,many,v_many,1),"parallel rates");
+    require(v_one==v_many && one.d==many.d && one.psi==many.psi && one.k==many.k && one.h==many.h,
+            "bitwise identical serial and parallel rates");
+    parallel.tau0[12]=std::nan("");bool caught=false;
+    try{parallel.rates(initial,many,v_many);}catch(const std::exception&){caught=true;}
+    require(caught,"parallel friction failure propagates to step rejection");
+    omp_set_num_threads(threads);
+    std::cout<<"parallel_rates_bitwise_identical 1\n";
+#endif
+    std::cout<<"PASS\n";
 }
 
 int main(int argc,char**argv) try {
+    int worker_threads=1;
+#ifdef _OPENMP
+    if(!std::getenv("OMP_NUM_THREADS"))omp_set_num_threads(8);
+    worker_threads=omp_get_max_threads();
+#endif
     int intervals=16384,stride=10,checkpoint_stride=500;
     double T=1e8,years=120,H=578952.681034,rtol=1e-4,maxdt=3e5,perturb=0,rk_max_dt=3000;
     bool coupled=true,append=false;double start_year=0;
@@ -437,6 +470,7 @@ int main(int argc,char**argv) try {
         <<", \"rtol\": "<<rtol<<", \"max_dt_s\": "<<maxdt<<", \"years\": "<<years
         <<", \"stride\": "<<stride<<", \"checkpoint_stride\": "<<checkpoint_stride
         <<", \"rk_max_dt_s\": "<<rk_max_dt
+        <<", \"worker_threads\": "<<worker_threads
         <<", \"coupled\": "<<(coupled?"true":"false")<<", \"initial_state_perturbation\": "<<perturb
         <<", \"continuation_start_year\": "<<start_year
         <<", \"initial_profile\": \""<<profile<<"\", \"fields\": [\"slip_m\",\"velocity_m_s\",\"effective_stress_Pa\",\"permeability_m2\",\"flux_m_s\",\"psi\",\"kstar_m2\"]}\n";meta.close();
