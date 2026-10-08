@@ -1,0 +1,556 @@
+{
+  "scope": "Report comparison checked against independently reread scientific outputs through 100 years; compilation and package checks use a marked short-run fixture, whose PDF is excluded from deliverables.",
+  "source_file": "scripts/report_tables.py",
+  "source_sha256": "3c88b0ccb733c453dd03be4553149d527bea4fcc98d34c91177d6e2e55a0c927",
+  "checks_passed": true,
+  "scientific_metrics": {
+    "horizon_years": 100,
+    "baseline_count": 20,
+    "tight_count": 20,
+    "baseline_threshold_intervals": 21,
+    "tight_threshold_intervals": 20,
+    "chronological_pairs": [
+      {
+        "ordinal": 1,
+        "baseline_end_year": 7.714899456221274,
+        "tight_end_year": 7.714905937948671,
+        "end_time_difference_years": 6.481727397406809e-06,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            9492.874145507812,
+            18072.128295898438
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            9492.874145507812,
+            18072.128295898438
+          ]
+        ],
+        "onset_s": 204.6197485923767,
+        "duration_percent": -0.05558145809586579,
+        "peak_speed_percent": 0.00859389757299489,
+        "maximum_slip_percent": 0.00010946008810464036
+      },
+      {
+        "ordinal": 2,
+        "baseline_end_year": 7.898227057471538,
+        "tight_end_year": 7.898233655367531,
+        "end_time_difference_years": 6.597895992767144e-06,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            7722.8546142578125,
+            11835.098266601562
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            7722.8546142578125,
+            11835.098266601562
+          ]
+        ],
+        "onset_s": 208.32232439517975,
+        "duration_percent": -0.41544154550828827,
+        "peak_speed_percent": -5.3850853187764613e-05,
+        "maximum_slip_percent": -9.294790316305424e-05
+      },
+      {
+        "ordinal": 3,
+        "baseline_end_year": 8.106092413866739,
+        "tight_end_year": 8.10609959161824,
+        "end_time_difference_years": 7.177751500852771e-06,
+        "baseline_large": true,
+        "tight_large": true,
+        "baseline_footprints_m": [
+          [
+            13.3514404296875,
+            16214.370727539062
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            13.3514404296875,
+            16214.370727539062
+          ]
+        ],
+        "onset_s": 226.2284569144249,
+        "duration_percent": 0.2618142984778915,
+        "peak_speed_percent": -0.003706956075377743,
+        "maximum_slip_percent": 2.6104342576438455e-05
+      },
+      {
+        "ordinal": 4,
+        "baseline_end_year": 25.958889507268225,
+        "tight_end_year": 25.958898857849974,
+        "end_time_difference_years": 9.350581748840893e-06,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            13452.529907226562,
+            17053.604125976562
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            13452.529907226562,
+            17053.604125976562
+          ]
+        ],
+        "onset_s": 295.54852855205536,
+        "duration_percent": -0.3604567139861792,
+        "peak_speed_percent": -0.002117605234075448,
+        "maximum_slip_percent": -0.0008149181635386249
+      },
+      {
+        "ordinal": 5,
+        "baseline_end_year": 34.39622868136119,
+        "tight_end_year": 34.396241545289804,
+        "end_time_difference_years": 1.2863928612536838e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            9973.526000976562,
+            17621.994018554688
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            9973.526000976562,
+            17621.994018554688
+          ]
+        ],
+        "onset_s": 405.78644251823425,
+        "duration_percent": 0.14022747675130898,
+        "peak_speed_percent": 0.0055347900743907275,
+        "maximum_slip_percent": 5.4801982618535305e-05
+      },
+      {
+        "ordinal": 6,
+        "baseline_end_year": 34.680947378287726,
+        "tight_end_year": 34.68096015909378,
+        "end_time_difference_years": 1.2780806046824198e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            9164.810180664062,
+            11114.120483398438
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            9164.810180664062,
+            11114.120483398438
+          ]
+        ],
+        "onset_s": 403.4918978214264,
+        "duration_percent": -0.6924703949946487,
+        "peak_speed_percent": 0.029836836418928314,
+        "maximum_slip_percent": -0.001189952044933218
+      },
+      {
+        "ordinal": 7,
+        "baseline_end_year": 34.96255431407818,
+        "tight_end_year": 34.96256711687062,
+        "end_time_difference_years": 1.2802792442528821e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            8264.541625976562,
+            10362.625122070312
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            8264.541625976562,
+            10362.625122070312
+          ]
+        ],
+        "onset_s": 404.08110189437866,
+        "duration_percent": -0.29405835815874415,
+        "peak_speed_percent": 0.02321429491392024,
+        "maximum_slip_percent": -0.0005169802151705483
+      },
+      {
+        "ordinal": 8,
+        "baseline_end_year": 35.22964320140628,
+        "tight_end_year": 35.229657090020694,
+        "end_time_difference_years": 1.3888614413178997e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            6734.8480224609375,
+            9672.164916992188
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            6734.8480224609375,
+            9672.164916992188
+          ]
+        ],
+        "onset_s": 438.40394401550293,
+        "duration_percent": -0.5298512994057814,
+        "peak_speed_percent": 0.01231829009109564,
+        "maximum_slip_percent": -0.0014269592044979795
+      },
+      {
+        "ordinal": 9,
+        "baseline_end_year": 35.30638977876008,
+        "tight_end_year": 35.30640188485719,
+        "end_time_difference_years": 1.2106097106876538e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            5804.0618896484375,
+            8024.2156982421875
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            5804.0618896484375,
+            8024.2156982421875
+          ]
+        ],
+        "onset_s": 382.0575428009033,
+        "duration_percent": -0.08975137860187665,
+        "peak_speed_percent": -0.0070596655569854505,
+        "maximum_slip_percent": -0.003901962974894868
+      },
+      {
+        "ordinal": 10,
+        "baseline_end_year": 35.44345537632188,
+        "tight_end_year": 35.443463388174344,
+        "end_time_difference_years": 8.011852463143864e-06,
+        "baseline_large": true,
+        "tight_large": true,
+        "baseline_footprints_m": [
+          [
+            13.3514404296875,
+            13872.146606445312
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            13.3514404296875,
+            13872.146606445312
+          ]
+        ],
+        "onset_s": 252.7472620010376,
+        "duration_percent": 0.2551458223368108,
+        "peak_speed_percent": 0.009188675147253633,
+        "maximum_slip_percent": -0.0017212431603241818
+      },
+      {
+        "ordinal": 11,
+        "baseline_end_year": 49.609180815377826,
+        "tight_end_year": 49.60922104815878,
+        "end_time_difference_years": 4.023278095297485e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            13334.274291992188,
+            16931.533813476562
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            13334.274291992188,
+            16931.533813476562
+          ]
+        ],
+        "onset_s": 1269.8076565265656,
+        "duration_percent": -0.10962245038340646,
+        "peak_speed_percent": -0.003576965499862972,
+        "maximum_slip_percent": -0.0029512889754612637
+      },
+      {
+        "ordinal": 12,
+        "baseline_end_year": 57.92450135396188,
+        "tight_end_year": 57.92457222968371,
+        "end_time_difference_years": 7.087572183277071e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            10454.177856445312,
+            17713.546752929688
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            10454.177856445312,
+            17713.546752929688
+          ]
+        ],
+        "onset_s": 2236.6823279857635,
+        "duration_percent": -0.010651329907329643,
+        "peak_speed_percent": -0.0031895744207921517,
+        "maximum_slip_percent": 0.00017295497318770003
+      },
+      {
+        "ordinal": 13,
+        "baseline_end_year": 58.3916155663497,
+        "tight_end_year": 58.39168294585424,
+        "end_time_difference_years": 6.737950454269685e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            9492.874145507812,
+            11774.063110351562
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            9492.874145507812,
+            11774.063110351562
+          ]
+        ],
+        "onset_s": 2126.6916892528534,
+        "duration_percent": -1.4700249413252764,
+        "peak_speed_percent": -0.008828680595718286,
+        "maximum_slip_percent": -0.005670373776245352
+      },
+      {
+        "ordinal": 14,
+        "baseline_end_year": 60.83884032203195,
+        "tight_end_year": 60.838893612374264,
+        "end_time_difference_years": 5.329034231121702e-05,
+        "baseline_large": true,
+        "tight_large": true,
+        "baseline_footprints_m": [
+          [
+            13.3514404296875,
+            12971.878051757812
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            13.3514404296875,
+            12971.878051757812
+          ]
+        ],
+        "onset_s": 1681.730763912201,
+        "duration_percent": -0.05135753068639115,
+        "peak_speed_percent": 0.0025761721274442095,
+        "maximum_slip_percent": 0.0011131094861838164
+      },
+      {
+        "ordinal": 15,
+        "baseline_end_year": 71.97512217473641,
+        "tight_end_year": 71.97518262908122,
+        "end_time_difference_years": 6.04543448050557e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            13002.395629882812,
+            16962.051391601562
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            13002.395629882812,
+            16962.051391601562
+          ]
+        ],
+        "onset_s": 1907.6743111610413,
+        "duration_percent": 0.09975921178111413,
+        "peak_speed_percent": 0.0056844392586352654,
+        "maximum_slip_percent": 0.0007563533682919399
+      },
+      {
+        "ordinal": 16,
+        "baseline_end_year": 81.7081342639544,
+        "tight_end_year": 81.70819953701084,
+        "end_time_difference_years": 6.527305643594826e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            10004.043579101562,
+            18133.163452148438
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            10004.043579101562,
+            18133.163452148438
+          ]
+        ],
+        "onset_s": 2059.862322330475,
+        "duration_percent": -0.0007610765820453835,
+        "peak_speed_percent": -0.002330231567448937,
+        "maximum_slip_percent": 0.0011653393128252532
+      },
+      {
+        "ordinal": 17,
+        "baseline_end_year": 82.09474616448671,
+        "tight_end_year": 82.09480961782782,
+        "end_time_difference_years": 6.345334110639091e-05,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            9283.065795898438,
+            11175.155639648438
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            9283.065795898438,
+            11175.155639648438
+          ]
+        ],
+        "onset_s": 2002.473545074463,
+        "duration_percent": -0.16484182740204023,
+        "peak_speed_percent": -0.002710855758780717,
+        "maximum_slip_percent": -0.002051889350396241
+      },
+      {
+        "ordinal": 18,
+        "baseline_end_year": 86.76623590487087,
+        "tight_end_year": 86.7663940841428,
+        "end_time_difference_years": 0.00015817927192136096,
+        "baseline_large": true,
+        "tight_large": true,
+        "baseline_footprints_m": [
+          [
+            13.3514404296875,
+            12254.714965820312
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            13.3514404296875,
+            12254.714965820312
+          ]
+        ],
+        "onset_s": 4991.937925815582,
+        "duration_percent": -0.610954503558736,
+        "peak_speed_percent": 0.00683656919198139,
+        "maximum_slip_percent": -0.0012137682939394878
+      },
+      {
+        "ordinal": 19,
+        "baseline_end_year": 86.8547952499685,
+        "tight_end_year": 86.85494262044519,
+        "end_time_difference_years": 0.0001473704766848817,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            13.3514404296875,
+            2744.6746826171875
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            13.3514404296875,
+            2744.6746826171875
+          ]
+        ],
+        "onset_s": 4650.698103427887,
+        "duration_percent": -0.29182621303739387,
+        "peak_speed_percent": -1.0955209593432658,
+        "maximum_slip_percent": -0.006201953319961984
+      },
+      {
+        "ordinal": 20,
+        "baseline_end_year": 95.05091613512586,
+        "tight_end_year": 95.05104670058626,
+        "end_time_difference_years": 0.00013056546039423187,
+        "baseline_large": false,
+        "tight_large": false,
+        "baseline_footprints_m": [
+          [
+            13753.890991210938,
+            16061.782836914062
+          ]
+        ],
+        "tight_footprints_m": [
+          [
+            13753.890991210938,
+            16061.782836914062
+          ]
+        ],
+        "onset_s": 4120.779198646545,
+        "duration_percent": -0.3496526325506788,
+        "peak_speed_percent": -0.18410790711641534,
+        "maximum_slip_percent": 0.005945261626494336
+      }
+    ],
+    "maximum_absolute_differences": {
+      "end_time_difference_years": 0.00015817927192136096,
+      "onset_s": 4991.937925815582,
+      "duration_percent": 1.4700249413252764,
+      "peak_speed_percent": 1.0955209593432658,
+      "maximum_slip_percent": 0.006201953319961984
+    },
+    "all_paired_footprints_equal": true,
+    "all_paired_large_classifications_equal": true,
+    "unpaired_baseline_events": [],
+    "unpaired_tight_events": []
+  },
+  "scientific_text": "The time-tolerance comparison also includes every resolved rupture over the first 100 years. The baseline and tighter-tolerance cases contain 20 and 20 resolved ruptures, respectively, from 21 and 20 complete threshold excursions.\nAcross the 20 chronological pairs, the maximum absolute differences are 83.2 min in onset, 1.47\\% in duration, 1.1\\% in peak speed, and 0.0062\\% in maximum slip.\nAll pairs have identical connected 1 cm rupture footprints on the saved depth grid and identical large-event classifications.\nThese measurements test time tolerance on the baseline mesh. Footprint comparisons are limited by the saved depth spacing, about 30 m in the scientific runs. They do not establish spatial convergence or recovery of the published swarm sequence.\n\n",
+  "scientific_audit_file": "data/tolerance_100yr_verification.json",
+  "scientific_audit_sha256": "1f3e048e2c785568a674d523e7edd3577f3e11352e4c9027bb3d54caafd4af65",
+  "fixture_commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 0.39919620397267863
+    },
+    {
+      "command": [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320/report",
+      "exit_code": 0,
+      "elapsed_s": 1.0812465680064633
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 3.728263070981484
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 2.1109449850046076
+    }
+  ],
+  "elapsed_s": 7.320010376977734,
+  "fixture_pdf_excluded_from_deliverables": true,
+  "fixture_overfull_boxes": 0,
+  "fixture_pdf_contains_tolerance_section": true,
+  "fixture_validation_summary_contains_tolerance_metrics": true
+}

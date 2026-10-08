@@ -31,6 +31,46 @@ def event_differences(event,reference):
         maximum_slip_percent=100*(event['max_slip_m']/reference['max_slip_m']-1)
             if reference['max_slip_m']>0 else None)
 
+def tolerance_sequence(a,reference,horizon):
+    """Compare all resolved events over the same interval at two time tolerances."""
+    catalogs=[[e for e in run['events'] if e['complete'] and e['end_s']/YEAR<=horizon]
+              for run in [reference,a]]
+    baseline,tight=[[e for e in events if e['rupture_intervals_m']] for events in catalogs]
+    pairs=[dict(ordinal=i,baseline_end_year=ref['end_s']/YEAR,tight_end_year=e['end_s']/YEAR,
+        end_time_difference_years=(e['end_s']-ref['end_s'])/YEAR,
+        baseline_large=ref['large'],tight_large=e['large'],baseline_footprints_m=ref['rupture_intervals_m'],
+        tight_footprints_m=e['rupture_intervals_m'],**event_differences(e,ref))
+        for i,(e,ref) in enumerate(zip(tight,baseline),1)]
+    maxima={key:max(abs(pair[key]) for pair in pairs) if pairs else None for key in
+        ['end_time_difference_years','onset_s','duration_percent','peak_speed_percent','maximum_slip_percent']}
+    metric=dict(horizon_years=horizon,baseline_count=len(baseline),tight_count=len(tight),
+        baseline_threshold_intervals=len(catalogs[0]),tight_threshold_intervals=len(catalogs[1]),
+        chronological_pairs=pairs,maximum_absolute_differences=maxima,
+        all_paired_footprints_equal=bool(pairs) and all(p['baseline_footprints_m']==p['tight_footprints_m'] for p in pairs),
+        all_paired_large_classifications_equal=bool(pairs) and all(p['baseline_large']==p['tight_large'] for p in pairs),
+        unpaired_baseline_events=baseline[len(pairs):],unpaired_tight_events=tight[len(pairs):])
+    prose=('The time-tolerance comparison also includes every resolved rupture over the first {} years. '
+        'The baseline and tighter-tolerance cases contain {} and {} resolved ruptures, '
+        'respectively, from {} and {} complete threshold excursions.\n').format(
+            number(horizon),len(baseline),len(tight),len(catalogs[0]),len(catalogs[1]))
+    if pairs:
+        prose+=('Across the {} chronological pairs, the maximum absolute differences are {} min in onset, '
+            '{}\\% in duration, {}\\% in peak speed, and {}\\% in maximum slip.\n').format(
+                len(pairs),number(maxima['onset_s']/60),number(maxima['duration_percent']),
+                number(maxima['peak_speed_percent']),number(maxima['maximum_slip_percent']))
+        if len(baseline)==len(tight) and metric['all_paired_footprints_equal'] and metric['all_paired_large_classifications_equal']:
+            prose+=('All pairs have identical connected 1 cm rupture footprints on the saved depth grid '
+                'and identical large-event classifications.\n')
+        else:
+            prose+=('Counts, saved rupture footprints, or large-event classifications differ between the catalogs; '
+                'chronological pairing alone does not establish physical correspondence.\n')
+    else:
+        prose+='No complete resolved-event pairs are available for this comparison.\n'
+    prose+=('These measurements test time tolerance on the baseline mesh. Footprint comparisons are limited '
+        'by the saved depth spacing, about 30 m in the scientific runs. They do not establish spatial '
+        'convergence or recovery of the published swarm sequence.\n\n')
+    return prose,metric
+
 def reference_sequence(a,slip):
     """Compare S5 timing and accumulated slip without assigning published event IDs."""
     start,end=a['selected_cycle_s']
@@ -491,6 +531,11 @@ times is retained in the numerical summary. Close agreement for the first ruptur
 does not imply close agreement in later slip, peak speed, or duration. Pairing
 by event number measures sequence sensitivity; it does not establish that the
 paired ruptures correspond physically when the catalogs contain different events.
+'''
+    tolerance_prose,tolerance_metrics=tolerance_sequence(analyses['baseline_tight'],baseline,horizon)
+    validation['baseline_tight']['resolved_event_tolerance_comparison']=tolerance_metrics
+    comparison+=tolerance_prose
+    comparison+=r'''
 
 Exact friction profiles, prestress, startup procedure, spatial grid, and the
 authors' saved cycle states cannot be recovered from the article and supplement.
