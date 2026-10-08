@@ -647,5 +647,71 @@
     "overfull_boxes": 0,
     "all_time_and_field_arrays_unchanged": true,
     "trace_depths_match_cpp": true
+  },
+  "two_cycle_slip_report_update": {
+    "commands": [
+      [
+        "python3",
+        "tests/analysis_boundaries.py"
+      ],
+      [
+        "python3",
+        "scripts/prepare_panels.py"
+      ],
+      [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ]
+    ],
+    "exit_code": 0,
+    "wall_s": 7.734898090362549,
+    "overfull_boxes": 1,
+    "final_layout_check": {
+      "commands": [
+        [
+          "python3",
+          "scripts/prepare_panels.py"
+        ],
+        [
+          "python3",
+          "scripts/report_tables.py"
+        ],
+        [
+          "latexmk",
+          "-pdf",
+          "-interaction=nonstopmode",
+          "-halt-on-error",
+          "reproduction.tex"
+        ],
+        [
+          "python3",
+          "scripts/package_report.py",
+          "--verify"
+        ],
+        [
+          "python3",
+          "scripts/verify_artifacts.py"
+        ]
+      ],
+      "exit_code": 0,
+      "wall_s": 6.661895275115967,
+      "overfull_boxes": 0
+    }
   }
 }

@@ -1,0 +1,102 @@
+{
+  "case": "long_reference",
+  "scope": "Completed case and its two scientific panels only; the other runs and complete report remain pending.",
+  "checks_passed": true,
+  "simulation_command": [
+    "build/valving",
+    "configs/long_reference.cfg",
+    "data/long_reference"
+  ],
+  "postprocess_commands": [
+    [
+      "python3",
+      "scripts/analyze.py",
+      "long_reference"
+    ],
+    [
+      "python3",
+      "scripts/prepare_panels.py",
+      "S3a",
+      "S3b"
+    ],
+    [
+      "python3",
+      "scripts/plot.py",
+      "S3a",
+      "S3b"
+    ]
+  ],
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "config_sha256": "24ff4f0c236c07289e56f98693e010005438626e3f1189abd5f8372afbde7874",
+  "accepted_steps": 209873,
+  "saved_profiles": 12897,
+  "minimum_Lb_cells": 5.07143178760557,
+  "minimum_hstar_cells": 19.2705609009368,
+  "panels": [
+    {
+      "panel": "S3a",
+      "status": "partial",
+      "data_sha256": "bf9db705c5d9016842c6e92e7e979d2bf6c26156ae7fc59ebf1fdb6f1b526d0c",
+      "bytes": 10811973,
+      "window_years": [
+        249.64554440173774,
+        338.029584272671
+      ],
+      "values_shape": [
+        3650,
+        833
+      ],
+      "comparison": {
+        "approximate_reference_years": 160,
+        "source": "Supplementary Fig. 3a, published PDF page 4; approximate visual reading of the time axis, not simulation input or authors data",
+        "calculated_last_interval_years": 88.38403987093325,
+        "approximate_relative_difference_percent": -44.75997508066671
+      },
+      "figure_png_sha256": "6db8c7ba6204d3d4a3cee9ebae0dc063f616aa299dd40971390ce3445a6f9571",
+      "figure_pdf_sha256": "b959c7f3b07912f7557264f5097429db0888f202bd506f5cc3597b917230e0f0"
+    },
+    {
+      "panel": "S3b",
+      "status": "partial",
+      "data_sha256": "f068d1432529b105f4d6c778a3fc0369ea6aa9e503245be4324f947b18fa9fb7",
+      "bytes": 8414406,
+      "window_years": [
+        158.89209243935855,
+        338.029584272671
+      ],
+      "values_shape": [
+        6962,
+        833
+      ],
+      "comparison": {
+        "approximate_reference_years": 160,
+        "source": "Supplementary Fig. 3a, published PDF page 4; approximate visual reading of the time axis, not simulation input or authors data",
+        "calculated_last_interval_years": 88.38403987093325,
+        "approximate_relative_difference_percent": -44.75997508066671
+      },
+      "cycle_bounds_years": [
+        [
+          158.89209243935855,
+          249.64554440173774
+        ],
+        [
+          249.64554440173774,
+          338.029584272671
+        ]
+      ],
+      "final_shallowest_slip_m": 5.272365093231201,
+      "final_maximum_slip_m": 5.597553253173828,
+      "figure_png_sha256": "025f856e37c787d928d7947059d25f309e101b58125041fa95a23b7c09a489b4",
+      "figure_pdf_sha256": "75e08c95c48ac2f1d9a59fffb1b6b5418b57b5be70c026a6c4da8677fd017c7e"
+    }
+  ],
+  "visual_review": {
+    "reference": "Published Supplementary Fig. 3, PDF page 4; visual comparison only",
+    "findings": [
+      "Velocity map shows a locked upper region and deeper creep, but timing and rupture patterns differ from the published panel.",
+      "Slip profiles retain two full interseismic intervals and their closing earthquakes; both groups are legible.",
+      "Published time-axis comparison is approximate and is not a simulation input.",
+      "No separate spatial refinement sequence has been completed for this higher-stress reference case."
+    ]
+  }
+}

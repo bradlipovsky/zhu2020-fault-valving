@@ -11,6 +11,7 @@ import numpy as np
 ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/'scripts'))
 from analyze import analyze,fit_migration,velocity_crossings
+from prepare_panels import run_panel
 
 def integrated(increments):
     # Increment i belongs to the interval from saved time i to time i+1.
@@ -46,7 +47,7 @@ def main():
                 np.savetxt(str(folder/'history.csv'),np.column_stack([t,speed,maximum_depth,np.full(len(t),2e7)]),
                     delimiter=',',header='time_s,vmax_m_s,z_vmax_m,min_effective_pa',comments='')
             write_fixture()
-            (folder/'config.cfg').write_text('Vp = 1e-9\nseismic_threshold = 0.001\nT = 1e8\n')
+            (folder/'config.cfg').write_text('Vp = 1e-9\nseismic_threshold = 0.001\nT = 1e8\ninflux = 3e-9\n')
             (folder/'completed.json').write_text(json.dumps(dict(completed=True,n=16,dynamic_nodes=16,
                 dz_m=1000,minimum_Lb_cells=5,minimum_hstar_cells=20)))
             result=analyze('fixture')
@@ -117,6 +118,27 @@ def main():
             fronts=np.genfromtxt(str(folder/'front.csv'),delimiter=',',names=True)
             assert np.allclose(fronts['leading_front_depth_m'],7500,atol=.001)
             assert np.allclose(fronts['deepest_front_depth_m'],17500,atol=.001)
+            # Three closed large events delimit two cycles. A slip panel must
+            # retain both intervening intervals, including their closing ruptures.
+            t=np.arange(14,dtype=float);active=np.isin(np.arange(14),[2,3,6,7,10,11])
+            speed=np.where(active,.01,1e-10);maximum_depth=np.full(len(t),15000.)
+            records=np.zeros(len(t),dtype=dtype);records['time']=t;records['step']=np.arange(len(t))
+            records['fields'][:,0,:]=(.5*integrated(active))[:,None]
+            records['fields'][:,1,:]=speed[:,None];records['fields'][:,2,:]=2e7
+            records['fields'][:,3:5,:]=1e-16;records['fields'][:,5,:]=3e-9
+            (folder/'provenance.json').write_text('{"purpose":"synthetic window verification"}')
+            write_fixture();analyze('fixture')
+            spec=dict(cases=['fixture'],kind='slip_profiles',field=0)
+            panel,metadata=run_panel('F2d',spec)
+            assert metadata['window_s']==[4.,12.] and metadata['complete_cycle_count']==2
+            assert np.array_equal(panel['cycle_bounds_s'],[[4.,8.],[8.,12.]])
+            assert np.all(panel['values'][0]==0) and np.all(panel['values'][-1]==2)
+            active[10:]=False;speed[10:]=1e-10
+            records['fields'][:,1,:]=speed[:,None]
+            records['fields'][:,0,:]=(.5*integrated(active))[:,None]
+            write_fixture();analyze('fixture');panel,metadata=run_panel('F2d',spec)
+            assert metadata['window_s']==[4.,8.] and metadata['complete_cycle_count']==1
+            assert metadata['requested_cycle_count']==2 and np.all(panel['values'][-1]==1)
         finally:os.chdir(str(original))
     print('CATALOG BOUNDARY CHECKS PASSED: truncated events cannot close complete cycles.')
     print('PHASE DIAGNOSTIC CHECKS PASSED: connected rupture depths and pressure-minimum timing.')
@@ -126,5 +148,6 @@ def main():
     print('ASEISMIC CLASSIFICATION CHECKS PASSED: use the whole-fault accepted-step maximum.')
     print('MIGRATION FIT CHECKS PASSED: speed, depth selection, and seismic interruption.')
     print('FRONT BRANCH CHECKS PASSED: preserve leading and deeper crossings separately.')
+    print('SLIP PROFILE WINDOW CHECKS PASSED: two cycles retained; missing cycles counted.')
 
 if __name__=='__main__':main()

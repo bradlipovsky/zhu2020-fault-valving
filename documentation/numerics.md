@@ -169,8 +169,13 @@ above threshold. Slip during that initial bracket is not included in the footpri
 the exact measured slip interval is recorded separately. Using an earlier profile
 would incorrectly include nucleation creep in a brief threshold excursion.
 Large events have a connected footprint reaching above 2 km and spanning more
-than 10 km. The last complete large-event cycle is selected by a fixed
-rule. The published time origins and restarts are never imported or fitted.
+than 10 km. Velocity maps and fluid fields use the last complete large-event
+cycle. The cumulative-slip panels F2b,d, S3b,d, and S5b,d use the last two
+complete cycles, retaining both interseismic contour groups and closing ruptures
+shown in the published panels. Their data contain the exact cycle boundaries.
+If only one cycle exists it is shown and the missing second cycle is reported;
+if none exists, the whole-run attempt is marked not reproduced. These fixed
+chronological rules do not import or fit published time origins or restarts.
 Threshold events truncated at either output boundary are retained with
 complete=false and cannot close a cycle or enter complete-event comparisons.
 The report compares the first two complete partial events in chronological

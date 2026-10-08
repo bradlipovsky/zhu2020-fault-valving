@@ -26,6 +26,13 @@ def run_panel(name,spec):
         # Fixed two-year pre-rupture window; no search for the closest published image.
         window=[max(window[0],window[1]-2*YEAR),window[1]];depth=(2000,10000)
         reason='Final two years preceding the selected closing large earthquake'
+    if kind=='slip_profiles':
+        profile_cycles=a['complete_cycles_s'][-2:]
+        if profile_cycles:
+            window=[profile_cycles[0][0],profile_cycles[-1][1]];complete=True
+            reason='Last two complete large-event cycles' if len(profile_cycles)==2 else 'Only one complete large-event cycle available; two requested'
+        else:
+            complete=False;reason='No complete large-event cycle; full simulation shown as an attempt'
     if kind=='depth_histories':
         cycles=a['complete_cycles_s']
         window=[cycles[-2][0],cycles[-1][1]] if len(cycles)>=2 else [float(t[0]),float(t[-1])]
@@ -75,6 +82,9 @@ def run_panel(name,spec):
     details=dict(case=case,config_file='configs/'+case+'.cfg',parameters=cfg,
         window_s=window,selection=reason,complete_cycle=complete,
         source_provenance=json.loads(Path('data',case,'provenance.json').read_text()))
+    if kind=='slip_profiles':
+        result['cycle_bounds_s']=np.asarray(profile_cycles,dtype=float).reshape((-1,2))
+        details.update(requested_cycle_count=2,complete_cycle_count=len(profile_cycles))
     if kind=='depth_histories':
         details.update(nominal_depths_m=result['nominal_depth_m'].tolist(),sample_depths_m=result['depth_m'].tolist(),
             depth_sampling='Nearest physical model node to each nominal depth; exact centers retained in depth_m.')
@@ -164,10 +174,24 @@ def prepare(name):
             discrepancy='At 10 km, k spans {:.3g}--{:.3g} square metres; exact cycle phases are not recovered.'.format(sample['permeability_min'],sample['permeability_max'])
         else:
             discrepancy='At 10 km, maximum flux is {:.3g} m/s; the article gives an order 1e-7 m/s upper scale. Phase timing differs.'.format(sample['flux_max'])
+    elif name in ['S3a','S3b']:
+        a=analysis('long_reference')
+        metadata['published_cycle_comparison']=dict(approximate_reference_years=160,
+            source='Supplementary Fig. 3a, published PDF page 4; approximate visual reading of the time axis, not simulation input or authors data')
+        if a['selected_cycle_complete']:
+            duration=(a['selected_cycle_s'][1]-a['selected_cycle_s'][0])/YEAR
+            difference=100*(duration/160-1)
+            metadata['published_cycle_comparison'].update(calculated_last_interval_years=duration,approximate_relative_difference_percent=difference)
+            discrepancy='Last complete interval {:.3g} yr versus roughly 160 yr by visual reading of Supplementary Fig. 3a ({:+.0f}%). Rupture sequence and assumed inputs differ.'.format(duration,difference)
+        else:
+            discrepancy='No complete large-event cycle; the displayed published reference cycle is roughly 160 yr by visual reading.'
     elif name.startswith(('S4','S6')):
         sample=analysis(spec['cases'][0])['sample_depths']['10000']
         discrepancy='At 10 km, stress range {:.3g} MPa and permeability ratio {:.3g}. The target is reduced valving with long healing; event sequence and mesh convergence remain uncertain.'.format(
             sample['effective_range_mpa'],sample['permeability_max']/sample['permeability_min'])
+    if kind=='slip_profiles' and metadata['complete_cycle_count']<2:
+        discrepancy+=' Only {} complete cycles available; the published slip panels display two.'.format(metadata['complete_cycle_count'])
+        if metadata['complete_cycle_count']==0:status='not reproduced'
     metadata.update(status=status,main_discrepancy=discrepancy,
         model_source_sha256=hashlib.sha256(Path('src/model.cpp').read_bytes()).hexdigest(),
         pipeline_source_sha256={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in

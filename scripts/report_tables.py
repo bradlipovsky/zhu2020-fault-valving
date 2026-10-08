@@ -487,6 +487,8 @@ Original panel & Quantity and output data & Documentation used & Command generat
       'S6':r'Independent counterpart to Supplementary Fig. 6 for $T=10^{10}$ s. Effective stress (a,b), permeability (c,d), and upward flux (e,f) test the predicted reduction in fault-valving amplitude when healing is slow. All curves and images are generated from the new implementation.'}
     pages=''
     for group in order:
+        if group in ['F2','S3','S5']:
+            captions[group]+=r' Velocity maps use the final complete cycle; cumulative-slip profiles use the last two complete cycles when available. Missing cycles are identified in the provenance table.'
         pages+=r'\clearpage\begin{figure}[p]\centering'+'\n'+r'\includegraphics[width=\textwidth,height=.77\textheight,keepaspectratio]{../figures/'+group+'.pdf}\n'
         pages+=r'\caption{'+captions[group]+r' Comparison target: Zhu et al.~\cite{zhu}.}\label{fig:'+group+r'}\end{figure}'+'\n'
     write('figure_pages',pages)

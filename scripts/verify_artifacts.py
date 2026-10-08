@@ -39,6 +39,11 @@ def main():
         assert meta['data_command']==spec['data_command'] and meta['plot_command']==spec['plot_command']
         assert meta['status'] in ['independently reproduced','partial','not reproduced']
         with np.load(str(path),allow_pickle=False) as d:
+            if spec['kind']=='slip_profiles':
+                a=json.loads(Path('data',spec['cases'][0],'analysis.json').read_text())
+                expected=np.asarray(a['complete_cycles_s'][-2:],dtype=float).reshape((-1,2))
+                assert np.array_equal(d['cycle_bounds_s'],expected),name+' incorrect slip-profile cycles'
+                assert meta['complete_cycle_count']==len(expected) and meta['requested_cycle_count']==2,name
             if spec['kind']=='depth_histories':
                 assert np.array_equal(d['nominal_depth_m'],meta['nominal_depths_m']),name
                 assert np.array_equal(d['depth_m'],meta['sample_depths_m']),name
