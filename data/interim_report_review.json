@@ -1,13 +1,13 @@
 {
   "scope": "Manual scientific and visual review of the dated interim report; full reproduction remains incomplete.",
-  "recorded_utc": "2026-10-09T15:20:00.346511Z",
+  "recorded_utc": "2026-10-09T19:12:17.848289Z",
   "checks_passed": true,
-  "pdf_sha256": "f98f4447daaf9a672825da2abac3fa02fedf86c57072889a6363e27bfc5a5fe2",
-  "pages": 23,
+  "pdf_sha256": "f166f7faf35aea864c4adc938b6f0c7bb87b5b36e0ed993605ed3ce69746edac",
+  "pages": 24,
   "visual_review": [
-    "Reviewed all 23 pages on contact sheets, with detailed review of the availability statement and quantitative pages 4 and 5. After correcting a source attribution, re-rendered all pages: only pages 1, 4 and 5 changed, and those final pages were inspected.",
-    "All 49 panel labels are included across twelve figure groups in main-manuscript then supplementary order. All numerical figures use independent arrays; the new schematic is explicitly labeled.",
-    "The 49-row provenance table retains two independently reproduced constitutive-law panels and 47 partial comparisons. No panel is pending at this snapshot.",
+    "Reviewed contact sheets covering all 24 final pages and full-resolution temporal-comparison pages 5 and 6.",
+    "All 49 panel labels remain included across twelve figure groups. All numerical figures use independent arrays; the new schematic is explicitly labeled.",
+    "The inventory retains two independently reproduced constitutive-law panels and 47 partial comparisons. All eleven completed cases are listed; only baseline_fine is pending.",
     "Titles, axes, legends, tables, captions and color scales are legible, with no visible clipping or overfull LaTeX boxes."
   ],
   "scientific_review": [
@@ -17,11 +17,15 @@
     "The first two partial ruptures remain chronological, including the extra early shallow rupture. The paper's 12 km nucleation depth refers to its larger precursor, not the final surface-breaking event; the report explicitly distinguishes them.",
     "The large-event span sensitivity yields eight events for 9 km and seven for 10 or 11 km. The intermediate surface-reaching 9.48 km rupture is retained in the catalog, and all primary figures retain the original 10 km criterion.",
     "Both leading and deepest contour statistics retain every qualifying segment. S1 preserves all accepted history samples; S2 retains fixed earlier cycles of 26.80529 and 54.61383 years.",
-    "No unfinished run or software fixture supplies a scientific figure. The full validation and final report are still pending."
+    "No unfinished run or software fixture supplies a scientific figure. The full 200-year temporal comparison is complete; the fine-grid calculation, common 100-year spatial comparison, and final report remain pending.",
+    "The completed tighter-tolerance run passed its raw audit for all 736538 accepted steps and 16455 saved profiles. Its only configuration change is tolerance 1e-5 to 2.5e-6.",
+    "The early 100- and 117-year metrics exactly match previous published prefix audits. The full 200-year comparison reports 60 versus 58 resolved ruptures and seven versus six primary large events.",
+    "The report identifies ordinal-pair maxima as catalog-position differences, not errors between physically matched events, and explicitly withholds a claim of convergence for individual late events.",
+    "A 9 km span threshold gives eight large events in each run; 10 or 11 km gives seven and six. Primary results retain 10 km. The remaining fine-grid case covers 100 years and cannot establish spatial convergence of the later figure cycles."
   ],
   "checks_remaining": [
-    "Complete baseline_fine and baseline_tight and audit their full outputs.",
-    "Review common 100-year spatial/parameter comparisons and full 200-year temporal-tolerance comparison.",
+    "Complete baseline_fine and audit its full output.",
+    "Review common 100-year spatial and parameter comparisons alongside the completed full 200-year temporal result.",
     "Regenerate, scientifically and visually review, audit and publish the final report and release."
   ]
 }

@@ -16,11 +16,11 @@
 \markright{INTERIM REPORT: incomplete reproduction study}
 \title{Independent calculations of fault valving: interim results}
 \author{Reproducibility study of Zhu, Allison, Dunham, and Yang (2020)}
-\date{2026-10-09 15:17 UTC}
+\date{2026-10-09 19:10 UTC}
 \begin{document}
 \maketitle
 \textbf{This is an interim scientific report. The full study remains incomplete.}
-At this snapshot, 10 of 12 configured cases have completed, and 49 of 49 panel packages are available. Of these, 2 are independently reproduced constitutive-law panels and 47 are partial comparisons, including one newly drawn schematic. Pending runs are \texttt{baseline\_fine}, \texttt{baseline\_tight}. Their configured durations remain unchanged.
+At this snapshot, 11 of 12 configured cases have completed, and 49 of 49 panel packages are available. Of these, 2 are independently reproduced constitutive-law panels and 47 are partial comparisons, including one newly drawn schematic. Pending runs are \texttt{baseline\_fine}. Their configured durations remain unchanged.
 
 \section{Scope and independence}
 Fault slip increases permeability, while healing between earthquakes restricts
@@ -168,6 +168,7 @@ long\_reference & 350 & 209873 & 12897 & 4\\
 verylong & 500 & 216379 & 18414 & 3\\
 verylong\_reference & 500 & 334274 & 19194 & 4\\
 baseline\_coarse & 200 & 438564 & 14838 & 7\\
+baseline\_tight & 200 & 736538 & 16455 & 6\\
 initialization & 100 & 282753 & 7219 & 4\\
 normal\_stress & 100 & 287400 & 7227 & 4\\
 \bottomrule\end{tabular}\end{center}
@@ -238,6 +239,24 @@ Depth (km) & Episodes & Duration (yr) & Recurrence (yr) & Slip (cm)\\\midrule
 18 & 11 & 0.611 & 3.17 & 2.46\\
 20 & 2 & 0.894 & 8.64 & 3.19\\
 \bottomrule\end{tabular}\end{center}
+\subsection{Temporal-tolerance comparison}
+The time-tolerance comparison also includes every resolved rupture over the first 100 years. The baseline and tighter-tolerance cases contain 20 and 20 resolved ruptures, respectively, from 21 and 20 complete threshold excursions.
+The declared large-event criterion identifies 4 and 4 events, respectively.
+Across the 20 chronological pairs, the maximum absolute differences are 83.2 min in onset, 1.47\% in duration, 1.1\% in peak speed, and 0.0062\% in maximum slip.
+All pairs have identical connected 1 cm rupture footprints on the saved depth grid and identical large-event classifications.
+These measurements test time tolerance on the baseline mesh. Footprint comparisons are limited by the saved depth spacing, about 30 m in the scientific runs. They do not establish spatial convergence or recovery of the published swarm sequence.
+
+The baseline and tighter-tolerance runs both extend beyond the common validation window. We therefore repeat the comparison over their full shared duration of 200 years, so agreement confined to the early cycles cannot substitute for assessment of later events.
+The time-tolerance comparison also includes every resolved rupture over the first 200 years. The baseline and tighter-tolerance cases contain 60 and 58 resolved ruptures, respectively, from 61 and 58 complete threshold excursions.
+The declared large-event criterion identifies 7 and 6 events, respectively.
+Across the 58 chronological pairs, the maximum absolute differences are 1.63e+07 min in onset, 718\% in duration, 743\% in peak speed, and 852\% in maximum slip.
+Counts, saved rupture footprints, or large-event classifications differ between the catalogs; chronological pairing alone does not establish physical correspondence. The reported maxima compare ordinal catalog positions and cannot be interpreted as timing or amplitude errors between physically matched events.
+These measurements test time tolerance on the baseline mesh. Footprint comparisons are limited by the saved depth spacing, about 30 m in the scientific runs. They do not establish spatial convergence or recovery of the published swarm sequence.
+
+These long-duration catalog differences preclude claiming convergence of individual late events from this tolerance test. Early agreement does not certify the later figure cycles.
+Large-event counts also depend on the declared span cutoff. With a 9 km cutoff, the baseline and tighter-tolerance catalogs contain 8 and 8 large events, compared with 7 and 6 at 10 km. All primary results retain 10 km; this relabeling does not remove differences in the resolved small-event sequences.
+The fine-mesh and input-sensitivity runs do not cover this longer window. This additional temporal comparison therefore does not establish spatial convergence of the later figure cycles.
+
 
 The final model assessment requires the baseline, mesh-refined case, and tighter
 time-tolerance case together. This interim report does not treat completed

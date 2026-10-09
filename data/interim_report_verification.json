@@ -1,6 +1,6 @@
 {
   "scope": "Dated interim report only; not completion of the independent reproduction goal.",
-  "recorded_utc": "2026-10-09 15:17 UTC",
+  "recorded_utc": "2026-10-09 19:10 UTC",
   "checks_passed": true,
   "completed_cases": [
     "reference",
@@ -11,12 +11,12 @@
     "verylong",
     "verylong_reference",
     "baseline_coarse",
+    "baseline_tight",
     "initialization",
     "normal_stress"
   ],
   "pending_cases": [
-    "baseline_fine",
-    "baseline_tight"
+    "baseline_fine"
   ],
   "included_panels": [
     "F1a",
@@ -129,7 +129,7 @@
       ],
       "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/report",
       "exit_code": 0,
-      "elapsed_s": 0.9679687023162842
+      "elapsed_s": 1.8088538646697998
     },
     {
       "command": [
@@ -139,9 +139,9 @@
         "-halt-on-error",
         "interim.tex"
       ],
-      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/interim-compile-m17t5sqp/report",
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/interim-compile-nosddvoa/report",
       "exit_code": 0,
-      "elapsed_s": 1.7721920013427734
+      "elapsed_s": 1.8409521579742432
     },
     {
       "command": [
@@ -151,7 +151,7 @@
       ],
       "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/report",
       "exit_code": 0,
-      "elapsed_s": 1.2310478687286377
+      "elapsed_s": 1.3512873649597168
     }
   ],
   "input_sha256": {
@@ -187,6 +187,10 @@
     "data/baseline_coarse/output_verification.json": "333d233679d3ac7abba584272d75a6239bcea0f9c0eb4862019315f9adc70fc2",
     "data/baseline_coarse/provenance.json": "f16d9b45265f1aec4644e1aad1551539b5e9673db4eb93b87a18925ec230e27d",
     "data/baseline_coarse/analysis.json": "ed82d76d25a043a84490c8c3bb50ed2f315778121e16f0a25ae10f6935edfcdb",
+    "data/baseline_tight/completed.json": "76ce5d76a7d1762a44d89da88978f2b49f870c52319cbffa62949b6c9160ab3f",
+    "data/baseline_tight/output_verification.json": "c753df84df893a3d453ab196de1c328a7ad25abf2ee651b6bebb815ce5f687b4",
+    "data/baseline_tight/provenance.json": "11a2dc86b0ad6a7db19929336b0d5bba0bc2660d19b27a1b769dc94e74b49d59",
+    "data/baseline_tight/analysis.json": "bf365594c72c4d65dfb76336a90ce9d3fe2c39c7a6f87b011928de2bc60c60df",
     "data/initialization/completed.json": "14d7f74d3c573f46ec8aebbad06e86e5e3e6d28b7a63be975f67c578ef267c18",
     "data/initialization/output_verification.json": "f99b82853bb247853e5f00a35b6df78ba942fa35668d5eb572039bdca4fa234f",
     "data/initialization/provenance.json": "e075d8eb0161f3fab52a8299d19a22e5ef73de30bad709b35d1eb75e146c2659",
@@ -344,7 +348,7 @@
     "figures/panels/S6f.pdf": "97b4cb9f30d7bacafcd9a0a52bc9f3c3119baeb466fa4a775147ae1c1c1c90c3",
     "report/reproduction.tex": "1591af91bdac1830d8978e3ba6c325e0afeafa80a6a4ba20d854d62bb093e5c9",
     "scripts/inventory.py": "bcf57967af1f7c0dadd74894a79834c4007bd9a6ff9d1c92812396a6a4f4fb39",
-    "scripts/report_tables.py": "992f9d4d68e987648f2db83b6c7fe3d8f54920d77e64f956ad43c541f5390bb2",
+    "scripts/report_tables.py": "889dedff0aa6a819904f2547edb3e537e4d515ea0a99be79a8ae0982fb05d666",
     "figures/F1.pdf": "c3ad0736c080644ba989e03ae06dbf76739ec3e0b2fb82118acd9d1427b00582",
     "figures/F2.pdf": "cb24d3159a80b1a1177c4abb852aef31a33d33f37fdbbabf630a74fd7bbe88e8",
     "figures/F3.pdf": "cfee942ab61f40174563a31e9f287e680dfa79699e394662f91f82201622e1d5",
@@ -358,12 +362,12 @@
     "figures/S5.pdf": "d6b123fa07f65264a9aba271e6c4018c55146ab3ddb0c5007353980de8ceefa6",
     "figures/S6.pdf": "054cd960e207f4883b55ed1fbae8e5d1183af10d884073f900825f6731c1d87f"
   },
-  "script_sha256": "8fdf973f1b9f9dacc1d4c0f391c7be66bd8e159bee20c015fe5294736f410fc9",
+  "script_sha256": "4f5d9939431b017a3f964c54098af2fd8ce0a41f9185cde62d5969827d9e4022",
   "output_sha256": {
-    "report/interim.tex": "4fa28787e64e9c883fc3edcf8a96792a4cfeb90d323d6a366be42deb481ae8ba",
-    "report/interim.pdf": "f98f4447daaf9a672825da2abac3fa02fedf86c57072889a6363e27bfc5a5fe2",
-    "report/interim-latex-source.zip": "6bc0e5bb80b06eb556901862ecfce4d6a07fc1b01390710ec6fd94d2d6a9e692",
-    "data/interim_report_build.log": "5b34a7e502e9e7aa198520205006d35f563b8d263213aba94aae372de10989df"
+    "report/interim.tex": "7021e8d4c820052515bfc67f6713499ad2d846f2ef898063507f0aad241174b7",
+    "report/interim.pdf": "f166f7faf35aea864c4adc938b6f0c7bb87b5b36e0ed993605ed3ce69746edac",
+    "report/interim-latex-source.zip": "379b719e23774bdf9b16b54a967d3f4853f329f604e3a92190969630699a1b46",
+    "data/interim_report_build.log": "515113226bf57d0c86d828e57251756ef36beeb01f0ab4bedf22e2a83bdfd0a5"
   },
   "checks": [
     "Completed cases have successful exit and raw-output audits with matching source and configuration hashes.",

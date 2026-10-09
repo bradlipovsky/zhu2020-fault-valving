@@ -1,0 +1,22 @@
+{
+  "case": "baseline_tight",
+  "command": [
+    "build/valving",
+    "configs/baseline_tight.cfg",
+    "data/baseline_tight"
+  ],
+  "pid": 2604926,
+  "start_utc": "2026-10-08T06:01:26Z",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "bb0e5f2ef3e086400f3f004e1f0a0b2c841e7ba39da268fd712274bb400449db",
+  "cpu_affinity": [
+    36,
+    37,
+    38,
+    39
+  ],
+  "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+  "exit_code": 0,
+  "end_utc": "2026-10-09T18:10:51Z"
+}

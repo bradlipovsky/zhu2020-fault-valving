@@ -1,0 +1,48 @@
+{
+  "checks_passed": true,
+  "scope": "Final-report and source-archive integration in an explicitly marked short software fixture; actual full200 comparison is separately checked in data/tolerance_200yr_verification.json and compiled in the scientific interim report.",
+  "report_generator_sha256": "889dedff0aa6a819904f2547edb3e537e4d515ea0a99be79a8ae0982fb05d666",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 0.614128828048706
+    },
+    {
+      "command": [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320/report",
+      "exit_code": 0,
+      "elapsed_s": 1.2795147895812988
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 4.160016775131226
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 2.751425266265869
+    }
+  ],
+  "overfull_boxes": 0
+}

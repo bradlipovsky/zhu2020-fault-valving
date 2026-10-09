@@ -13,7 +13,7 @@ import zipfile
 from common import MAIN_CASES, YEAR
 from inventory import PANELS, GROUPS, PUBLISHED_CYCLES
 from reproduce import VALIDATION_CASES
-from report_tables import tex, number, command, front_speed, baseline_supplementary
+from report_tables import tex, number, command, front_speed, baseline_supplementary, tolerance_windows
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -245,6 +245,10 @@ Depth (km) & Episodes & Duration (yr) & Recurrence (yr) & Slip (cm)\\\midrule
                 number(s['median_duration_years']), number(s['median_interval_years']),
                 number(100 * s['median_net_slip_m'])]) + r'\\' + '\n'
         out += r'\bottomrule\end{tabular}\end{center}' + '\n'
+    if 'baseline_tight' in analyses and 'baseline' in analyses:
+        horizon = min(analyses[c]['final_time_years'] for c in VALIDATION_CASES if c in analyses)
+        tolerance_text, _, _ = tolerance_windows(analyses['baseline_tight'], analyses['baseline'], horizon)
+        out += r'\subsection{Temporal-tolerance comparison}' + '\n' + tolerance_text
     out += r'''
 The final model assessment requires the baseline, mesh-refined case, and tighter
 time-tolerance case together. This interim report does not treat completed

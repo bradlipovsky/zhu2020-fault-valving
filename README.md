@@ -17,11 +17,11 @@ The fault mesh resolves the rupture region at 3.81 m and coarsens at depth.
 energy-preserving elastic projection, and refinement checks.
 
 The [interim scientific report](report/interim.pdf), dated 9 October 2026 (UTC),
-contains all 49 generated panel packages from ten completed cases and direct
+contains all 49 generated panel packages from eleven completed cases and direct
 constitutive calculations. Two constitutive-law panels are independently
 reproduced; 47 are partial comparisons, including the newly drawn schematic.
-The main 200-year case has finished. The fine-mesh and tighter time-tolerance
-runs continue; this is not the final reproduction report.
+The main and tighter-tolerance 200-year cases have finished. The fine-mesh run
+continues; this is not the final reproduction report.
 Its [LaTeX source](report/interim.tex) and
 [self-contained source archive](report/interim-latex-source.zip) are included.
 Run `python3 scripts/interim_report.py` to rebuild this report from completed,
@@ -32,6 +32,10 @@ The main case's final complete interval is 31.44 years versus approximately
 rates differ. Its [supplementary diagnostics](data/baseline/supplementary_verification.json)
 also show that a surface-reaching 9.48 km rupture is excluded by the declared
 10 km large-event cutoff; recurrence statistics depend on that event definition.
+The [full temporal-tolerance comparison](data/tolerance_200yr_verification.json)
+finds close agreement through 100 years, but 60 versus 58 resolved ruptures over
+200 years. Large-event counts are also sensitive to the span cutoff. These checks
+do not demonstrate convergence of the individual late events used in the figures.
 
 ## Regeneration
 

@@ -53,6 +53,8 @@ def tolerance_sequence(a,reference,horizon):
         'The baseline and tighter-tolerance cases contain {} and {} resolved ruptures, '
         'respectively, from {} and {} complete threshold excursions.\n').format(
             number(horizon),len(baseline),len(tight),len(catalogs[0]),len(catalogs[1]))
+    prose+='The declared large-event criterion identifies {} and {} events, respectively.\n'.format(
+        sum(e['large'] for e in baseline),sum(e['large'] for e in tight))
     if pairs:
         prose+=('Across the {} chronological pairs, the maximum absolute differences are {} min in onset, '
             '{}\\% in duration, {}\\% in peak speed, and {}\\% in maximum slip.\n').format(
@@ -63,7 +65,9 @@ def tolerance_sequence(a,reference,horizon):
                 'and identical large-event classifications.\n')
         else:
             prose+=('Counts, saved rupture footprints, or large-event classifications differ between the catalogs; '
-                'chronological pairing alone does not establish physical correspondence.\n')
+                'chronological pairing alone does not establish physical correspondence. '
+                'The reported maxima compare ordinal catalog positions and cannot be interpreted as '
+                'timing or amplitude errors between physically matched events.\n')
     else:
         prose+='No complete resolved-event pairs are available for this comparison.\n'
     prose+=('These measurements test time tolerance on the baseline mesh. Footprint comparisons are limited '
@@ -84,6 +88,18 @@ def tolerance_windows(a,reference,horizon):
                 number(full_horizon))
         later,full=tolerance_sequence(a,reference,full_horizon)
         prose+=later
+        if full['baseline_count']!=full['tight_count'] or (full['chronological_pairs'] and not full['all_paired_large_classifications_equal']):
+            prose+=('These long-duration catalog differences preclude claiming convergence of individual '
+                'late events from this tolerance test. Early agreement does not certify the later figure cycles.\n')
+            counts={str(span):[sum(e['complete'] and e['end_s']/YEAR<=full_horizon and
+                any(top<2000 and bottom-top>span for top,bottom in e['rupture_intervals_m'])
+                for e in run['events']) for run in [reference,a]] for span in [9000,10000,11000]}
+            full['large_event_span_sensitivity']=counts
+            prose+=('Large-event counts also depend on the declared span cutoff. With a 9 km cutoff, '
+                'the baseline and tighter-tolerance catalogs contain {} and {} large events, '
+                'compared with {} and {} at 10 km. All primary results retain 10 km; this relabeling '
+                'does not remove differences in the resolved small-event sequences.\n').format(
+                    *counts['9000'],*counts['10000'])
         prose+=('The fine-mesh and input-sensitivity runs do not cover this longer window. '
             'This additional temporal comparison therefore does not establish spatial convergence '
             'of the later figure cycles.\n\n')
