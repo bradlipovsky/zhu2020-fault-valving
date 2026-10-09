@@ -13,7 +13,7 @@ import zipfile
 from common import MAIN_CASES, YEAR
 from inventory import PANELS, GROUPS, PUBLISHED_CYCLES
 from reproduce import VALIDATION_CASES
-from report_tables import tex, number, command, front_speed
+from report_tables import tex, number, command, front_speed, baseline_supplementary
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -85,12 +85,15 @@ def main():
 '''
     out += ('At this snapshot, {} of 12 configured cases have completed, and {} of 49 panel packages '
             'are available. Of these, {} are independently reproduced constitutive-law panels and {} '
-            'are partial comparisons, including one newly drawn schematic. The {} pending panels '
-            'are labeled as not reproduced (pending) in the inventory; this describes their current '
-            'availability, not a failed physical behavior. Pending runs are {}. Their configured '
-            'durations remain unchanged.\n').format(len(completed), len(panels),
-                counts['independently reproduced'], counts['partial'], len(pending),
-                ', '.join(command(c) for c in missing_cases))
+            'are partial comparisons, including one newly drawn schematic. ').format(
+                len(completed), len(panels), counts['independently reproduced'], counts['partial'])
+    if counts['not reproduced']:
+        out += '{} generated attempts are classified as not reproduced. '.format(counts['not reproduced'])
+    if pending:
+        out += ('The {} pending panels are labeled as not reproduced (pending) in the inventory; '
+                'this describes their current availability, not a failed physical behavior. ').format(len(pending))
+    out += ('Pending runs are {}. Their configured durations remain unchanged.\n').format(
+        ', '.join(command(c) for c in missing_cases) if missing_cases else 'none')
     out += r'''
 \section{Scope and independence}
 Fault slip increases permeability, while healing between earthquakes restricts
@@ -106,9 +109,9 @@ in this report. The schematic is newly drawn and is not a reproduced simulation.
 Every displayed numerical panel comes from independent arrays in
 \code{data/panels}. Its JSON sidecar records parameters, source hashes, selection
 window, and provenance. A constitutive-law check establishes a narrower result
-than recovery of an earthquake sequence. All displayed cycle calculations remain
-partial comparisons because timing, event patterns, assumed inputs, or spatial
-convergence remain unresolved. Published cycle durations below are approximate
+than recovery of an earthquake sequence. Displayed cycle calculations retain
+the status in each inventory row because timing, event patterns, assumed inputs,
+or spatial convergence remain unresolved. Published cycle durations below are approximate
 visual readings used only as comparison targets, never computational inputs.
 '''
     out += model
@@ -158,7 +161,7 @@ Case & Last cycle (yr) & All-cycle median (yr) & Paper (yr) & Difference (\%)\\\
         out += ' & '.join([tex(case), number(last), number(a['median_recurrence_years']),
                           number(target), number(difference)]) + r'\\' + '\n'
     out += r'''\bottomrule\end{tabular}\end{center}
-The reference target is main Fig. 2a; the long-healing targets are supplementary
+The reference and baseline targets are main Figs. 2a and 2c; the long-healing targets are supplementary
 Figs. 3a,c and 5a,c. The differences describe the selected final cycles and do not
 imply stationary recurrence. In particular, the two long-healing fixed-pressure
 references differ substantially from their approximately 160-year targets.
@@ -171,7 +174,7 @@ cause. No high-healing-time mesh study has been completed.
 Case & $T$ (s) & $\Delta(\sigma-p)$ at 10 km (MPa) & Leading front & Deepest front\\
  & & & (m/yr) & (m/yr)\\\midrule
 '''
-    for case in ['short', 'long', 'verylong']:
+    for case in ['short', 'baseline', 'long', 'verylong']:
         if case not in analyses:
             continue
         a = analyses[case]
@@ -184,10 +187,45 @@ The stress range uses the nearest saved depth, about 10.004 km. Front rates are
 medians of all retained upward segments of the $|V|=V_p$ contour, with $R^2\geq0.8$,
 at 13--20 km depth. The leading and deepest branches are contour extrema, not
 tracked identities of individual pulses. Their definitions need not coincide
-with the paper's reported migration speeds of 2500, 120, and 30 m/yr for these
-three cases. The discrepancies are retained rather than selecting the branch
+with the paper's reported migration speeds of 2500, 380, 120, and 30 m/yr for the
+short, baseline, long, and very-long healing cases. The discrepancies are retained rather than selecting the branch
 closest to the published rate.
 '''
+    if 'baseline' in analyses:
+        a = analyses['baseline']
+        sample = a['sample_depths']['10000']
+        phase = a['phase_diagnostics']
+        closing = [e for e in a['events'] if e['large'] and e['complete']][-1]
+        top, bottom = max(closing['rupture_intervals_m'], key=lambda pair: pair[1]-pair[0])
+        small = panels['F4a']['middepth_small_events'] if 'F4a' in panels else []
+        out += ('\nThe baseline recurrence intervals range from {} to {} yr; the close agreement '
+                'of its final interval with the displayed 32-year example does not establish '
+                'a stationary cycle. At the saved depth nearest 10 km, effective stress spans '
+                '{}--{} MPa, a variation of {} MPa compared with the article\'s 10--20 MPa scale. '
+                'The maximum occurs {} yr after cycle opening. This maximum is a diagnostic, '
+                'not an identification of the paper\'s phase boundary. Maximum upward flux '
+                'there is {} m/s, compared with the article\'s order $10^{{-7}}$ m/s upper scale.\n').format(
+            number(min(a['recurrence_years'])), number(max(a['recurrence_years'])),
+            number(sample['effective_min_mpa']), number(sample['effective_max_mpa']),
+            number(sample['effective_range_mpa']),
+            number(phase['maximum_effective_stress_since_window_start_years']), number(sample['flux_max']))
+        first = phase['first_partial_ruptures']
+        out += '\nThe first two resolved partial ruptures are retained in chronological order: '
+        out += '; '.join('{} yr after opening, with a connected footprint at {}--{} km'.format(
+            number(e['peak_since_window_start_years']), number(e['footprint_top_m']/1000),
+            number(e['footprint_bottom_m']/1000)) for e in first) + '. '
+        out += ('The extra early shallow rupture differs from the published sequence. '
+                'The final two-year window contains {} smaller ruptures intersecting 2--10 km. '
+                'This recovers swarm-like behavior, while its timing and depth range differ. '
+                'The closing large event first crosses the speed threshold at {} km, '
+                'and its connected footprint spans {}--{} km. The paper gives a 12 km '
+                'nucleation depth for the preceding 8--19 km rupture; it does not specify '
+                'a numerical nucleation depth for the final surface-breaking event in this description. '
+                'Our threshold definition does not establish identical published event boundaries.\n').format(
+            len(small), number(closing['nucleation_depth_m']/1000),
+            number(top/1000), number(bottom/1000))
+        supplementary, _ = baseline_supplementary(a, panels)
+        out += '\n' + supplementary
     if 'short' in analyses:
         out += r'''
 The short-healing case produces aseismic pulses. The following medians compare
@@ -291,8 +329,8 @@ It records commands, exit codes, input hashes, and output hashes in
 file, \code{report/interim.tex}. All scientific arrays and their independent
 generation commands are available in the repository.
 
-Completion still requires the remaining calculations, the pending
-panels, common-duration validation comparisons, the full scientific report,
+Completion still requires the remaining calculations, any pending
+panels listed in the inventory, common-duration validation comparisons, the full scientific report,
 visual and numerical artifact review, execution of the final regeneration
 procedure, and publication of those final deliverables. This snapshot makes
 the completed scientific results reviewable without declaring that work finished.

@@ -1,0 +1,49 @@
+{
+  "checks_passed": true,
+  "scope": "Report helper and complete report/source-bundle integration in an explicitly marked short software fixture. Fixture figures and PDF are excluded from scientific deliverables.",
+  "report_generator_sha256": "992f9d4d68e987648f2db83b6c7fe3d8f54920d77e64f956ad43c541f5390bb2",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/report_tables.py"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 0.5021557807922363
+    },
+    {
+      "command": [
+        "latexmk",
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "reproduction.tex"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320/report",
+      "exit_code": 0,
+      "elapsed_s": 1.9065866470336914
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/package_report.py",
+        "--verify"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 3.8355371952056885
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/verify_artifacts.py"
+      ],
+      "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+      "exit_code": 0,
+      "elapsed_s": 2.031301736831665
+    }
+  ],
+  "overfull_boxes": 0,
+  "empty_event_catalog_handled": true
+}

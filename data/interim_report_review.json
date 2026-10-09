@@ -1,28 +1,27 @@
 {
-  "scope": "Manual scientific and visual review of the dated interim report; the full reproduction remains incomplete.",
-  "recorded_utc": "2026-10-09T00:49:14.312964Z",
+  "scope": "Manual scientific and visual review of the dated interim report; full reproduction remains incomplete.",
+  "recorded_utc": "2026-10-09T15:20:00.346511Z",
   "checks_passed": true,
-  "pdf_sha256": "da643172f7baf61f82ae08f9b1f16c477aa3f56b8866d05d843a179a0c4e7074",
-  "pages": 16,
+  "pdf_sha256": "f98f4447daaf9a672825da2abac3fa02fedf86c57072889a6363e27bfc5a5fe2",
+  "pages": 23,
   "visual_review": [
-    "Reviewed contact sheets covering every final page and full-size pages for the corrected normal-stress unit, constitutive/schematic figure, and availability statement.",
-    "All 30 included panel labels appear in the seven figure groups; main-manuscript groups precede supplementary groups.",
-    "The newly drawn schematic is explicitly labeled as not a simulation result.",
-    "The 49-row provenance inventory identifies 19 pending panels and retains discrepancies for generated comparisons.",
-    "Titles, axes, legends, color bars, tables, and captions are legible without visible clipping; the redundant blank heading page was removed."
+    "Reviewed all 23 pages on contact sheets, with detailed review of the availability statement and quantitative pages 4 and 5. After correcting a source attribution, re-rendered all pages: only pages 1, 4 and 5 changed, and those final pages were inspected.",
+    "All 49 panel labels are included across twelve figure groups in main-manuscript then supplementary order. All numerical figures use independent arrays; the new schematic is explicitly labeled.",
+    "The 49-row provenance table retains two independently reproduced constitutive-law panels and 47 partial comparisons. No panel is pending at this snapshot.",
+    "Titles, axes, legends, tables, captions and color scales are legible, with no visible clipping or overfull LaTeX boxes."
   ],
   "scientific_review": [
-    "All current input/output hashes agree with the build record; model source and executable hashes remain unchanged.",
-    "Cycle differences are calculated against declared approximate published comparison targets, with both final-cycle and all-interval median statistics.",
-    "Leading and deepest migration statistics retain all qualifying segments; both branches in the verylong case have the same two qualifying rates, 217.76847657097036 and 118.93089057863386 m/yr, and the displayed median is 168.3496835748021 m/yr.",
-    "Slow-slip duration, recurrence, and slip medians are reported at all three declared depths and derived from the completed short-case analysis.",
-    "No unfinished run or software fixture supplies a scientific figure in this interim report.",
-    "The shared main-report template had a carriage-return escape in its normal-stress-gradient unit. Corrected to 22 MPa per km and inspected the rendered result."
+    "All current input hashes agree with the build record. The production model source and executable hashes are unchanged.",
+    "The completed baseline raw audit checks all 624522 accepted steps and 16510 field profiles. The separate panel audit verifies all 61 event footprints and all 19 new data selections against raw solver arrays.",
+    "The final baseline interval is 31.43796 years, but recurrence intervals range from 25.39538 to 54.61383 years. The report preserves event-sequence, stress-amplitude and migration-rate discrepancies.",
+    "The first two partial ruptures remain chronological, including the extra early shallow rupture. The paper's 12 km nucleation depth refers to its larger precursor, not the final surface-breaking event; the report explicitly distinguishes them.",
+    "The large-event span sensitivity yields eight events for 9 km and seven for 10 or 11 km. The intermediate surface-reaching 9.48 km rupture is retained in the catalog, and all primary figures retain the original 10 km criterion.",
+    "Both leading and deepest contour statistics retain every qualifying segment. S1 preserves all accepted history samples; S2 retains fixed earlier cycles of 26.80529 and 54.61383 years.",
+    "No unfinished run or software fixture supplies a scientific figure. The full validation and final report are still pending."
   ],
   "checks_remaining": [
-    "Complete baseline, baseline_fine, and baseline_tight simulations.",
-    "Generate and audit the remaining 19 panels and full-report validation comparisons.",
-    "Compare temporal tolerance over the full shared 200-year interval as well as the common 100-year resolution/parameter interval.",
-    "Compile, visually review, regenerate, audit, and publish the final report and release."
+    "Complete baseline_fine and baseline_tight and audit their full outputs.",
+    "Review common 100-year spatial/parameter comparisons and full 200-year temporal-tolerance comparison.",
+    "Regenerate, scientifically and visually review, audit and publish the final report and release."
   ]
 }

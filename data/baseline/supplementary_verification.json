@@ -1,0 +1,85 @@
+{
+  "checks_passed": true,
+  "scope": "Completed baseline supplementary diagnostics and event-definition sensitivity; no temporal or spatial convergence claim.",
+  "metrics": {
+    "depth_histories": {
+      "samples": 168789,
+      "depth_m": [
+        4999.1607666015625,
+        10000.228881835938,
+        15001.296997070312,
+        19998.550415039062
+      ],
+      "minimum_speed_m_s": [
+        9.606300896999791e-23,
+        1.5022975098733298e-20,
+        1.4469461841951463e-16,
+        3.343939514017318e-10
+      ],
+      "maximum_speed_m_s": [
+        0.9565406552054622,
+        1.0376721522426926,
+        1.9087636477945373,
+        1.2836826995948578e-06
+      ]
+    },
+    "alternate_cycles": {
+      "S2a": {
+        "duration_years": 26.80528641007767,
+        "small_resolved_events": 8
+      },
+      "S2b": {
+        "duration_years": 54.61382719668205,
+        "small_resolved_events": 23
+      }
+    },
+    "event_span_sensitivity": {
+      "9000": {
+        "large_event_count": 8,
+        "recurrence_years": [
+          27.33736296245514,
+          25.395384945710074,
+          25.927395582838926,
+          31.066787435816344,
+          23.547039760865708,
+          26.80528641007767,
+          31.43796174304674
+        ],
+        "median_recurrence_years": 26.80528641007767
+      },
+      "10000": {
+        "large_event_count": 7,
+        "recurrence_years": [
+          27.33736296245514,
+          25.395384945710074,
+          25.927395582838926,
+          54.61382719668205,
+          26.80528641007767,
+          31.43796174304674
+        ],
+        "median_recurrence_years": 27.071324686266404
+      },
+      "11000": {
+        "large_event_count": 7,
+        "recurrence_years": [
+          27.33736296245514,
+          25.395384945710074,
+          25.927395582838926,
+          54.61382719668205,
+          26.80528641007767,
+          31.43796174304674
+        ],
+        "median_recurrence_years": 27.071324686266404
+      }
+    },
+    "additional_events_at_9km": [
+      {
+        "time_years": 117.83302249104365,
+        "top_m": 13.3514404296875,
+        "bottom_m": 9492.874145507812
+      }
+    ]
+  },
+  "report_text": "\\subsection{Depth histories, alternate cycles, and event labels}\nSupplementary Fig. 1 retains 168789 accepted samples at the nearest physical nodes to 5, 10, 15, and 20 km. Minimum slip speeds at the first two depths are 9.61e-23 and 1.5e-20 m/s. These calculated minima and the timing of the transients provide additional comparisons beyond the final recurrence interval. Supplementary Figs. 2a and 2b use fixed earlier cycles of 26.8 and 54.6 yr, containing 8 and 23 smaller resolved ruptures, respectively. Their event catalog and complete windows are retained even when their behavior differs from the alternate sequences described in the published supplement.\nThe large-event label requires a connected footprint reaching above 2 km and spanning more than 10 km. A postprocessing sensitivity check changes that span threshold to 9, 10, and 11 km and obtains 8, 7, and 7 large events. The simulation and panel windows remain unchanged; all primary comparisons retain the declared 10 km criterion. The surface-reaching event at year 118 has a 0.0134--9.49 km connected footprint; the 10 km criterion excludes it. Recurrence statistics therefore depend on the event definition as well as the numerical trajectory.\n",
+  "report_generator_sha256": "992f9d4d68e987648f2db83b6c7fe3d8f54920d77e64f956ad43c541f5390bb2"
+}

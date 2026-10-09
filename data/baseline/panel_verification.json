@@ -1,0 +1,568 @@
+{
+  "case": "baseline",
+  "checks_passed": true,
+  "recorded_utc": "2026-10-09T15:18:17.099313Z",
+  "scope": "Completed 200-year baseline, 19 new panel datasets, and six figure composites. No global completion or convergence claim.",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "3d4e84a1e5e3429c28ea6c2db56cbdea295de9cbb56afb9976410496f1bc04f7",
+  "years": 200,
+  "accepted_steps": 624522,
+  "saved_profiles": 16510,
+  "raw_audit_sha256": "7c4e8e55da3dafb3ef3b61a1ff24724dc89c89c5cafad97c1de379d435cd0ac1",
+  "array_audit_verifier_sha256": "224fb687983a9e59bb1490a3ae7ba20ee4ae7bfdda45a942c46be00d99c4ebef",
+  "array_audit_scope": "Nineteen panel datasets enabled by the completed baseline case; no global completion or convergence claim.",
+  "panels": [
+    {
+      "panel": "F2c",
+      "status": "partial",
+      "bytes": 6960043,
+      "data_sha256": "0b58160bdadd945e19e38a8aaffe28732d6c871be04c3add98343256e5cee12d",
+      "comparison": {
+        "approximate_reference_years": 32.0,
+        "source": "Main Fig. 2c; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
+        "calculated_last_interval_years": 31.43796174304674,
+        "approximate_relative_difference_percent": -1.7563695529789425,
+        "calculated_all_interval_median_years": 27.071324686266404,
+        "approximate_median_difference_percent": -15.402110355417486,
+        "recurrence_intervals_years": [
+          27.33736296245514,
+          25.395384945710074,
+          25.927395582838926,
+          54.61382719668205,
+          26.80528641007767,
+          31.43796174304674
+        ]
+      },
+      "window_years": [
+        168.1853495116306,
+        199.62331125467733
+      ],
+      "values_shape": [
+        2293,
+        833
+      ],
+      "figure_png_sha256": "6c1118f447581e6e5389860595faeb22b10dc6774b06f19f79e988a7d1776f4e",
+      "figure_pdf_sha256": "1f9c224cb769ee918a1223ecfae23778e32e6bb14ceeaee878715e7b66fb8254"
+    },
+    {
+      "panel": "F2d",
+      "status": "partial",
+      "bytes": 4609095,
+      "data_sha256": "a06f4528f116764202459f26c35b669886ef467680aff6e5769b7011254b98da",
+      "cycle_bounds_years": [
+        [
+          141.38006310155293,
+          168.1853495116306
+        ],
+        [
+          168.1853495116306,
+          199.62331125467733
+        ]
+      ],
+      "final_shallowest_slip_m": 2.772747039794922,
+      "final_maximum_slip_m": 3.6112899780273438,
+      "comparison": {
+        "approximate_reference_years": 32.0,
+        "source": "Main Fig. 2c; approximate visual reading of the closing earthquake time on the displayed axis, not simulation input or authors data",
+        "calculated_last_interval_years": 31.43796174304674,
+        "approximate_relative_difference_percent": -1.7563695529789425,
+        "calculated_all_interval_median_years": 27.071324686266404,
+        "approximate_median_difference_percent": -15.402110355417486,
+        "recurrence_intervals_years": [
+          27.33736296245514,
+          25.395384945710074,
+          25.927395582838926,
+          54.61382719668205,
+          26.80528641007767,
+          31.43796174304674
+        ]
+      },
+      "window_years": [
+        141.38006310155293,
+        199.62331125467733
+      ],
+      "values_shape": [
+        4492,
+        833
+      ],
+      "figure_png_sha256": "003a023aa3827d4308fe63239d91c2bdd35059148650e20cb31b734a23f23b29",
+      "figure_pdf_sha256": "23a3de23a1513e7907e4ebd302c0dbd94fc944ea4e36e20675e50ddcb04e2f4e"
+    },
+    {
+      "panel": "F3a",
+      "status": "partial",
+      "bytes": 3838966,
+      "data_sha256": "3aa64e6d6e72cf2ff5ed85a6e25f3d9e3195504ac17cc6ef81a44bdd9406c0dd",
+      "window_years": [
+        168.1853495116306,
+        199.62331125467733
+      ],
+      "values_shape": [
+        2293,
+        833
+      ],
+      "figure_png_sha256": "b9f06f42ee57a39f6afdc68bcefb87b9b8152dbda1d180d728a08be5bf085c70",
+      "figure_pdf_sha256": "6db325d67890a8fbb79fa3dd49c1de366c77f56489fcc027e7ee4b092b307006"
+    },
+    {
+      "panel": "F3b",
+      "status": "partial",
+      "bytes": 4071040,
+      "data_sha256": "3fa78f59674a96573d37d75e0f19e28932d0d2493cd6e8dc2a2b7d568760539d",
+      "window_years": [
+        168.1853495116306,
+        199.62331125467733
+      ],
+      "values_shape": [
+        2293,
+        833
+      ],
+      "figure_png_sha256": "65901921c471b1093950da8c8cbf31dbc3f8b0f80dc8c6f48019b661d3c4ad4b",
+      "figure_pdf_sha256": "16589b9f08240053a968e2775472f9547e24a27b7191fc90e1e3deceac88bf9b"
+    },
+    {
+      "panel": "F3c",
+      "status": "partial",
+      "bytes": 4994519,
+      "data_sha256": "f515bd8fdf170c0274e8f9aad297e7d39bb025eaa27e4eab58c6bd3df1c34f6c",
+      "window_years": [
+        168.1853495116306,
+        199.62331125467733
+      ],
+      "values_shape": [
+        2293,
+        833
+      ],
+      "figure_png_sha256": "53c6d9369176a69bbe03e4435ab50d70fb10f3ab72ebe660cab8dbb6184e0324",
+      "figure_pdf_sha256": "095f2cbe663d59d5f2ce9b06f0c6c22636ff04ce7c4e1edbcc1e67c603467d41"
+    },
+    {
+      "panel": "F3d",
+      "status": "partial",
+      "bytes": 5439135,
+      "data_sha256": "7c461c50d73d0791b05ae234be27496c15db817351be75a09e466dc16eafa56b",
+      "window_years": [
+        168.1853495116306,
+        199.62331125467733
+      ],
+      "values_shape": [
+        2293,
+        833
+      ],
+      "figure_png_sha256": "b3068e6772893da00b9249db7a71eb656f5977e2e0b1347295f8e091b365fe6b",
+      "figure_pdf_sha256": "99281b2ebf566ca28b5b4b4e4b44e7f1bdc8c08768e4c8cb94eb273df3f6c60d"
+    },
+    {
+      "panel": "F3e",
+      "status": "partial",
+      "bytes": 5060064,
+      "data_sha256": "43fdaf30dac2e471c58c8e08ba5be184f3bcde577a1176c58c880d909f0ca520",
+      "window_years": [
+        168.1853495116306,
+        199.62331125467733
+      ],
+      "values_shape": [
+        2293,
+        833
+      ],
+      "figure_png_sha256": "2a34b7c45d53683393960de29d652aecfd4405fa114dd2120bac48fa817ab50c",
+      "figure_pdf_sha256": "a6e8e584290ff8ac70cef3e8be782ea8b75f4fbd2ca1f657346967c82958e955"
+    },
+    {
+      "panel": "F3f",
+      "status": "partial",
+      "bytes": 5525232,
+      "data_sha256": "ea3bf0acaf40edc5147df7cbb65a2d06a4e8496269604ac0863b7d9801d3431a",
+      "window_years": [
+        168.1853495116306,
+        199.62331125467733
+      ],
+      "values_shape": [
+        2293,
+        833
+      ],
+      "figure_png_sha256": "72775aa1285c5c7d3bc296f4609ec318143beefdb5ee3c482673ad99bf73bc08",
+      "figure_pdf_sha256": "58d44301a1ef48f6449b9473ed33ad4c4e311a34a9c54ac4a914974875a9fbb3"
+    },
+    {
+      "panel": "F4a",
+      "status": "partial",
+      "bytes": 824687,
+      "data_sha256": "202d4ab84d18c479ea7c99af9bb71aefb9ab68b7a7cad4379695c5206b8e490b",
+      "middepth_small_event_count": 5,
+      "window_years": [
+        197.62331125467733,
+        199.62331125467733
+      ],
+      "values_shape": [
+        813,
+        266
+      ],
+      "figure_png_sha256": "856955c74586dca01f2043385c90a2e0b9b3f0e2201fc057ea562858d64d5d1d",
+      "figure_pdf_sha256": "5ce186e1a29398984ac9a696d82ada42ad666d2ea26081d7e2c901bb09f16935"
+    },
+    {
+      "panel": "F4b",
+      "status": "partial",
+      "bytes": 824687,
+      "data_sha256": "202d4ab84d18c479ea7c99af9bb71aefb9ab68b7a7cad4379695c5206b8e490b",
+      "middepth_small_event_count": 5,
+      "window_years": [
+        197.62331125467733,
+        199.62331125467733
+      ],
+      "values_shape": [
+        813,
+        266
+      ],
+      "figure_png_sha256": "ff24963912f967cebd40ffd5d06f843190b486d30f6d5f147f95d27a0da5bca4",
+      "figure_pdf_sha256": "c9d99585f7cbae45aa40a4141789a9dacddcfb7102237b31bd16ba85da373f1d"
+    },
+    {
+      "panel": "F4c",
+      "status": "partial",
+      "bytes": 226063,
+      "data_sha256": "d67dd9ef01c502c9835b39ecb18205daba5ae886c1fe40f0be6937a6721c67ea",
+      "middepth_small_event_count": 5,
+      "window_years": [
+        197.62331125467733,
+        199.62331125467733
+      ],
+      "values_shape": [
+        813,
+        266
+      ],
+      "figure_png_sha256": "d8a50939b3cef7bd6fcc2a933deaf9c4aac959861382b2f5aa2eaa854518f289",
+      "figure_pdf_sha256": "b9eb01af0deeb85b5118d648c504d0e61b2019c589902bd3d2230cc74fdf5079"
+    },
+    {
+      "panel": "F4d",
+      "status": "partial",
+      "bytes": 410830,
+      "data_sha256": "c1cd98ccdc8d1bf43dc9c3744f2dce0196f9050d7311e891cc87e0f423bb217d",
+      "middepth_small_event_count": 5,
+      "window_years": [
+        197.62331125467733,
+        199.62331125467733
+      ],
+      "values_shape": [
+        813,
+        266
+      ],
+      "figure_png_sha256": "37fdf4980bf6c1db6f84b1bed0db573ccf3954a7d4fc9c1182a8ba70a4cbf799",
+      "figure_pdf_sha256": "a91c7c6dd4a925a389764daab8510d89739dc1f17a8b65b7b41ba5ca1fb7e28c"
+    },
+    {
+      "panel": "F6",
+      "status": "partial",
+      "bytes": 43353309,
+      "data_sha256": "c8586568c5db1db421897da9adb65ea6736897be705b2e6503c42d2f0a68fe04",
+      "selections": {
+        "short": {
+          "window_years": [
+            141.00992105101992,
+            190.8138656056336
+          ],
+          "velocity_shape": [
+            2262,
+            833
+          ]
+        },
+        "baseline": {
+          "window_years": [
+            168.1853495116306,
+            199.62331125467733
+          ],
+          "velocity_shape": [
+            2293,
+            833
+          ]
+        },
+        "long": {
+          "window_years": [
+            276.83069338534705,
+            347.29162007794815
+          ],
+          "velocity_shape": [
+            3331,
+            833
+          ]
+        },
+        "verylong": {
+          "window_years": [
+            273.4881659027112,
+            447.8776223357422
+          ],
+          "velocity_shape": [
+            6722,
+            833
+          ]
+        }
+      },
+      "figure_png_sha256": "cae4fe813c1b5ada421cf704cf18ba1e086197605c63c4afab61b39c3a6b9975",
+      "figure_pdf_sha256": "a7dd894ed878c7f640973a6a69af5ea4c7877ccc06f531c8bc2fdba87c95a2de"
+    },
+    {
+      "panel": "S1a",
+      "status": "partial",
+      "bytes": 5784054,
+      "data_sha256": "eb5500b1bccf5c118eca7407d6f2825c55590317cab6f0ef122ea03e11b9100a",
+      "actual_depths_m": [
+        4999.1607666015625,
+        10000.228881835938,
+        15001.296997070312,
+        19998.550415039062
+      ],
+      "window_years": [
+        141.38006310155293,
+        199.62331125467733
+      ],
+      "values_shape": [
+        168789,
+        4
+      ],
+      "figure_png_sha256": "03f9d9dc04365f514689cd6888a7751664f2d937b910a97d37c99e9f31b82e92",
+      "figure_pdf_sha256": "79fb8875ab4e63208f2ac468e98da66e5500ae620ff9664529312eed0973d96f"
+    },
+    {
+      "panel": "S1b",
+      "status": "partial",
+      "bytes": 4949295,
+      "data_sha256": "979f1f76985ab2a59370090c2b18a4b562438d3a930aeb2271adcf3ccf746c8f",
+      "actual_depths_m": [
+        4999.1607666015625,
+        10000.228881835938,
+        15001.296997070312,
+        19998.550415039062
+      ],
+      "window_years": [
+        141.38006310155293,
+        199.62331125467733
+      ],
+      "values_shape": [
+        168789,
+        4
+      ],
+      "figure_png_sha256": "b27a2d1311c9e6504dfd74d7046ad488f4bd64f0441d36080f49c7db1c515b03",
+      "figure_pdf_sha256": "c533b56f81d9f63a2753f321424408828c2ae5a41198863e221a4c03729a9b8b"
+    },
+    {
+      "panel": "S1c",
+      "status": "partial",
+      "bytes": 4962542,
+      "data_sha256": "59b7c71797a2aa14f32e376363ccd64bc138dd1d823885c1ab0b51ad5680ab28",
+      "actual_depths_m": [
+        4999.1607666015625,
+        10000.228881835938,
+        15001.296997070312,
+        19998.550415039062
+      ],
+      "window_years": [
+        141.38006310155293,
+        199.62331125467733
+      ],
+      "values_shape": [
+        168789,
+        4
+      ],
+      "figure_png_sha256": "df521edb5c54d719560cf614aceaeb881c49c319274e992385fc43966bf7bf08",
+      "figure_pdf_sha256": "490342d77f9420682e87e35fd71cb1ceb9b1d3d177ffd925da21acfe0920daf5"
+    },
+    {
+      "panel": "S1d",
+      "status": "partial",
+      "bytes": 4319127,
+      "data_sha256": "dde4d301cedc7b47731cd812acb79866e061af4f83363883282b56df58a3c153",
+      "actual_depths_m": [
+        4999.1607666015625,
+        10000.228881835938,
+        15001.296997070312,
+        19998.550415039062
+      ],
+      "window_years": [
+        141.38006310155293,
+        199.62331125467733
+      ],
+      "values_shape": [
+        168789,
+        4
+      ],
+      "figure_png_sha256": "3e3409f66940d358521273a4cf265a90b3ee1907841a63b683fb44a4cd62384a",
+      "figure_pdf_sha256": "e05f7e2dc3b0ce50ddfd668f057615309ba2ca236e3e2d300f28bf44078d2613"
+    },
+    {
+      "panel": "S2a",
+      "status": "partial",
+      "bytes": 6620684,
+      "data_sha256": "9c532fd5aca88e4207b708dbfb491054fa299e0c85f24a8dd8e1c67dbf5123a1",
+      "window_years": [
+        141.38006310155293,
+        168.1853495116306
+      ],
+      "values_shape": [
+        2200,
+        833
+      ],
+      "figure_png_sha256": "af1e9b3f91ad3f99d06f2f7747d35c8454ff8cb621e305722505acbfd395db88",
+      "figure_pdf_sha256": "30370118861f88fac8f5398341a2c7433a46ea55d130b49ffe0127155f001c66"
+    },
+    {
+      "panel": "S2b",
+      "status": "partial",
+      "bytes": 16699035,
+      "data_sha256": "304b760a2e69071403a1aac124964944107fa8fb9fc713577da8ec705a187e76",
+      "window_years": [
+        86.76623590487087,
+        141.38006310155293
+      ],
+      "values_shape": [
+        5538,
+        833
+      ],
+      "figure_png_sha256": "bff7ad62ccc99233d9188f7ddf8157b384cf9d141d66f561ef320e4a55971f57",
+      "figure_pdf_sha256": "680b690619f6bca6f3b3a3f59a510ee62035ff8eb0672f171bcd384e3bba45e3"
+    }
+  ],
+  "figure_groups": {
+    "F2": {
+      "png_sha256": "308e1e363fcb50d3e6c85d38eecd80c7825d7af49b5218a1e46b286a6a3445ab",
+      "pdf_sha256": "cb24d3159a80b1a1177c4abb852aef31a33d33f37fdbbabf630a74fd7bbe88e8"
+    },
+    "F3": {
+      "png_sha256": "8f165d9fd91209023d8f1faf00f84f589f7288101ba45120ea6ce13f8c1fe113",
+      "pdf_sha256": "cfee942ab61f40174563a31e9f287e680dfa79699e394662f91f82201622e1d5"
+    },
+    "F4": {
+      "png_sha256": "833687a035ab3fe70d6418058a2451767bc67dadfb2e465f3e5586f4bb9ab845",
+      "pdf_sha256": "45685ef8a9e693246a731a707df486fa88e0ade56272ba410a5e67b1809e2db1"
+    },
+    "F6": {
+      "png_sha256": "ca0e16a7e31e2943deea60f526bd9cbccbae646e237878b8f2569f1e7531f14b",
+      "pdf_sha256": "fe1bc661bfbc1a7c05b619cf50ec1bccdf6d39011d75095b53f5f01fa0efebb5"
+    },
+    "S1": {
+      "png_sha256": "99324161c96723e1b33f28a501fbcdf6927d5cd1ee8363dbd210a8102740ee1d",
+      "pdf_sha256": "1e8eea9c68b7f00aba1130ef2718560fbc30f098970fb9c5a956fdef5174e80c"
+    },
+    "S2": {
+      "png_sha256": "a371e6c2be7975e4925d679c3fa5d3593e706dacc44fd07aba21610a5fc9d77a",
+      "pdf_sha256": "afe7b3759c8896c08849c5be66ae1eba29e28ddbf89caf79eb3f1083b65db894"
+    }
+  },
+  "simulation_command": [
+    "build/valving",
+    "configs/baseline.cfg",
+    "data/baseline"
+  ],
+  "postprocess_commands": [
+    [
+      "python3",
+      "scripts/verify_outputs.py",
+      "baseline"
+    ],
+    [
+      "python3",
+      "scripts/analyze.py",
+      "baseline"
+    ],
+    [
+      "python3",
+      "scripts/prepare_panels.py",
+      "F2c",
+      "F2d",
+      "F3a",
+      "F3b",
+      "F3c",
+      "F3d",
+      "F3e",
+      "F3f",
+      "F4a",
+      "F4b",
+      "F4c",
+      "F4d",
+      "F6",
+      "S1a",
+      "S1b",
+      "S1c",
+      "S1d",
+      "S2a",
+      "S2b"
+    ],
+    [
+      "python3",
+      "scripts/plot.py",
+      "F2c",
+      "F2d",
+      "F3a",
+      "F3b",
+      "F3c",
+      "F3d",
+      "F3e",
+      "F3f",
+      "F4a",
+      "F4b",
+      "F4c",
+      "F4d",
+      "F6",
+      "F2",
+      "F3",
+      "F4"
+    ],
+    [
+      "python3",
+      "scripts/plot.py",
+      "S1a",
+      "S1b",
+      "S1c",
+      "S1d",
+      "S2a",
+      "S2b",
+      "S1",
+      "S2"
+    ],
+    [
+      "python3",
+      "-c",
+      "import sys; sys.path.insert(0,'scripts'); from plot import combined; combined('F6')"
+    ]
+  ],
+  "visual_review": {
+    "reference_targets": [
+      "Main Figs. 2, 3, 4 and 6; comparison only",
+      "Supplementary Figs. 1 and 2; comparison only"
+    ],
+    "generated_views": [
+      "figures/F2.png",
+      "figures/F3.png",
+      "figures/F4.png",
+      "figures/F6.png",
+      "figures/S1.png",
+      "figures/S2.png"
+    ],
+    "findings": [
+      "All 19 new individual datasets match independently selected raw field or accepted-step history arrays, including profile selections and time/depth/step coordinates. All 61 event footprints and classifications were checked against threshold-crossing slip.",
+      "Panel labels, units, legends, color scales and depth axes are legible in all six composites. The F3b depth label is also present in the individual PDF text.",
+      "The final complete cycle spans years 168.1853495116306 to 199.62331125467733, or 31.43796174304674 years, versus approximately 32 years in the published Fig. 2c. All six recurrence intervals are retained; their median is 27.071324686266404 years. This does not establish a stationary cycle.",
+      "F2c shows upward fronts, partial ruptures and a late swarm, but also an early shallow rupture at 0.13217 years after opening. The first two chronological partial footprints are 0.01335--5.74303 km and 12.13264--17.14516 km. No event is discarded to imitate the published phase sequence.",
+      "F2d retains two complete cycles. Final shallowest cumulative slip is 2.772747039794922 m and maximum cumulative slip is 3.6112899780273438 m. The slip scale is similar to the published figure, but individual contours differ.",
+      "F3 gives a 28.110528 MPa stress range at the saved depth 10.004043579 km, exceeding the article's stated order 10--20 MPa variation. Permeability ranges from 4.320249051066589e-19 to 3.5755253878008025e-16 m^2 and maximum upward flux there is 3.6743102782565984e-08 m/s. The stress maximum at 19.4411 years is a diagnostic, not the authors' phase boundary.",
+      "F4 retains the fixed final two-year window and contains five smaller ruptures intersecting 2--10 km. The leading boundary is nearly stationary near 6.5 km for much of that window, then advances during late ruptures. This differs from the more continuously ascending published front and its event sequence.",
+      "The closing large event first exceeds the seismic threshold at 6.10161 km, with a connected footprint at 0.01335--11.50322 km. The article's quoted 12 km nucleation depth belongs to the preceding 8--19 km rupture, not the final surface-breaking event; no one-to-one identity is asserted.",
+      "F6 plots all |V|=Vp contours over each complete selected cycle, including downward and secondary branches; the published panel shows a shorter common time window. Quantitative fits retain both leading and deepest upward segments with R^2>=0.8. Baseline medians are 647.2955 and 967.3881 m/yr versus the printed 380 m/yr. The leading shallow median is 7265.2072 m/yr versus 4560; no deepest shallow segment qualifies.",
+      "S1 retains 168789 accepted samples at physical node depths 4.99916, 10.00023, 15.00130 and 19.99855 km. Minimum 5 and 10 km slip speeds are 9.6063e-23 and 1.5023e-20 m/s, substantially below the displayed published interseismic traces. The calculated spikes, permeability changes, fluxes and stress histories are not presented as recovered curves.",
+      "S2a and S2b use the fixed previous cycles of 26.80529 and 54.61383 years, containing eight and 23 smaller resolved ruptures. They do not recover the particular alternate slow-slip sequences described in the supplementary caption. Its references to panels c,d remain a documented caption inconsistency; only visible panels a,b are inventoried.",
+      "A surface-reaching event at year 117.83302 spans 0.01335--9.49287 km and falls below the declared 10 km large-event span criterion. Changing only that postprocessing threshold to 9 km gives eight large events, versus seven for 10 or 11 km, and splits the 54.61383-year interval. Primary panels retain the original rule. This sensitivity does not change the simulation.",
+      "Accepted-step coordinates differ from the paper's integrator and are not a physical accuracy metric. Selected cycle maps stop at the closing event, whereas published maps include post-event tails. Saved-profile cadence differs from accepted-step depth-history cadence.",
+      "All 19 panels remain partial comparisons. Fine-grid and full-duration tighter-tolerance validation remain incomplete at this publication snapshot."
+    ]
+  },
+  "postprocess_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ]
+}

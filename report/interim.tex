@@ -16,11 +16,11 @@
 \markright{INTERIM REPORT: incomplete reproduction study}
 \title{Independent calculations of fault valving: interim results}
 \author{Reproducibility study of Zhu, Allison, Dunham, and Yang (2020)}
-\date{2026-10-09 00:47 UTC}
+\date{2026-10-09 15:17 UTC}
 \begin{document}
 \maketitle
 \textbf{This is an interim scientific report. The full study remains incomplete.}
-At this snapshot, 9 of 12 configured cases have completed, and 30 of 49 panel packages are available. Of these, 2 are independently reproduced constitutive-law panels and 28 are partial comparisons, including one newly drawn schematic. The 19 pending panels are labeled as not reproduced (pending) in the inventory; this describes their current availability, not a failed physical behavior. Pending runs are \texttt{baseline}, \texttt{baseline\_fine}, \texttt{baseline\_tight}. Their configured durations remain unchanged.
+At this snapshot, 10 of 12 configured cases have completed, and 49 of 49 panel packages are available. Of these, 2 are independently reproduced constitutive-law panels and 47 are partial comparisons, including one newly drawn schematic. Pending runs are \texttt{baseline\_fine}, \texttt{baseline\_tight}. Their configured durations remain unchanged.
 
 \section{Scope and independence}
 Fault slip increases permeability, while healing between earthquakes restricts
@@ -36,9 +36,9 @@ in this report. The schematic is newly drawn and is not a reproduced simulation.
 Every displayed numerical panel comes from independent arrays in
 \code{data/panels}. Its JSON sidecar records parameters, source hashes, selection
 window, and provenance. A constitutive-law check establishes a narrower result
-than recovery of an earthquake sequence. All displayed cycle calculations remain
-partial comparisons because timing, event patterns, assumed inputs, or spatial
-convergence remain unresolved. Published cycle durations below are approximate
+than recovery of an earthquake sequence. Displayed cycle calculations retain
+the status in each inventory row because timing, event patterns, assumed inputs,
+or spatial convergence remain unresolved. Published cycle durations below are approximate
 visual readings used only as comparison targets, never computational inputs.
 \section{Physical model and declared assumptions}
 The elastic domain occupies $0\leq y\leq L_y$ and $0\leq z\leq L_z$, with depth
@@ -161,6 +161,7 @@ convergence or agreement with the paper. The audit files are
 \begin{tabular}{lrrrr}\toprule
 Case & Duration (yr) & Accepted steps & Profiles & Large events\\\midrule
 reference & 400 & 164586 & 14041 & 5\\
+baseline & 200 & 624522 & 16510 & 7\\
 short & 200 & 272347 & 8873 & 4\\
 long & 350 & 306854 & 17162 & 6\\
 long\_reference & 350 & 209873 & 12897 & 4\\
@@ -184,12 +185,13 @@ the published images.
 \begin{tabular}{lrrrr}\toprule
 Case & Last cycle (yr) & All-cycle median (yr) & Paper (yr) & Difference (\%)\\\midrule
 reference & 64 & 66 & 50 & 27.9\\
+baseline & 31.4 & 27.1 & 32 & -1.76\\
 long\_reference & 88.4 & 88.4 & 160 & -44.8\\
 long & 70.5 & 63.6 & 65 & 8.4\\
 verylong\_reference & 95.1 & 95.2 & 160 & -40.6\\
 verylong & 174 & 179 & 150 & 16.3\\
 \bottomrule\end{tabular}\end{center}
-The reference target is main Fig. 2a; the long-healing targets are supplementary
+The reference and baseline targets are main Figs. 2a and 2c; the long-healing targets are supplementary
 Figs. 3a,c and 5a,c. The differences describe the selected final cycles and do not
 imply stationary recurrence. In particular, the two long-healing fixed-pressure
 references differ substantially from their approximately 160-year targets.
@@ -202,6 +204,7 @@ cause. No high-healing-time mesh study has been completed.
 Case & $T$ (s) & $\Delta(\sigma-p)$ at 10 km (MPa) & Leading front & Deepest front\\
  & & & (m/yr) & (m/yr)\\\midrule
 short & 1e+07 & 4.57 & 1.84e+03 & 1.53e+03\\
+baseline & 1e+08 & 28.1 & 647 & 967\\
 long & 1e+09 & 16.5 & 187 & 242\\
 verylong & 1e+10 & 6.82 & 168 & 168\\
 \bottomrule\end{tabular}\end{center}
@@ -209,9 +212,17 @@ The stress range uses the nearest saved depth, about 10.004 km. Front rates are
 medians of all retained upward segments of the $|V|=V_p$ contour, with $R^2\geq0.8$,
 at 13--20 km depth. The leading and deepest branches are contour extrema, not
 tracked identities of individual pulses. Their definitions need not coincide
-with the paper's reported migration speeds of 2500, 120, and 30 m/yr for these
-three cases. The discrepancies are retained rather than selecting the branch
+with the paper's reported migration speeds of 2500, 380, 120, and 30 m/yr for the
+short, baseline, long, and very-long healing cases. The discrepancies are retained rather than selecting the branch
 closest to the published rate.
+
+The baseline recurrence intervals range from 25.4 to 54.6 yr; the close agreement of its final interval with the displayed 32-year example does not establish a stationary cycle. At the saved depth nearest 10 km, effective stress spans 19.1--47.2 MPa, a variation of 28.1 MPa compared with the article's 10--20 MPa scale. The maximum occurs 19.4 yr after cycle opening. This maximum is a diagnostic, not an identification of the paper's phase boundary. Maximum upward flux there is 3.67e-08 m/s, compared with the article's order $10^{-7}$ m/s upper scale.
+
+The first two resolved partial ruptures are retained in chronological order: 0.132 yr after opening, with a connected footprint at 0.0134--5.74 km; 18 yr after opening, with a connected footprint at 12.1--17.1 km. The extra early shallow rupture differs from the published sequence. The final two-year window contains 5 smaller ruptures intersecting 2--10 km. This recovers swarm-like behavior, while its timing and depth range differ. The closing large event first crosses the speed threshold at 6.1 km, and its connected footprint spans 0.0134--11.5 km. The paper gives a 12 km nucleation depth for the preceding 8--19 km rupture; it does not specify a numerical nucleation depth for the final surface-breaking event in this description. Our threshold definition does not establish identical published event boundaries.
+
+\subsection{Depth histories, alternate cycles, and event labels}
+Supplementary Fig. 1 retains 168789 accepted samples at the nearest physical nodes to 5, 10, 15, and 20 km. Minimum slip speeds at the first two depths are 9.61e-23 and 1.5e-20 m/s. These calculated minima and the timing of the transients provide additional comparisons beyond the final recurrence interval. Supplementary Figs. 2a and 2b use fixed earlier cycles of 26.8 and 54.6 yr, containing 8 and 23 smaller resolved ruptures, respectively. Their event catalog and complete windows are retained even when their behavior differs from the alternate sequences described in the published supplement.
+The large-event label requires a connected footprint reaching above 2 km and spanning more than 10 km. A postprocessing sensitivity check changes that span threshold to 9, 10, and 11 km and obtains 8, 7, and 7 large events. The simulation and panel windows remain unchanged; all primary comparisons retain the declared 10 km criterion. The surface-reaching event at year 118 has a 0.0134--9.49 km connected footprint; the 10 km criterion excludes it. Recurrence statistics therefore depend on the event definition as well as the numerical trajectory.
 
 The short-healing case produces aseismic pulses. The following medians compare
 with the article's approximate one-year duration, few-year recurrence, and
@@ -253,29 +264,29 @@ F1c & Healing and slip-enhancement limiting solutions & Main Eq. (4), Fig. 1c; T
 F1d & Steady pressure, stress, and permeability profiles & Main Eqs. (2)-(4), Fig. 1d; assumed normal-stress gradient & \texttt{python3 scripts/panel.py F1d -{}-data} & \texttt{python3 scripts/plot.py F1d} & partial & Normal stress gradient is assumed; steady Darcy balance is independently verified.\\[5pt]
 F2a & Slip velocity in time and step coordinates & Main Fig. 2; main Eqs. (1)-(9), Table 1 & \texttt{python3 scripts/panel.py F2a -{}-data} & \texttt{python3 scripts/plot.py F2a} & partial & Last complete interval 64 yr versus approximately 50 yr in Main Fig. 2a (+28\%). All-interval median 66 yr. Initial state and friction profiles remain uncertain.\\[5pt]
 F2b & Cumulative slip profiles & Main Fig. 2; main Eqs. (1)-(9), Table 1 & \texttt{python3 scripts/panel.py F2b -{}-data} & \texttt{python3 scripts/plot.py F2b} & partial & Last complete interval 64 yr versus approximately 50 yr in Main Fig. 2a (+28\%). All-interval median 66 yr. Initial state and friction profiles remain uncertain.\\[5pt]
-F2c & Slip velocity in time and step coordinates & Main Fig. 2; main Eqs. (1)-(9), Table 1 & \texttt{python3 scripts/panel.py F2c -{}-data} & \texttt{python3 scripts/plot.py F2c} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F2d & Cumulative slip profiles & Main Fig. 2; main Eqs. (1)-(9), Table 1 & \texttt{python3 scripts/panel.py F2d -{}-data} & \texttt{python3 scripts/plot.py F2d} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F3a & Effective normal stress history & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3a -{}-data} & \texttt{python3 scripts/plot.py F3a} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F3b & Effective normal stress depth profiles & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3b -{}-data} & \texttt{python3 scripts/plot.py F3b} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F3c & Permeability history & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3c -{}-data} & \texttt{python3 scripts/plot.py F3c} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F3d & Permeability depth profiles & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3d -{}-data} & \texttt{python3 scripts/plot.py F3d} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F3e & Upward fluid flux history & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3e -{}-data} & \texttt{python3 scripts/plot.py F3e} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F3f & Upward fluid flux depth profiles & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3f -{}-data} & \texttt{python3 scripts/plot.py F3f} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F4a & Slip velocity versus time & Main Fig. 4; Eqs. (1)-(9); Table 1 & \texttt{python3 scripts/panel.py F4a -{}-data} & \texttt{python3 scripts/plot.py F4a} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F4b & Slip velocity versus accepted step & Main Fig. 4; Eqs. (1)-(9); Table 1 & \texttt{python3 scripts/panel.py F4b -{}-data} & \texttt{python3 scripts/plot.py F4b} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F4c & Effective normal stress & Main Fig. 4; Eqs. (1)-(9); Table 1 & \texttt{python3 scripts/panel.py F4c -{}-data} & \texttt{python3 scripts/plot.py F4c} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-F4d & Permeability & Main Fig. 4; Eqs. (1)-(9); Table 1 & \texttt{python3 scripts/panel.py F4d -{}-data} & \texttt{python3 scripts/plot.py F4d} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
+F2c & Slip velocity in time and step coordinates & Main Fig. 2; main Eqs. (1)-(9), Table 1 & \texttt{python3 scripts/panel.py F2c -{}-data} & \texttt{python3 scripts/plot.py F2c} & partial & Last complete interval 31.4 yr versus approximately 32 yr in Main Fig. 2c (-2\%). All-interval median 27.1 yr. Initial state and friction profiles remain uncertain. First partial footprints: 0.01--5.74, 12.13--17.15 km.\\[5pt]
+F2d & Cumulative slip profiles & Main Fig. 2; main Eqs. (1)-(9), Table 1 & \texttt{python3 scripts/panel.py F2d -{}-data} & \texttt{python3 scripts/plot.py F2d} & partial & Last complete interval 31.4 yr versus approximately 32 yr in Main Fig. 2c (-2\%). All-interval median 27.1 yr. Initial state and friction profiles remain uncertain. First partial footprints: 0.01--5.74, 12.13--17.15 km.\\[5pt]
+F3a & Effective normal stress history & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3a -{}-data} & \texttt{python3 scripts/plot.py F3a} & partial & At 10 km, stress varies by 28.1 MPa; article gives an order 10--20 MPa scale. Phase timing differs.\\[5pt]
+F3b & Effective normal stress depth profiles & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3b -{}-data} & \texttt{python3 scripts/plot.py F3b} & partial & At 10 km, stress varies by 28.1 MPa; article gives an order 10--20 MPa scale. Phase timing differs.\\[5pt]
+F3c & Permeability history & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3c -{}-data} & \texttt{python3 scripts/plot.py F3c} & partial & At 10 km, k spans 4.32e-19--3.58e-16 square metres; exact cycle phases are not recovered.\\[5pt]
+F3d & Permeability depth profiles & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3d -{}-data} & \texttt{python3 scripts/plot.py F3d} & partial & At 10 km, k spans 4.32e-19--3.58e-16 square metres; exact cycle phases are not recovered.\\[5pt]
+F3e & Upward fluid flux history & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3e -{}-data} & \texttt{python3 scripts/plot.py F3e} & partial & At 10 km, maximum flux is 3.67e-08 m/s; the article gives an order 1e-7 m/s upper scale. Phase timing differs.\\[5pt]
+F3f & Upward fluid flux depth profiles & Main Fig. 3; main Eqs. (1)-(4), Table 1 & \texttt{python3 scripts/panel.py F3f -{}-data} & \texttt{python3 scripts/plot.py F3f} & partial & At 10 km, maximum flux is 3.67e-08 m/s; the article gives an order 1e-7 m/s upper scale. Phase timing differs.\\[5pt]
+F4a & Slip velocity versus time & Main Fig. 4; Eqs. (1)-(9); Table 1 & \texttt{python3 scripts/panel.py F4a -{}-data} & \texttt{python3 scripts/plot.py F4a} & partial & 5 small ruptures intersect 2--10 km in the fixed two-year window; exact swarm sequence differs.\\[5pt]
+F4b & Slip velocity versus accepted step & Main Fig. 4; Eqs. (1)-(9); Table 1 & \texttt{python3 scripts/panel.py F4b -{}-data} & \texttt{python3 scripts/plot.py F4b} & partial & 5 small ruptures intersect 2--10 km in the fixed two-year window; exact swarm sequence differs.\\[5pt]
+F4c & Effective normal stress & Main Fig. 4; Eqs. (1)-(9); Table 1 & \texttt{python3 scripts/panel.py F4c -{}-data} & \texttt{python3 scripts/plot.py F4c} & partial & 5 small ruptures intersect 2--10 km in the fixed two-year window; exact swarm sequence differs.\\[5pt]
+F4d & Permeability & Main Fig. 4; Eqs. (1)-(9); Table 1 & \texttt{python3 scripts/panel.py F4d -{}-data} & \texttt{python3 scripts/plot.py F4d} & partial & 5 small ruptures intersect 2--10 km in the fixed two-year window; exact swarm sequence differs.\\[5pt]
 F5a & Slip velocity versus time & Main Fig. 5; Eqs. (1)-(9); Table 1; T=1e7 s, q0=3.3e-10 m/s & \texttt{python3 scripts/panel.py F5a -{}-data} & \texttt{python3 scripts/plot.py F5a} & partial & Complete aseismic episodes above 1.1 Vp at 15/18/20 km: 14/11/2. Median intervals: 3.04, 3.17, 8.64 yr. Durations and slip are tabulated in the report; exact pulse sequence is not recovered.\\[5pt]
 F5b & Slip velocity versus accepted step & Main Fig. 5; Eqs. (1)-(9); Table 1; T=1e7 s, q0=3.3e-10 m/s & \texttt{python3 scripts/panel.py F5b -{}-data} & \texttt{python3 scripts/plot.py F5b} & partial & Complete aseismic episodes above 1.1 Vp at 15/18/20 km: 14/11/2. Median intervals: 3.04, 3.17, 8.64 yr. Durations and slip are tabulated in the report; exact pulse sequence is not recovered.\\[5pt]
 F5c & Effective normal stress & Main Fig. 5; Eqs. (1)-(9); Table 1; T=1e7 s, q0=3.3e-10 m/s & \texttt{python3 scripts/panel.py F5c -{}-data} & \texttt{python3 scripts/plot.py F5c} & partial & Complete aseismic episodes above 1.1 Vp at 15/18/20 km: 14/11/2. Median intervals: 3.04, 3.17, 8.64 yr. Durations and slip are tabulated in the report; exact pulse sequence is not recovered.\\[5pt]
 F5d & Permeability & Main Fig. 5; Eqs. (1)-(9); Table 1; T=1e7 s, q0=3.3e-10 m/s & \texttt{python3 scripts/panel.py F5d -{}-data} & \texttt{python3 scripts/plot.py F5d} & partial & Complete aseismic episodes above 1.1 Vp at 15/18/20 km: 14/11/2. Median intervals: 3.04, 3.17, 8.64 yr. Durations and slip are tabulated in the report; exact pulse sequence is not recovered.\\[5pt]
-F6 & Upward migration of the |V|=Vp contour & Main Fig. 6 and Discussion; reported rates 2.50, 0.38, 0.12, 0.03 km/year & \texttt{python3 scripts/panel.py F6 -{}-data} & \texttt{python3 scripts/plot.py F6} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-S1a & Slip velocity at 5, 10, 15, and 20 km & Supplementary Fig. 1; main Eqs. (1)-(9) & \texttt{python3 scripts/panel.py S1a -{}-data} & \texttt{python3 scripts/plot.py S1a} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-S1b & Permeability at 5, 10, 15, and 20 km & Supplementary Fig. 1; main Eqs. (1)-(9) & \texttt{python3 scripts/panel.py S1b -{}-data} & \texttt{python3 scripts/plot.py S1b} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-S1c & Upward flux at 5, 10, 15, and 20 km & Supplementary Fig. 1; main Eqs. (1)-(9) & \texttt{python3 scripts/panel.py S1c -{}-data} & \texttt{python3 scripts/plot.py S1c} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-S1d & Effective stress at 5, 10, 15, and 20 km & Supplementary Fig. 1; main Eqs. (1)-(9) & \texttt{python3 scripts/panel.py S1d -{}-data} & \texttt{python3 scripts/plot.py S1d} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-S2a & Alternative cycle: slip velocity in time and step coordinates & Visible panels a,b of Supplementary Fig. 2; caption additionally mentions absent c,d & \texttt{python3 scripts/panel.py S2a -{}-data} & \texttt{python3 scripts/plot.py S2a} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
-S2b & Alternative cycle: slip velocity in time and step coordinates & Visible panels a,b of Supplementary Fig. 2; caption additionally mentions absent c,d & \texttt{python3 scripts/panel.py S2b -{}-data} & \texttt{python3 scripts/plot.py S2b} & not reproduced (pending) & Pending completed baseline calculation and final extraction; no result supplied in this snapshot.\\[5pt]
+F6 & Upward migration of the |V|=Vp contour & Main Fig. 6 and Discussion; reported rates 2.50, 0.38, 0.12, 0.03 km/year & \texttt{python3 scripts/panel.py F6 -{}-data} & \texttt{python3 scripts/plot.py F6} & partial & Leading/deepest contour medians at 13--20 km, short through verylong: 1.84e+03/1.53e+03, 647/967, 187/242, 168/168 m/year; published targets 2500, 380, 120, 30. Both contour choices are retained. Baseline shallow medians: 7.27e+03/unmeasured m/year versus 4560.\\[5pt]
+S1a & Slip velocity at 5, 10, 15, and 20 km & Supplementary Fig. 1; main Eqs. (1)-(9) & \texttt{python3 scripts/panel.py S1a -{}-data} & \texttt{python3 scripts/plot.py S1a} & partial & Exact friction and initialization are not fully specified; numerical trajectory differs.\\[5pt]
+S1b & Permeability at 5, 10, 15, and 20 km & Supplementary Fig. 1; main Eqs. (1)-(9) & \texttt{python3 scripts/panel.py S1b -{}-data} & \texttt{python3 scripts/plot.py S1b} & partial & Exact friction and initialization are not fully specified; numerical trajectory differs.\\[5pt]
+S1c & Upward flux at 5, 10, 15, and 20 km & Supplementary Fig. 1; main Eqs. (1)-(9) & \texttt{python3 scripts/panel.py S1c -{}-data} & \texttt{python3 scripts/plot.py S1c} & partial & Exact friction and initialization are not fully specified; numerical trajectory differs.\\[5pt]
+S1d & Effective stress at 5, 10, 15, and 20 km & Supplementary Fig. 1; main Eqs. (1)-(9) & \texttt{python3 scripts/panel.py S1d -{}-data} & \texttt{python3 scripts/plot.py S1d} & partial & Exact friction and initialization are not fully specified; numerical trajectory differs.\\[5pt]
+S2a & Alternative cycle: slip velocity in time and step coordinates & Visible panels a,b of Supplementary Fig. 2; caption additionally mentions absent c,d & \texttt{python3 scripts/panel.py S2a -{}-data} & \texttt{python3 scripts/plot.py S2a} & partial & Exact friction and initialization are not fully specified; numerical trajectory differs.\\[5pt]
+S2b & Alternative cycle: slip velocity in time and step coordinates & Visible panels a,b of Supplementary Fig. 2; caption additionally mentions absent c,d & \texttt{python3 scripts/panel.py S2b -{}-data} & \texttt{python3 scripts/plot.py S2b} & partial & Exact friction and initialization are not fully specified; numerical trajectory differs.\\[5pt]
 S3a & Slip velocity in time and step coordinates & Supplementary Fig. 3; main Eqs. (1)-(9), Table 1 & \texttt{python3 scripts/panel.py S3a -{}-data} & \texttt{python3 scripts/plot.py S3a} & partial & Last complete interval 88.4 yr versus approximately 160 yr in Supplementary Fig. 3a (-45\%). All-interval median 88.4 yr. Initial state and friction profiles remain uncertain.\\[5pt]
 S3b & Cumulative slip profiles & Supplementary Fig. 3; main Eqs. (1)-(9), Table 1 & \texttt{python3 scripts/panel.py S3b -{}-data} & \texttt{python3 scripts/plot.py S3b} & partial & Last complete interval 88.4 yr versus approximately 160 yr in Supplementary Fig. 3a (-45\%). All-interval median 88.4 yr. Initial state and friction profiles remain uncertain.\\[5pt]
 S3c & Slip velocity in time and step coordinates & Supplementary Fig. 3; main Eqs. (1)-(9), Table 1 & \texttt{python3 scripts/panel.py S3c -{}-data} & \texttt{python3 scripts/plot.py S3c} & partial & Last complete interval 70.5 yr versus approximately 65 yr in Supplementary Fig. 3c (+8\%). All-interval median 63.6 yr. Initial state and friction profiles remain uncertain.\\[5pt]
@@ -301,12 +312,26 @@ S6f & Upward fluid flux depth profiles & Supplementary Fig. 6; main Eqs. (1)-(4)
 \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{../figures/F1.pdf}
 \caption{Independent outputs corresponding to F1. F1a: Geometry schematic and assumed friction profiles; F1b: Permeability versus effective normal stress; F1c: Healing and slip-enhancement limiting solutions; F1d: Steady pressure, stress, and permeability profiles. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Panel F1a is a new schematic, not a simulated reproduction. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
 \clearpage\begin{figure}[p]\centering
-\includegraphics[width=\textwidth,height=.34\textheight,keepaspectratio]{../figures/panels/F2a.pdf}
-\includegraphics[width=\textwidth,height=.34\textheight,keepaspectratio]{../figures/panels/F2b.pdf}
-\caption{Independent outputs corresponding to F2. F2a: Slip velocity in time and step coordinates; F2b: Cumulative slip profiles. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Pending and absent here: F2c, F2d. Cases: reference (T=1e+08 s; fixed pressure). These panels are partial comparisons. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{../figures/F2.pdf}
+\caption{Independent outputs corresponding to F2. F2a: Slip velocity in time and step coordinates; F2b: Cumulative slip profiles; F2c: Slip velocity in time and step coordinates; F2d: Cumulative slip profiles. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Cases: baseline (T=1e+08 s; coupled pressure), reference (T=1e+08 s; fixed pressure). These panels are partial comparisons. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{../figures/F3.pdf}
+\caption{Independent outputs corresponding to F3. F3a: Effective normal stress history; F3b: Effective normal stress depth profiles; F3c: Permeability history; F3d: Permeability depth profiles; F3e: Upward fluid flux history; F3f: Upward fluid flux depth profiles. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Cases: baseline (T=1e+08 s; coupled pressure). These panels are partial comparisons. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{../figures/F4.pdf}
+\caption{Independent outputs corresponding to F4. F4a: Slip velocity versus time; F4b: Slip velocity versus accepted step; F4c: Effective normal stress; F4d: Permeability. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Cases: baseline (T=1e+08 s; coupled pressure). These panels are partial comparisons. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
 \clearpage\begin{figure}[p]\centering
 \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{../figures/F5.pdf}
 \caption{Independent outputs corresponding to F5. F5a: Slip velocity versus time; F5b: Slip velocity versus accepted step; F5c: Effective normal stress; F5d: Permeability. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Cases: short (T=1e+07 s; coupled pressure). These panels are partial comparisons. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{../figures/F6.pdf}
+\caption{Independent outputs corresponding to F6. F6: Upward migration of the |V|=Vp contour. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Cases: baseline (T=1e+08 s; coupled pressure), long (T=1e+09 s; coupled pressure), short (T=1e+07 s; coupled pressure), verylong (T=1e+10 s; coupled pressure). These panels are partial comparisons. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{../figures/S1.pdf}
+\caption{Independent outputs corresponding to S1. S1a: Slip velocity at 5, 10, 15, and 20 km; S1b: Permeability at 5, 10, 15, and 20 km; S1c: Upward flux at 5, 10, 15, and 20 km; S1d: Effective stress at 5, 10, 15, and 20 km. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Cases: baseline (T=1e+08 s; coupled pressure). These panels are partial comparisons. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
+\clearpage\begin{figure}[p]\centering
+\includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{../figures/S2.pdf}
+\caption{Independent outputs corresponding to S2. S2a: Alternative cycle: slip velocity in time and step coordinates; S2b: Alternative cycle: slip velocity in time and step coordinates. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Cases: baseline (T=1e+08 s; coupled pressure). These panels are partial comparisons. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
 \clearpage\begin{figure}[p]\centering
 \includegraphics[width=\textwidth,height=.72\textheight,keepaspectratio]{../figures/S3.pdf}
 \caption{Independent outputs corresponding to S3. S3a: Slip velocity in time and step coordinates; S3b: Cumulative slip profiles; S3c: Slip velocity in time and step coordinates; S3d: Cumulative slip profiles. Units and color scales are shown on the panels. Parameter files and selection rules are specified in the provenance sidecars. Cases: long (T=1e+09 s; coupled pressure), long\_reference (T=1e+09 s; fixed pressure). These panels are partial comparisons. Comparison target: Zhu et al.~\cite{zhu}.}\end{figure}
@@ -341,8 +366,8 @@ It records commands, exit codes, input hashes, and output hashes in
 file, \code{report/interim.tex}. All scientific arrays and their independent
 generation commands are available in the repository.
 
-Completion still requires the remaining calculations, the pending
-panels, common-duration validation comparisons, the full scientific report,
+Completion still requires the remaining calculations, any pending
+panels listed in the inventory, common-duration validation comparisons, the full scientific report,
 visual and numerical artifact review, execution of the final regeneration
 procedure, and publication of those final deliverables. This snapshot makes
 the completed scientific results reviewable without declaring that work finished.

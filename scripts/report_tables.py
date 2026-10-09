@@ -129,6 +129,57 @@ def reference_sequence(a,slip):
         'refinement establishes convergence of this long-healing reference.\n')
     return prose,metric
 
+def baseline_supplementary(a,panels):
+    """Retain depth-history scales and sensitivity to the declared event label."""
+    with np.load('data/panels/S1a.npz',allow_pickle=False) as data:
+        history_metrics=dict(samples=len(data['time_s']),depth_m=data['depth_m'].tolist(),
+            minimum_speed_m_s=np.min(np.abs(data['values']),axis=0).tolist(),
+            maximum_speed_m_s=np.max(np.abs(data['values']),axis=0).tolist())
+    sensitivity={}
+    for span in [9000,10000,11000]:
+        events=[e for e in a['events'] if e['complete'] and
+            any(top<2000 and bottom-top>span for top,bottom in e['rupture_intervals_m'])]
+        intervals=np.diff([e['end_s'] for e in events])/YEAR
+        sensitivity[str(span)]=dict(large_event_count=len(events),recurrence_years=intervals.tolist(),
+            median_recurrence_years=float(np.median(intervals)) if len(intervals) else None)
+    alternate={}
+    for name in ['S2a','S2b']:
+        window=panels[name]['window_s']
+        events=[e for e in a['events'] if e['complete'] and window[0]<e['peak_s']<=window[1]]
+        alternate[name]=dict(duration_years=(window[1]-window[0])/YEAR,
+            small_resolved_events=sum(not e['large'] and bool(e['rupture_intervals_m']) for e in events))
+    added=[]
+    for e in a['events']:
+        if e['complete'] and not e['large']:
+            for top,bottom in e['rupture_intervals_m']:
+                if top<2000 and bottom-top>9000:
+                    added.append(dict(time_years=e['peak_s']/YEAR,top_m=top,bottom_m=bottom))
+    prose=(r'\subsection{{Depth histories, alternate cycles, and event labels}}'+'\n'+
+        'Supplementary Fig. 1 retains {} accepted samples at the nearest physical nodes to '
+        '5, 10, 15, and 20 km. Minimum slip speeds at the first two depths are {} and {} m/s. '
+        'These calculated minima and the timing of the transients provide additional comparisons '
+        'beyond the final recurrence interval. Supplementary Figs. 2a and 2b use fixed earlier '
+        'cycles of {} and {} yr, containing {} and {} smaller resolved ruptures, respectively. '
+        'Their event catalog and complete windows are retained even when their behavior differs '
+        'from the alternate sequences described in the published supplement.\n').format(
+            history_metrics['samples'],number(history_metrics['minimum_speed_m_s'][0]),
+            number(history_metrics['minimum_speed_m_s'][1]),number(alternate['S2a']['duration_years']),
+            number(alternate['S2b']['duration_years']),alternate['S2a']['small_resolved_events'],
+            alternate['S2b']['small_resolved_events'])
+    prose+=('The large-event label requires a connected footprint reaching above 2 km and spanning '
+        'more than 10 km. A postprocessing sensitivity check changes that span threshold to 9, 10, '
+        'and 11 km and obtains {}, {}, and {} large events. The simulation and panel windows '
+        'remain unchanged; all primary comparisons retain the declared 10 km criterion. ').format(
+            *(sensitivity[str(span)]['large_event_count'] for span in [9000,10000,11000]))
+    for e in added:
+        prose+=('The surface-reaching event at year {} has a {}--{} km connected footprint; '
+                'the 10 km criterion excludes it. ').format(number(e['time_years']),
+                    number(e['top_m']/1000),number(e['bottom_m']/1000))
+    prose+='Recurrence statistics therefore depend on the event definition as well as the numerical trajectory.\n'
+    return prose,dict(depth_histories=history_metrics,alternate_cycles=alternate,
+        event_span_sensitivity=sensitivity,additional_events_at_9km=added)
+
+
 def main():
     panels={p:json.loads(Path('data/panels',p+'.json').read_text()) for p in PANELS}
     analyses={c:json.loads(Path('data',c,'analysis.json').read_text()) for c in MAIN_CASES+VALIDATION_CASES}
@@ -330,6 +381,9 @@ cycle exists, the comparison window covers the entire run, including startup;
 such a window cannot establish the four-phase cycle. Events truncated by an
 output boundary cannot close a complete cycle and are excluded from this table.
 '''
+    prose,supplementary_metrics=baseline_supplementary(baseline,panels)
+    comparison+='\n'+prose
+    metrics['baseline']['supplementary_diagnostics']=supplementary_metrics
     comparison+=r'''\subsection{Dependence on healing time}
 The article and Supplementary Figs. 3--6 predict reduced pressure cycling when
 healing is slow relative to earthquake recurrence. The following quantities

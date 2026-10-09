@@ -1,0 +1,22 @@
+{
+  "case": "baseline",
+  "command": [
+    "build/valving",
+    "configs/baseline.cfg",
+    "data/baseline"
+  ],
+  "pid": 2604918,
+  "start_utc": "2026-10-08T06:01:26Z",
+  "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+  "config_sha256": "3d4e84a1e5e3429c28ea6c2db56cbdea295de9cbb56afb9976410496f1bc04f7",
+  "cpu_affinity": [
+    4,
+    5,
+    6,
+    7
+  ],
+  "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+  "exit_code": 0,
+  "end_utc": "2026-10-09T14:58:49Z"
+}

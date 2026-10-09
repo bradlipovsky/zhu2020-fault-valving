@@ -1,0 +1,228 @@
+{
+  "panel": "F4a",
+  "quantity": "Slip velocity versus time",
+  "kind": "heatmap",
+  "cases": [
+    "baseline"
+  ],
+  "documentation": "Main Fig. 4; Eqs. (1)-(9); Table 1",
+  "field": 1,
+  "data_command": "python3 scripts/panel.py F4a --data",
+  "plot_command": "python3 scripts/plot.py F4a",
+  "data_file": "data/panels/F4a.npz",
+  "case": "baseline",
+  "config_file": "configs/baseline.cfg",
+  "parameters": {
+    "n": 131072.0,
+    "threads": 4.0,
+    "Ly": 500000.0,
+    "Lz": 500000.0,
+    "mu": 32400000000.0,
+    "radiation": 4680000.0,
+    "Vp": 1e-09,
+    "V0": 1e-06,
+    "f0": 0.6,
+    "dc": 0.002,
+    "rho": 1000.0,
+    "gravity": 9.8,
+    "viscosity": 0.0001,
+    "storage": 1e-11,
+    "normal_gradient": 22000.0,
+    "stress_scale": 30000000.0,
+    "kmin": 1e-19,
+    "kmax": 1e-15,
+    "L": 1.0,
+    "T": 100000000.0,
+    "influx": 3e-09,
+    "a_surface": 0.01,
+    "a_15km": 0.03,
+    "a_deep_slope": 3e-06,
+    "ab_shallow": -0.01,
+    "ab_corner": 13500.0,
+    "vw_bottom": 17000.0,
+    "perturbation": 0.0001,
+    "perturb_depth": 12000.0,
+    "perturb_width": 1000.0,
+    "initial_locking_depth": 17000.0,
+    "initial_transition_width": 1500.0,
+    "initial_velocity_fraction": 0.0001,
+    "years": 200.0,
+    "tolerance": 1e-05,
+    "dt_max": 1000000.0,
+    "fine_depth": 30000.0,
+    "stretch_scale": 10000.0,
+    "maximum_spacing": 1000.0,
+    "surface_ratio": 8.0,
+    "surface_scale": 1000.0,
+    "output_years": 0.025,
+    "output_seconds": 0.5,
+    "output_depth": 30000.0,
+    "output_spacing": 30.0,
+    "seismic_threshold": 0.001,
+    "fixed_pressure": 0.0
+  },
+  "window_s": [
+    6236517407.250606,
+    6299632607.250606
+  ],
+  "selection": "Final two years preceding the selected closing large earthquake",
+  "complete_cycle": true,
+  "source_provenance": {
+    "case": "baseline",
+    "command": [
+      "build/valving",
+      "configs/baseline.cfg",
+      "data/baseline"
+    ],
+    "pid": 2604918,
+    "start_utc": "2026-10-08T06:01:26Z",
+    "source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+    "executable_sha256": "f68dfdc8cad48d0c014b5ff699790fd8e10261c77308fa67ab1f21f23b9751a7",
+    "config_sha256": "3d4e84a1e5e3429c28ea6c2db56cbdea295de9cbb56afb9976410496f1bc04f7",
+    "cpu_affinity": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "scientific_input": "published equations and explicitly configured assumptions; no imported simulation state",
+    "exit_code": 0,
+    "end_utc": "2026-10-09T14:58:49Z"
+  },
+  "middepth_small_events": [
+    {
+      "start_s": 6291421151.494051,
+      "end_s": 6291421299.2129135,
+      "slip_start_s": 6291421151.663093,
+      "slip_end_s": 6291421299.2129135,
+      "onset_bracket_s": [
+        6291421151.494051,
+        6291421151.663093
+      ],
+      "peak_s": 6291421160.704737,
+      "peak_velocity": 2.303192682966086,
+      "nucleation_depth_m": 7886.8865966796875,
+      "shallow_m": 13.3514404296875,
+      "deep_m": 18583.297729492188,
+      "rupture_intervals_m": [
+        [
+          13.3514404296875,
+          2801.8951416015625
+        ],
+        [
+          6044.3878173828125,
+          18583.297729492188
+        ]
+      ],
+      "max_slip_m": 1.1599626541137695,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 6291996116.49652,
+      "end_s": 6291996131.511316,
+      "slip_start_s": 6291996116.847141,
+      "slip_end_s": 6291996131.511316,
+      "onset_bracket_s": [
+        6291996116.49652,
+        6291996116.847141
+      ],
+      "peak_s": 6291996123.585595,
+      "peak_velocity": 0.29620348853115036,
+      "nucleation_depth_m": 6254.1961669921875,
+      "shallow_m": 5834.5794677734375,
+      "deep_m": 6551.7425537109375,
+      "rupture_intervals_m": [
+        [
+          5834.5794677734375,
+          6551.7425537109375
+        ]
+      ],
+      "max_slip_m": 0.0933084487915039,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 6293698984.244172,
+      "end_s": 6293699001.216816,
+      "slip_start_s": 6293698984.449023,
+      "slip_end_s": 6293699001.216816,
+      "onset_bracket_s": [
+        6293698984.244172,
+        6293698984.449023
+      ],
+      "peak_s": 6293698988.934402,
+      "peak_velocity": 0.45739267095826547,
+      "nucleation_depth_m": 5907.0587158203125,
+      "shallow_m": 5502.7008056640625,
+      "deep_m": 7062.9119873046875,
+      "rupture_intervals_m": [
+        [
+          5502.7008056640625,
+          7062.9119873046875
+        ]
+      ],
+      "max_slip_m": 0.1595745086669922,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 6295775144.05619,
+      "end_s": 6295775161.938164,
+      "slip_start_s": 6295775144.202925,
+      "slip_end_s": 6295775161.938164,
+      "onset_bracket_s": [
+        6295775144.05619,
+        6295775144.202925
+      ],
+      "peak_s": 6295775148.076318,
+      "peak_velocity": 0.3661296743776013,
+      "nucleation_depth_m": 5651.4739990234375,
+      "shallow_m": 5144.1192626953125,
+      "deep_m": 6612.7777099609375,
+      "rupture_intervals_m": [
+        [
+          5144.1192626953125,
+          6612.7777099609375
+        ]
+      ],
+      "max_slip_m": 0.13791179656982422,
+      "large": false,
+      "complete": true
+    },
+    {
+      "start_s": 6297456057.215906,
+      "end_s": 6297456075.534346,
+      "slip_start_s": 6297456057.405113,
+      "slip_end_s": 6297456075.534346,
+      "onset_bracket_s": [
+        6297456057.215906,
+        6297456057.405113
+      ],
+      "peak_s": 6297456063.474522,
+      "peak_velocity": 0.11338667041382061,
+      "nucleation_depth_m": 5468.3685302734375,
+      "shallow_m": 4873.2757568359375,
+      "deep_m": 5865.0970458984375,
+      "rupture_intervals_m": [
+        [
+          4873.2757568359375,
+          5865.0970458984375
+        ]
+      ],
+      "max_slip_m": 0.07577037811279297,
+      "large": false,
+      "complete": true
+    }
+  ],
+  "status": "partial",
+  "main_discrepancy": "5 small ruptures intersect 2--10 km in the fixed two-year window; exact swarm sequence differs.",
+  "model_source_sha256": "24944b3c8240ef4165f55b7fa84669dd040886d748b15b4b4be9aad97fedb512",
+  "pipeline_source_sha256": {
+    "scripts/common.py": "60bc209b1f71391a4172016d5b1bcbc0e1040cfa95c8bf972852039c83243142",
+    "scripts/analyze.py": "3e4791cc732267a7dae80f8faab1de7e5d24f75ac69653433a4136d5dfc73f12",
+    "scripts/prepare_panels.py": "ba7e2b2955cc66ba956a1efd1e66099327e93df87d6b085e03356b2cf290395f",
+    "scripts/inventory.py": "bcf57967af1f7c0dadd74894a79834c4007bd9a6ff9d1c92812396a6a4f4fb39",
+    "scripts/plot.py": "2d2ecef344331fdcf5e4c16f44d80f8c828d40852af497d2c974b6662a73cd8f"
+  }
+}
