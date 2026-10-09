@@ -16,6 +16,17 @@ The fault mesh resolves the rupture region at 3.81 m and coarsens at depth.
 `documentation/graded_mesh.md` describes its conservative fluid operator,
 energy-preserving elastic projection, and refinement checks.
 
+The [interim scientific report](report/interim.pdf), dated 9 October 2026 (UTC),
+contains 30 generated panels from nine completed cases and direct constitutive
+calculations. It documents quantitative discrepancies and lists all 49 panel
+targets, including the 19 still pending. The baseline, fine-mesh, and tighter
+time-tolerance runs continue; this is not the final reproduction report.
+Its [LaTeX source](report/interim.tex) and
+[self-contained source archive](report/interim-latex-source.zip) are included.
+Run `python3 scripts/interim_report.py` to rebuild this report from completed,
+audited outputs. The [build record](data/interim_report_verification.json)
+includes input hashes and an isolated source-archive compilation.
+
 ## Regeneration
 
 Requirements: Linux, a C++17 compiler, CMake, OpenMP, Python 3 with NumPy and Matplotlib,

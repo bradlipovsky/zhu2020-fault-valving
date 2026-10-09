@@ -1,0 +1,28 @@
+{
+  "scope": "Manual scientific and visual review of the dated interim report; the full reproduction remains incomplete.",
+  "recorded_utc": "2026-10-09T00:49:14.312964Z",
+  "checks_passed": true,
+  "pdf_sha256": "da643172f7baf61f82ae08f9b1f16c477aa3f56b8866d05d843a179a0c4e7074",
+  "pages": 16,
+  "visual_review": [
+    "Reviewed contact sheets covering every final page and full-size pages for the corrected normal-stress unit, constitutive/schematic figure, and availability statement.",
+    "All 30 included panel labels appear in the seven figure groups; main-manuscript groups precede supplementary groups.",
+    "The newly drawn schematic is explicitly labeled as not a simulation result.",
+    "The 49-row provenance inventory identifies 19 pending panels and retains discrepancies for generated comparisons.",
+    "Titles, axes, legends, color bars, tables, and captions are legible without visible clipping; the redundant blank heading page was removed."
+  ],
+  "scientific_review": [
+    "All current input/output hashes agree with the build record; model source and executable hashes remain unchanged.",
+    "Cycle differences are calculated against declared approximate published comparison targets, with both final-cycle and all-interval median statistics.",
+    "Leading and deepest migration statistics retain all qualifying segments; both branches in the verylong case have the same two qualifying rates, 217.76847657097036 and 118.93089057863386 m/yr, and the displayed median is 168.3496835748021 m/yr.",
+    "Slow-slip duration, recurrence, and slip medians are reported at all three declared depths and derived from the completed short-case analysis.",
+    "No unfinished run or software fixture supplies a scientific figure in this interim report.",
+    "The shared main-report template had a carriage-return escape in its normal-stress-gradient unit. Corrected to 22 MPa per km and inspected the rendered result."
+  ],
+  "checks_remaining": [
+    "Complete baseline, baseline_fine, and baseline_tight simulations.",
+    "Generate and audit the remaining 19 panels and full-report validation comparisons.",
+    "Compare temporal tolerance over the full shared 200-year interval as well as the common 100-year resolution/parameter interval.",
+    "Compile, visually review, regenerate, audit, and publish the final report and release."
+  ]
+}
