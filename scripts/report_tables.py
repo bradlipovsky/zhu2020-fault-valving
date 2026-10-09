@@ -71,6 +71,24 @@ def tolerance_sequence(a,reference,horizon):
         'convergence or recovery of the published swarm sequence.\n\n')
     return prose,metric
 
+def tolerance_windows(a,reference,horizon):
+    """Keep the common validation window and assess any later shared duration."""
+    full_horizon=min(a['final_time_years'],reference['final_time_years'])
+    assert horizon<=full_horizon
+    prose,common=tolerance_sequence(a,reference,horizon)
+    full=common
+    if full_horizon>horizon:
+        prose+=('The baseline and tighter-tolerance runs both extend beyond the common validation window. '
+            'We therefore repeat the comparison over their full shared duration of {} years, '
+            'so agreement confined to the early cycles cannot substitute for assessment of later events.\n').format(
+                number(full_horizon))
+        later,full=tolerance_sequence(a,reference,full_horizon)
+        prose+=later
+        prose+=('The fine-mesh and input-sensitivity runs do not cover this longer window. '
+            'This additional temporal comparison therefore does not establish spatial convergence '
+            'of the later figure cycles.\n\n')
+    return prose,common,full
+
 def reference_sequence(a,slip):
     """Compare S5 timing and accumulated slip without assigning published event IDs."""
     start,end=a['selected_cycle_s']
@@ -532,8 +550,9 @@ does not imply close agreement in later slip, peak speed, or duration. Pairing
 by event number measures sequence sensitivity; it does not establish that the
 paired ruptures correspond physically when the catalogs contain different events.
 '''
-    tolerance_prose,tolerance_metrics=tolerance_sequence(analyses['baseline_tight'],baseline,horizon)
+    tolerance_prose,tolerance_metrics,full_tolerance_metrics=tolerance_windows(analyses['baseline_tight'],baseline,horizon)
     validation['baseline_tight']['resolved_event_tolerance_comparison']=tolerance_metrics
+    validation['baseline_tight']['full_duration_tolerance_comparison']=full_tolerance_metrics
     comparison+=tolerance_prose
     comparison+=r'''
 

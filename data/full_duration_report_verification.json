@@ -1,0 +1,72 @@
+{
+  "scope": "Verification of common-duration and full-shared-duration temporal comparisons. Scientific evidence is restricted to stable raw prefixes through 117 years. Both scientific 200-year runs remain incomplete; the compiled integration fixture is excluded from deliverables.",
+  "recorded_utc": "2026-10-09T00:55:39.735492Z",
+  "checks_passed": true,
+  "source_file": "scripts/report_tables.py",
+  "source_sha256": "2c1d896dfcc23e57d8c3b4f091bf43803cf1a1e758f1790de23fbd53fdd3bd74",
+  "scientific_audit_file": "data/tolerance_117yr_verification.json",
+  "scientific_audit_sha256": "eddc30d2c51a1fe6cf126db792b55309a8d455fdc80a0156fed4438ab14e3ce9",
+  "common_horizon_years": 100,
+  "extended_test_horizon_years": 117,
+  "common_metrics_unchanged": true,
+  "extended_resolved_rupture_counts": [
+    22,
+    22
+  ],
+  "extended_maximum_absolute_differences": {
+    "end_time_difference_years": 0.000301500149219484,
+    "onset_s": 9514.648363113403,
+    "duration_percent": 1.4700249413252764,
+    "peak_speed_percent": 1.0955209593432658,
+    "maximum_slip_percent": 0.006201953319961984
+  },
+  "fixture": {
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "scripts/report_tables.py"
+        ],
+        "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+        "exit_code": 0,
+        "elapsed_s": 0.37655554100638255
+      },
+      {
+        "command": [
+          "latexmk",
+          "-pdf",
+          "-interaction=nonstopmode",
+          "-halt-on-error",
+          "reproduction.tex"
+        ],
+        "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320/report",
+        "exit_code": 0,
+        "elapsed_s": 0.9444619829882868
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/package_report.py",
+          "--verify"
+        ],
+        "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+        "exit_code": 0,
+        "elapsed_s": 3.4975821590051055
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/verify_artifacts.py"
+        ],
+        "cwd": "/home/bradlipovsky/notebooks/zhu2020-independent/.tmp/pipeline-smoke-1791439281001144320",
+        "exit_code": 0,
+        "elapsed_s": 1.7898297749925405
+      }
+    ],
+    "equal_duration_metrics_match": true,
+    "fixture_pdf_excluded": true,
+    "overfull_boxes": 0
+  },
+  "fixture_log_sha256": "fd9b748136255ce99122bf8b26b520fbfc1572becd888e86965f2574547bda7c",
+  "final_production_behavior": "Retain the first-100-year common comparison and also compute the full shared 200-year temporal comparison from completed analyses. Spatial convergence of the later cycles remains unestablished by the 100-year fine-mesh case."
+}
